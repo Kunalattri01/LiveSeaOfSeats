@@ -1,0 +1,174 @@
+{% load static %}
+<header class="header-section">
+
+    <!-- TOP ROW -->
+    <div class="container">
+        <div class="header-wrapper">
+
+            <!-- LOGO -->
+            <div class="logo">
+                <a href="{% url 'HomePage' %}">
+                    <img src="{% static 'assets/images/logo/logo.png' %}" alt="logo">
+                </a>
+            </div>
+
+            <!-- SEARCH (CENTER LIKE BMS) -->
+            <form method="GET" action="{% url 'SearchPage' %}" class="header-search">
+                <input type="search" name="q" placeholder="Search for Movies, Events..." value="{{ request.GET.q }}">
+            </form>
+
+            <!-- RIGHT SIDE -->
+            <div class="header-tools">
+
+                <!-- LOCATION -->
+                <select class="header-location" onchange="setCity(this.value)">
+                    {% for row in all_cities %}
+                        <option value="{{ row.name }}" {% if request.session.city == row.name %}selected{% endif %}>
+                            {{ row.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <!-- <ul class="menu">
+                    <li>
+                        <a href="{% url 'SignUpPage' %}" class="header-button{% if request.resolver_match.url_name == 'SignUpPage' %} active{% endif %}">
+                            Join Us
+                        </a>
+                    </li>
+                </ul> -->
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MENU ROW (UNCHANGED) -->
+    <div class="container">
+        <div class="header-wrapper">
+            <ul class="menu">
+                <li>
+                    <a href="{% url 'MovieGridPage' %}" class="{% if request.resolver_match.url_name == 'MovieGridPage' %}active{% endif %}">Movies</a>
+                </li>
+                <li>
+                    <a href="{% url 'EventPage' %}" class="{% if '/events/' in request.path %}active{% endif %}"> Events </a>
+                </li>
+                <li>
+                    <a href="{% url 'SportsPage' %}" class="{% if request.resolver_match.url_name == 'SportsPage' %}active{% endif %}"> Sports </a>
+                </li>
+                <li>
+                    <a href="{% url 'HomePage' %}" class="{% if request.resolver_match.url_name == 'HomePage' %}active{% endif %}">ACTIVITIES</a>
+                </li>
+                <li>
+                    <a href="{% url 'BlogPage' %}" class="{% if request.resolver_match.url_name == 'BlogPage' %}active{% endif %}"> AVIATION </a>
+                </li>
+                <li>
+                    <a href="{% url 'HomePage' %}" class="{% if request.resolver_match.url_name == 'HomePage' %}active{% endif %}"> DINING </a>
+                </li>
+                <li>
+                    <a href="{% url 'BlogPage' %}" class="{% if request.resolver_match.url_name == 'BlogPage' %}active{% endif %}"> Blog </a>
+                </li>
+                <li>
+                    <a href="{% url 'ContactPage' %}" class="{% if request.resolver_match.url_name == 'ContactPage' %}active{% endif %}"> Contact </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<script>
+function setCity(city) {
+    fetch("{% url 'SetCity' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({ city: city })
+    }).then(() => location.reload());
+}
+</script>
+
+
+
+<!-- <header class="header-section">
+    <div class="container">
+        <div class="header-wrapper">
+            <div class="logo">
+                <a href="{% url 'HomePage' %}">
+                    <img src="{% static 'assets/images/logo/logo.png' %}" alt="logo">
+                </a>
+            </div>
+
+            <div class="header-tools">
+                <select class="header-location" onchange="setCity(this.value)">
+                    <option value="">City</option>
+                    {% for row in all_cities %}
+                        <option value="{{ row.name }}" {% if request.session.city == row.name %}selected{% endif %}>{{ row.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <ul class="menu">
+                <li>
+                    <a href="{% url 'MovieGridPage' %}" class="{% if request.resolver_match.url_name == 'MovieGridPage' %}active{% endif %}">Movies</a>
+                </li>
+                <li>
+                    <a href="{% url 'EventPage' %}" class="{% if '/events/' in request.path %}active{% endif %}"> Events </a>
+                </li>
+                <li>
+                    <a href="{% url 'SportsPage' %}" class="{% if request.resolver_match.url_name == 'SportsPage' %}active{% endif %}"> Sports </a>
+                </li>
+                <li>
+                    <a href="{% url 'HomePage' %}" class="{% if request.resolver_match.url_name == 'HomePage' %}active{% endif %}">ACTIVITIES</a>
+                </li>
+                <li>
+                    <a href="{% url 'BlogPage' %}" class="{% if request.resolver_match.url_name == 'BlogPage' %}active{% endif %}"> AVIATION </a>
+                </li>
+                <li>
+                    <a href="{% url 'HomePage' %}" class="{% if request.resolver_match.url_name == 'HomePage' %}active{% endif %}"> DINING </a>
+                </li>
+                <li>
+                    <a href="{% url 'BlogPage' %}" class="{% if request.resolver_match.url_name == 'BlogPage' %}active{% endif %}"> Blog </a>
+                </li>
+                <li>
+                    <a href="{% url 'ContactPage' %}" class="{% if request.resolver_match.url_name == 'ContactPage' %}active{% endif %}"> Contact </a>
+                </li>
+                <li class="header-button pr-0">
+                    <a href="{% url 'SignUpPage' %}" class="{% if request.resolver_match.url_name == 'SignUpPage' %}active{% endif %}"> Join Us </a>
+                </li>
+            </ul>
+
+            <div class="header-tools">
+                <form method="GET" action="" class="header-search">
+                    <input type="search" name="q" placeholder="Search..." value="{{ request.GET.q }}"/>
+                    <span class="search-icon">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="7"></circle>
+                            <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
+                        </svg>
+                    </span>
+                </form>
+            </div>
+
+            <div class="header-bar d-lg-none">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<script>
+function setCity(city) {
+    fetch("{% url 'SetCity' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({ city: city })
+    }).then(() => location.reload());
+}
+</script> -->

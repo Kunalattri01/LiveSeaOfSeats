@@ -1,0 +1,219 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>{{ booking_data.0.booking.event.title }}</title>
+
+<!-- FONT AWESOME -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<!-- <link rel="stylesheet" href="{% static 'assets/css/all.min.css' %}"> -->
+
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    padding:30px;
+}
+
+/* WRAPPER */
+.ticket-wrapper {
+    width:600px;
+    margin:auto;
+}
+
+/* TICKET */
+.ticket {
+    display:flex;
+    background:#fff;
+    border-radius:10px;
+    overflow:hidden;
+    border:1px solid #e5e7eb;
+    position:relative;
+}
+
+/* REAL CUT EFFECT */
+.ticket:before,
+.ticket:after {
+    content:"";
+    position:absolute;
+    width:22px;
+    height:22px;
+    background:#f3f4f6;
+    border-radius:50%;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:2;
+}
+
+.ticket:before { left:-11px; }
+.ticket:after { right:-11px; }
+
+/* LEFT SIDE */
+.ticket-left {
+    flex:2;
+    padding:16px;
+}
+
+/* RIGHT SIDE */
+.ticket-right {
+    flex:1;
+    background:#fafafa;
+    border-left:1px dashed #d1d5db;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:15px;
+}
+
+/* HEADER */
+.header {
+    font-size:14px;
+    font-weight:600;
+    color:#16a34a;
+    margin-bottom:8px;
+}
+
+/* EVENT */
+.event-title {
+    font-size:16px;
+    font-weight:600;
+    color:#111827;
+}
+
+.meta {
+    font-size:12px;
+    color:#6b7280;
+    margin-top:4px;
+    line-height:1.5;
+}
+
+/* ICON STYLE */
+.meta i {
+    width:14px;
+    color:#6b7280;
+    margin-right:5px;
+}
+
+/* DIVIDER */
+.divider {
+    border-top:1px dashed #d1d5db;
+    margin:10px 0;
+}
+
+/* TICKET ROW */
+.row {
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:6px;
+    font-size:13px;
+}
+
+.ticket-id {
+    font-size:10px;
+    color:#6b7280;
+}
+
+/* TOTAL */
+.total {
+    font-weight:600;
+    font-size:14px;
+}
+
+/* QR */
+.qr img {
+    width:100px;
+}
+
+.order {
+    font-size:11px;
+    color:#6b7280;
+    text-align:center;
+    margin-top:8px;
+}
+
+.order strong {
+    display:block;
+    font-size:12px;
+    color:#111827;
+}
+
+</style>
+
+</head>
+
+<body>
+    
+    <div class="ticket-wrapper">
+        <div class="ticket">
+
+            <!-- LEFT -->
+            <div class="ticket-left">
+                <div class="header">
+                    <i class="fa-solid fa-circle-check"></i> Booking Confirmed
+                </div>
+
+                <div class="event-title">{{ booking_data.0.booking.event.title }}</div>
+
+                <div class="meta">
+                    <i class="fa-solid fa-location-dot"></i> {{ booking_data.0.booking.event.venue.name }} <br>
+                    <i class="fa-solid fa-calendar-days"></i> {{ booking_data.0.booking.showtime.show_date|date:'D, d M' }} &nbsp;&nbsp;
+                    <i class="fa-solid fa-clock"></i> {{ booking_data.0.booking.showtime.start_time|time:"h:i A" }}
+                </div>
+
+                <div class="divider"></div>
+
+                {% for row in booking_data %}
+                    <!-- TICKETS -->
+                    <div class="row">
+                        <div>
+                            {{ row.category.name }}
+                            <div class="ticket-id">
+                                <i class="fa-solid fa-ticket"></i> {{ row.ticket_id }}
+                            </div>
+                        </div>
+                        <div>₹ {{ row.price|floatformat:0 }}</div>
+                    </div>
+                {% endfor %}
+
+                <div class="divider"></div>
+
+                <!-- TOTAL -->
+                <div class="row total">
+                    <div>Total</div>
+                    <div>₹ {{ booking_data.0.booking.total_amount|floatformat:0 }}</div>
+                </div>
+            </div>
+
+
+            <!-- RIGHT -->
+            <div class="ticket-right">
+                <div class="qr">
+                    <img src="/media/{{ booking_data.0.booking.qr_code }}">
+                </div>
+
+                <div class="order">
+                    ORDER ID
+                    <strong>{{ booking_data.0.booking.order_id }}</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="max-width:600px; margin:20px auto 0; font-size:12px; color:#374151;">
+        <div style="background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:12px;">
+            <strong style="display:block; margin-bottom:6px; color:#111827;"> 
+                Important Instructions 
+            </strong>
+            <ul style="padding-left:18px; margin:0; line-height:1.6;">
+                <li>Carry valid ID proof with this ticket.</li>
+                <li>Scan QR code at entry.</li>
+                <li>Valid for one-time use only.</li>
+                <li>Late entry may not be allowed.</li>
+                <li>No cancellation or refund.</li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>

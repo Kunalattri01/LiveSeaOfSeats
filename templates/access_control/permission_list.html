@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div>
+            <label>Menu</label>
+            <select name="menu_code">
+                <option value="">Select an option</option>
+                {% for m in menus %}
+                    <option value="{{ m.menu_code }}"> {{ m.menu_name }} </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label>Permission Type</label>
+            <select name="perm_type">
+                <option value="">Select an option</option>
+                <option value="BASE">BASE</option>
+                <option value="SPECIAL">SPECIAL</option>
+            </select>
+        </div>
+        
+        <div>
+            <label>Permission Name</label>
+            <select name="perm_name" required>
+                <option value="">Select an option</option>
+                <option value="READ">READ</option>
+                <option value="WRITE">WRITE</option>
+                <option value="MODIFY">MODIFY</option>
+                <option value="DELETE">DELETE</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Status</label>
+            <select name="is_active">
+                <option value="">Select an option</option>
+                <option value="1">Active</option>
+                <option value="0">Inactive</option>
+            </select>
+        </div>
+
+        <br>
+
+        <button type="submit">Save</button>
+
+    </form>
+
+    
+</body>
+</html>

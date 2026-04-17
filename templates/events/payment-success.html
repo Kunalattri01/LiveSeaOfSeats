@@ -1,0 +1,152 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block bodyContent %}
+<style>
+.card-theme {
+    background: #0f2c5c;
+    border-radius: 8px;
+}
+
+.text-muted-custom {
+    color: #94a3b8;
+    line-height: 1.4;
+    margin: 0px;
+    font-size: 13px;
+}
+
+.btn-gradient {
+    background: linear-gradient(90deg,#ff416c,#6c5ce7);
+    color: white;
+    border: none;
+}
+
+.btn-outline-theme {
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+}
+
+.qr-box {
+    background: white;
+    padding: 12px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.summary-container {
+    padding: 35px;
+}
+
+/*  RESPONSIVE FIXES ADDED */
+@media (max-width: 992px) {
+
+    .card-theme {
+        margin-bottom: 20px;
+    }
+
+    .col-lg-7, .col-lg-5 {
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+
+    .text-muted-custom {
+        font-size: 12px;
+    }
+
+    .qr-box img {
+        max-width: 150px !important;
+    }
+
+    .btn {
+        font-size: 14px;
+        padding: 10px;
+    }
+}
+
+</style>
+
+<div class="container event-facility padding-bottom padding-top">
+
+    <div class="row justify-content-center summary-container">
+
+        <div class="col-lg-10">
+
+            <!--  ONLY CHANGE: added g-4 -->
+            <div class="row">
+
+                <!-- LEFT SIDE -->
+                <div class="col-lg-7">
+                    <!-- SUCCESS -->
+                    <div class="px-2 pb-3">
+                        <h5 style="color:#22c55e;"> Payment Successful</h5>
+                        <p class="text-muted-custom">Your booking is confirmed</p>
+                    </div>
+                    
+                    <!--  SMALL FIX: responsive padding -->
+                    <div class="p-3 card-theme">
+
+                        <!-- EVENT -->
+                        <h6 style="color:white;">{{ booking_data.0.booking.event.title }}</h6>
+                        <p class="text-muted-custom">
+                            <i class="fas fa-map-marker-alt"></i> {{ booking_data.0.booking.event.venue.name }} <br>
+                            <i class="fas fa-clock"></i> 
+                            {{ booking_data.0.booking.showtime.show_date|date:'D, d M' }}, 
+                            {{ booking_data.0.booking.showtime.start_time|time:"h:i A" }}
+                        </p>
+
+                        <hr style="border-color:rgba(255,255,255,0.1);">
+
+                        <!-- TICKETS (UNCHANGED UI) -->
+                        <div class="mb-3">
+                            {% for row in booking_data %}
+                                <div class="d-flex justify-content-between">
+                                    <span style="color:#cbd5e1;">
+                                        {{ row.category.name }} ( {{ row.ticket_id }} )
+                                        <p style="font-size: 13px; color:#94a3b8"></p> 
+                                    </span> 
+                                    <span style="color:white;">
+                                        ₹ {{ row.price|floatformat:0 }}
+                                    </span>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <hr style="border-color:rgba(255,255,255,0.1);">
+
+                        <!-- TOTAL -->
+                        <div class="d-flex justify-content-between">
+                            <strong style="color:white;">Total</strong>
+                            <strong style="color:#22c55e;"> ₹ {{ booking_data.0.booking.total_amount|floatformat:0 }} </strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDE -->
+                <div class="col-lg-5">
+                    <!--  SMALL FIX: responsive padding -->
+                    <div class="p-3 text-center card-theme">
+                        <h6 style="color:white;">Scan at Entry</h6>
+
+                        <!--  ONLY CHANGE: responsive QR -->
+                        <div class="qr-box my-3">
+                            <img src="/media/{{ booking_data.0.booking.qr_code }}" class="img-fluid" style="max-width:200px;">
+                        </div>
+
+                        <p class="text-muted-custom">
+                            ORDER ID: {{ booking_data.0.booking.order_id }}
+                        </p>
+
+                        <!-- BUTTONS -->
+                        <div class="mt-4">
+                            <a href="{% url 'TicketDownloadPage' booking_id %}" class="btn btn-gradient w-100 mb-2"> Download Ticket </a>
+                            <a href="{% url 'HomePage' %}" class="btn btn-outline-theme w-100"> Go Home </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,281 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block title %} Boleto  - Online Ticket Booking Website HTML Template {% endblock title %}
+
+{% block banner-section %}
+    <section class="banner-section">
+        <div class="banner-bg bg_img" data-background="{% static 'assets/images/banner/banner05-mine.jpg' %}"></div>
+        <div class="container">
+            <div class="banner-content event-content">
+                <h1 class="title bold">get <span class="color-theme">events</span> tickets</h1>
+                <p>Buy event tickets in advance, find event times and much more</p>
+            </div>
+        </div>
+    </section>
+{% endblock banner-section %}
+
+
+{% block bodyContent %}
+    <section class="event-section padding-bottom"> <!-- padding-top -->
+        <div class="container">
+            <!-- <div class="row flex-wrap-reverse justify-content-center"> -->
+            <div class="row justify-content-center">
+                <div class="col-sm-10 col-md-8 col-lg-3">
+
+                    <!-- advertisment banner 1 -->
+                    <!-- <div class="widget-1 widget-banner">
+                        <div class="widget-1-body">
+                            <a href="#0">
+                                <img src="{% static 'assets/images/sidebar/banner/banner01.jpg' %}" alt="banner">
+                            </a>
+                        </div>
+                    </div> -->
+
+
+                    <!-- IMPORANT FILTERS TEMPLATE  -->
+                    <!-- <div class="widget-1 widget-check">
+                        <div class="widget-header">
+                            <h5 class="m-title">Filter By</h5> <a href="#0" class="clear-check">Clear All</a>
+                        </div>
+                        <div class="widget-1-body">
+                            <h6 class="subtitle">categories</h6>
+                            <div class="check-area">
+                                <div class="form-group">
+                                    <input type="checkbox" name="lang" id="cat1"><label for="cat1">all</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" name="lang" id="cat2"><label for="cat2">Screening</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" name="lang" id="cat3"><label for="cat3">meetings</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" name="lang" id="cat4"><label for="cat4">Performances</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" name="lang" id="cat5"><label for="cat5">workshops</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" name="lang" id="cat6"><label for="cat6">Exhibitions </label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" name="lang" id="cat8"><label for="cat8">music shows</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" name="lang" id="cat9"><label for="cat9">comedy shows</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" name="lang" id="cat10"><label for="cat10">Award shows</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                    <!-- IMPORANT FILTERS TEMPLATE  -->
+
+
+                    <form  id="filter-form">
+                        <div class="widget-1 widget-check">
+                            <div class="widget-header">
+                                <h5 class="m-title">Filters</h5> 
+                                <!-- <a href="#0" class="clear-check">Clear All</a> -->
+                            </div>
+
+                            <div class="widget-1-body">
+                                <h6 class="subtitle">categories</h6>
+                                <div class="check-area">
+                                    {% for row in categories_filters %}
+                                        <div class="form-group">
+                                            <input type="checkbox" name="cat" id="cat_{{ row.slug }}" value="{{ row.slug }}" {% if row.slug in selected_categories %}checked{% endif %}>
+                                            <label for="cat_{{ row.slug }}">{{ row.name }}</label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                                <div class="pt-4">
+                                    <h6 class="subtitle">LANGUAGE</h6>
+                                </div>
+                                <div class="check-area">
+                                    {% for row in language_filters %}
+                                        <div class="form-group">
+                                            <input type="checkbox" name="lang" id="lang_{{ row.name|lower }}" value="{{ row.name|lower }}" {% if row.name|lower in selected_languages %} checked {% endif %}>
+                                            <label for="lang_{{ row.name|lower }}">{{ row.name }}</label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                                <div class="pt-4">
+                                    <h6 class="subtitle">EVENT TAGS</h6>
+                                </div>
+                                <div class="check-area">
+                                    {% for row in eventtags_filters %}
+                                        <div class="form-group">
+                                            <input type="checkbox" name="tags" id="tag_{{ row.slug }}" value="{{ row.slug }}" {% if row.slug in selected_tags %} checked {% endif %}>
+                                            <label for="tag_{{ row.slug }}">{{ row.name }}</label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                                <!-- <div class="pt-4">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        Apply Filters
+                                    </button>
+                                </div> -->
+                            </div>
+                        </div>
+                    </form>
+                    
+                    <!-- advertisment banner 2 -->
+                    <!-- <div class="widget-1 widget-banner">
+                        <div class="widget-1-body">
+                            <a href="#0">
+                                <img src="{% static 'assets/images/sidebar/banner/banner02.jpg' %}" alt="banner">
+                            </a>
+                        </div>
+                    </div> -->
+
+                </div>
+                <div class="col-lg-9 mb-50 mb-lg-0">
+                    <div class="filter-tab">
+
+                        <!-- vertical filters -->
+                        <!-- <div class="filter-area">
+                            <div class="filter-main">
+                                <div class="left w-100 justify-content-between">
+                                    <div class="item">
+                                        <span class="show">Show :</span>
+                                        <select class="select-bar">
+                                            <option value="12">12</option>
+                                            <option value="15">15</option>
+                                            <option value="18">18</option>
+                                            <option value="21">21</option>
+                                            <option value="24">24</option>
+                                            <option value="27">27</option>
+                                            <option value="30">30</option>
+                                        </select>
+                                    </div>
+                                    <div class="item mr-0">
+                                        <span class="show">Sort By :</span>
+                                        <select class="select-bar">
+                                            <option value="showing">now showing</option>
+                                            <option value="exclusive">exclusive</option>
+                                            <option value="trending">trending</option>
+                                            <option value="most-view">most view</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+
+                        <div>
+                            <a href="{% if request.GET.type == 'upcoming' %}{% url 'EventPage' %}{% else %}{% url 'EventPage' %}?type=upcoming{% endif %}" 
+                                id="Upcoming-events">
+                                        {% if request.GET.type == 'upcoming' %}
+                                            Show Running Events
+                                        {% else %}
+                                            View Upcoming Events
+                                        {% endif %}
+                                <i class="fas fa-solid fa-angle-right"></i>
+                            </a>
+                        </div>
+
+                        <div class="row mb-10 justify-content-center" id="event-container">
+                            {% include "events/partials/event_cards.html" %}
+                        </div>
+
+                        <div id="loading" style="text-align:center;display:none;">
+                            Loading more events...
+                        </div>
+
+                        <!-- footer pagination -->
+                        <!-- <div class="pagination-area text-center">
+                            <a href="#0"><i class="fas fa-angle-double-left"></i><span>Prev</span></a>
+                            <a href="#0">1</a>
+                            <a href="#0">2</a>
+                            <a href="#0" class="active">3</a>
+                            <a href="#0">4</a>
+                            <a href="#0">5</a>
+                            <a href="#0"><span>Next</span><i class="fas fa-angle-double-right"></i></a>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock bodyContent %}
+
+
+{% block extraJs %} 
+<script>
+
+// To show the more events on scrolling of page 
+let page = 2
+let loading = false
+let hasNext = true
+
+window.addEventListener("scroll", function () {
+
+    if (loading || !hasNext) return
+
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
+
+        loading = true
+
+        document.getElementById("loading").style.display = "block"
+
+        const formData = new FormData(form)
+        const params = new URLSearchParams(formData)
+
+        params.set("page", page)
+
+        fetch(`/events/?${params}`, {
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            document.getElementById("event-container")
+                .insertAdjacentHTML("beforeend", data.html)
+
+            hasNext = data.has_next
+
+            if (hasNext) {
+                page++
+            }
+
+            loading = false
+            document.getElementById("loading").style.display = "none"
+        })
+    }
+})
+
+
+// It will filter the events without reload
+    const form = document.getElementById("filter-form")
+
+    form.querySelectorAll("input[type='checkbox']").forEach(cb => {
+
+        cb.addEventListener("change", function(){
+
+            const formData = new FormData(form)
+            const params = new URLSearchParams(formData)
+
+            // reset pagination
+            page = 2
+            loading = false
+
+            fetch(`/events/?${params}`, {
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("event-container").innerHTML = data.html
+            })
+        })
+    })
+
+</script>
+{% endblock extraJs %}

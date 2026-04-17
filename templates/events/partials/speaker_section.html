@@ -1,0 +1,42 @@
+{% load static %}
+
+<!-- Speaker-Section -->
+{% if speaker_detail %}
+    <section class="speaker-section padding-bottom padding-top-medium">
+        <div class="container">
+            <div class="section-header-3">
+                <span class="cate">listen to the</span>
+                <h2 class="title">event speakers</h2>
+                <p>Our speakers are thought leaders and professionals, sharing valuable insights to inspire and empower attendees.</p>
+            </div>
+            <div class="speaker--slider">
+                <div class="speaker-slider owl-carousel owl-theme">
+                    {% for row in speaker_detail %}
+                        <div class="speaker-item">
+                            <div class="speaker-thumb">
+                                <a href="{% url 'EventSpeakerPage' event_id=row.event.id speaker_id=row.id %}">
+                                    <img src="{{ row.image.url }}" alt="speaker">
+                                    <!-- <img src="{% static '/assets/images/speaker/speaker03.jpg' %}" alt="speaker"> -->
+                                </a>
+                            </div>
+                            <div class="speaker-content">
+                                <h5 class="title">
+                                    <a href="{% url 'EventSpeakerPage' event_id=row.event.id speaker_id=row.id %}">
+                                        {{ row.name }} 
+                                    </a>
+                                </h5>
+                                <span>{{ row.bio }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="speaker-prev">
+                    <i class="flaticon-double-right-arrows-angles"></i>
+                </div>
+                <div class="speaker-next">
+                    <i class="flaticon-double-right-arrows-angles"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endif %}

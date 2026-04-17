@@ -1,0 +1,271 @@
+{% extends "base/base.html" %}
+{% load custom_filters %}
+{% load static %}
+
+{% block title %} Boleto  - Online Ticket Booking Website HTML Template {% endblock title %}
+
+{% comment %}
+{% block banner-section %}
+<!-- Banner-Section -->
+<section class="details-banner event-details-banner hero-area bg_img seat-plan-banner" data-background="{% static 'assets/images/banner/banner07-mine.jpg' %}">
+    <div class="container">
+        <div class="details-banner-wrapper">
+            <div class="details-banner-content style-two">
+
+                <h3 class="title"><span class="d-block">{{ event_details.title }}</span> 
+                <div class="tags">
+                    <span>{{ event_details.venue.name }} {{ event_details.venue.city }} {{ event_details.venue.address }} <br> {{ event_details.start_date|date:"D, M d Y" }} </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock banner-section %}
+{% endcomment %}
+
+
+{% block bodyContent %}
+<!-- Event-Section -->
+<div class="event-facility padding-bottom padding-top">
+    <div class="container">
+
+        <div class="section-header-3">
+            <span class="cate">simple pricing</span>
+            <h2 class="title">make a booking</h2>
+            <p>Book your tickets now and be part of an unforgettable experience. 
+                Choose from multiple ticket categories designed to suit every attendee.</p>
+        </div>
+
+        <div class="row justify-content-center mb-30-none">
+            {% for row in tickets_details %}
+            <div class="col-md-6 col-lg-3 col-sm-6">
+                <div class="ticket--item">
+                    <div class="ticket-thumb">
+                        <img src="{% static 'assets/images/event/ticket/ticket01.png' %}" alt="event">
+                    </div>
+                    <div class="ticket-content">
+                        <span class="ticket-title">{{ row.name }} Ticket</span>
+                        <h2 class="amount"><sup>₹</sup>{{ row.price|floatformat:0 }}</h2>
+                        <ul>
+                            {% for title in row.description|split %}
+                            <li>{{ title }}</li>
+                            <!-- <li class="del"><del>Video presentations</del></li>
+                            <li class="del"><del>Meet all of our event speakers</del></li> -->
+                            {% endfor %}
+                        </ul>
+                        <!-- <a href="#0" class="custom-button">book tickets</a> -->
+                        <div class="ticket-action">
+                            <button class="custom-button add-ticket-btn" data-id="{{ row.id }}" data-price="{{ row.price|floatformat:0 }}"> Book Tickets </button>
+
+                            <div class="ticket-counter d-none">
+                                <button class="minus">−</button>
+                                <span class="count">1</span>
+                                <button class="plus">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- different tickets theme  -->
+                <!-- <div class="col-md-6 col-lg-3 col-sm-6">
+                    <div class="ticket--item two">
+                        <div class="hot">
+                            <span>hot</span>
+                        </div>
+                        <div class="ticket-thumb">
+                            <img src="{% static 'assets/images/event/ticket/ticket02.png' %}" alt="event">
+                        </div>
+                        <div class="ticket-content">
+                            <span class="ticket-title">Premium Ticket</span>
+                            <h2 class="amount"><sup>$</sup>79</h2>
+                            <ul>
+                                <li>Full access to all lectures and workshops</li>
+                                <li>Video presentations</li>
+                                <li>Meet all of our event speakers</li>
+                            </ul>
+                            <div class="ticket-action">
+                                <button class="custom-button add-ticket-btn" data-price="79"> Book Tickets </button>
+
+                                <div class="ticket-counter d-none">
+                                    <button class="minus">−</button>
+                                    <span class="count">1</span>
+                                    <button class="plus">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3 col-sm-6">
+                    <div class="ticket--item three">
+                        <div class="ticket-thumb">
+                            <img src="{% static 'assets/images/event/ticket/ticket03.png' %}" alt="event">
+                        </div>
+                        <div class="ticket-content">
+                            <span class="ticket-title">VIP Ticket</span>
+                            <h2 class="amount"><sup>$</sup>99</h2>
+                            <ul>
+                                <li>Full access to all lectures and workshops</li>
+                                <li>Video presentations</li>
+                                <li>Meet all of our event speakers</li>
+                            </ul>
+                            <div class="ticket-action">
+                                <button class="custom-button add-ticket-btn" data-price="99"> Book Tickets </button>
+
+                                <div class="ticket-counter d-none">
+                                    <button class="minus">−</button>
+                                    <span class="count">1</span>
+                                    <button class="plus">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+            <!-- different tickets theme  -->
+            {% endfor %}
+        </div>
+
+        <div class="ticket-checkout-bar">
+
+            <div class="checkout-info">
+                <div class="checkout-price">₹<span id="total-price">0</span></div>
+                <div class="checkout-tickets"><span id="ticket-count">0</span> Ticket</div>
+            </div>
+
+            <button id="proceed-btn" disabled>
+                Proceed →
+            </button>
+
+        </div>  
+    </div>
+</div>
+
+<form id="booking-form" method="POST" action="{% url 'EventTicketPage' show_id %}">
+    {% csrf_token %}
+
+    <input type="hidden" name="ticket_id" id="ticket_id">
+    <input type="hidden" name="qty" id="qty">
+</form>
+{% endblock bodyContent %}
+
+{% block extraJs %}
+<script>
+
+let activeTicket = null;
+let ticketPrice = 0;
+let ticketCount = 0;
+
+// store selected ticket id
+let selectedTicketId = null;
+
+const totalEl = document.getElementById("total-price");
+const ticketCountEl = document.getElementById("ticket-count");
+const proceedBtn = document.getElementById("proceed-btn");
+
+document.querySelectorAll(".ticket-action").forEach(action => {
+
+    const addBtn = action.querySelector(".add-ticket-btn");
+    const counter = action.querySelector(".ticket-counter");
+    const minus = action.querySelector(".minus");
+    const plus = action.querySelector(".plus");
+    const countEl = action.querySelector(".count");
+
+    let count = 1;
+
+    addBtn.addEventListener("click", () => {
+
+        if(activeTicket && activeTicket !== action){
+            const prevBtn = activeTicket.querySelector(".add-ticket-btn");
+            const prevCounter = activeTicket.querySelector(".ticket-counter");
+
+            prevCounter.classList.add("d-none");
+            prevBtn.style.display = "block";
+        }
+
+        activeTicket = action;
+
+        // ✅ NEW: capture ticket id
+        selectedTicketId = addBtn.dataset.id;
+
+        ticketPrice = parseFloat(addBtn.dataset.price);
+
+        addBtn.style.display = "none";
+        counter.classList.remove("d-none");
+
+        count = 1;
+        countEl.innerText = count;
+
+        ticketCount = count;
+        updateSummary();
+    });
+
+    plus.addEventListener("click", () => {
+
+        if(count >= 10){
+            alert("You can add only 10 tickets");
+            return;
+        }
+
+        count++;
+        countEl.innerText = count;
+
+        ticketCount = count;
+        updateSummary();
+    });
+
+    minus.addEventListener("click", () => {
+
+        count--;
+
+        if(count <= 0){
+            counter.classList.add("d-none");
+            addBtn.style.display = "block";
+            activeTicket = null;
+
+            // ✅ reset values
+            ticketCount = 0;
+            selectedTicketId = null;
+
+        }else{
+            countEl.innerText = count;
+            ticketCount = count;
+        }
+
+        updateSummary();
+    });
+
+});
+
+function updateSummary(){
+
+    let total = ticketCount * ticketPrice;
+
+    ticketCountEl.innerText = ticketCount;
+    totalEl.innerText = total;
+
+    if(ticketCount > 0){
+        proceedBtn.disabled = false;
+    }else{
+        proceedBtn.disabled = true;
+    }
+}
+
+
+// HANDLE PROCEED BUTTON
+proceedBtn.addEventListener("click", () => {
+
+    if(!selectedTicketId || ticketCount <= 0){
+        alert("Please select ticket");
+        return;
+    }
+
+    // set hidden input values
+    document.getElementById("ticket_id").value = selectedTicketId;
+    document.getElementById("qty").value = ticketCount;
+
+    // submit form
+    document.getElementById("booking-form").submit();
+});
+
+</script>
+{% endblock extraJs %}

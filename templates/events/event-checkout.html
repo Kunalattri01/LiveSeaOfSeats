@@ -1,0 +1,142 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %} Boleto  - Online Ticket Booking Website HTML Template {% endblock title %}
+
+{% block bodyContent %}
+
+<!-- Event-Section -->
+<div class="event-facility padding-bottom padding-top">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="checkout-widget d-flex flex-wrap align-items-center justify-cotent-between">
+                    <div class="title-area">
+                        <h5 class="title">Already a Boleto  Member?</h5>
+                        <p>Sign in to earn points and make booking easier!</p>
+                    </div>
+                    <a href="#0" class="sign-in-area">
+                        <i class="fas fa-user"></i><span>Sign in</span>
+                    </a>
+                </div>
+                <div class="checkout-widget checkout-card mb-0">
+                    <h5 class="title">Payment Option </h5>
+                    <ul class="payment-option">
+                        <li class="active">
+                            <a href="#0">
+                                <img src="{% static 'assets/images/payment/card.png' %}" alt="payment">
+                                <span>Credit Card</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#0">
+                                <img src="{% static 'assets/images/payment/card.png' %}" alt="payment">
+                                <span>Debit Card</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#0">
+                                <img src="{% static 'assets/images/payment/paypal.png' %}" alt="payment">
+                                <span>paypal</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <h6 class="subtitle">Enter Your Card Details </h6>
+                    <form method="POST" action="{% url 'EventCheckoutPage' show_id temp_booking_id %}" class="payment-card-form">
+                        {% csrf_token %}
+                        <div class="form-group w-100">
+                            <label for="card1">Card Details</label>
+                            <input type="text" id="card1">
+                            <div class="right-icon">
+                                <i class="flaticon-lock"></i>
+                            </div>
+                        </div>
+                        <div class="form-group w-100">
+                            <label for="card2"> Name on the Card</label>
+                            <input type="text" id="card2">
+                        </div>
+                        <div class="form-group">
+                            <label for="card3">Expiration</label>
+                            <input type="text" id="card3" placeholder="MM/YY">
+                        </div>
+                        <div class="form-group">
+                            <label for="card4">CVV</label>
+                            <input type="text" id="card4" placeholder="CVV">
+                        </div>
+                        <div class="form-group check-group">
+                            <input id="card5" type="checkbox" checked>
+                            <label for="card5">
+                                <span class="title">QuickPay</span>
+                                <span class="info">Save this card information to my Boleto  account and make faster payments.</span>
+                            </label>
+                        </div>
+                        <div class="">
+                            <button type="submit" class="custom-button back-button" value="make payment">make payment</button>
+                        </div>
+                    </form>
+                    <p class="notice">
+                        By Clicking "Make Payment" you agree to the <a href="#0">terms and conditions</a>
+                    </p>
+                </div>
+            </div>
+
+
+             <!-- Booking Summary -->
+            <div class="col-lg-4">
+                <div class="booking-summery bg-one">
+                    <h5 class="title">booking summary</h5>
+                    <ul>
+                        <li>
+                            <h6 class="subtitle">{{ booking_summary.0.EventTitle }}</h6>
+                            <span class="info">
+                                {{ booking_summary.0.Eventlanguage }}
+                            </span> 
+                        </li>
+                        <li>
+                            <h6 class="subtitle">
+                                <span>{{ booking_summary.0.EventVenue }}</span>
+                                <span>{{ booking_summary.0.PurchasingQuantity }}</span>
+                            </h6>
+                            <div class="info">
+                                <span>{{ booking_summary.0.EventDate|date:'d M D' }}, {{ booking_summary.0.EventTime|date:'h:i A' }}</span> 
+                                <span>Tickets</span>
+                            </div>
+                        </li>
+                        <li>
+                            <!-- <h6 class="subtitle mb-0"><span>Tickets  Price</span><span>₹150</span></h6> -->
+                            <h6 class="subtitle mb-0"><span>Tickets  Price</span><span>₹ {{ booking_summary.0.TotalTicketPrice }}</span></h6>
+                            <div class="info">{{ booking_summary.0.TicketCat }}</div> 
+                        </li>
+                    </ul>
+                    <!-- <ul class="side-shape">
+                        <li>
+                            <h6 class="subtitle"><span>combos</span><span>₹57</span></h6>
+                            <span class="info"><span>2 Nachos Combo</span></span>
+                        </li>
+                        <li>
+                            <h6 class="subtitle"><span>food & bevarage</span></h6>
+                        </li>
+                    </ul> -->
+                    <ul class="side-shape">
+                        <li>
+                            <span class="info"><span>price</span><span>₹ {{ booking_summary.0.TotalTicketPrice }}</span></span>
+                            <span class="info"><span>plaform fee</span><span>₹ 15</span></span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="proceed-area text-center">
+                    <h6 class="subtitle"><span>Amount Payable</span><span>₹ {{ booking_summary.0.TotalTicketPrice }} </span></h6>
+                    <!-- <a href="" class="custom-button back-button">proceed</a> -->
+                </div>
+                <div class="padding-top-medium">
+                    <a href="" class="custom-button back-button">
+                        {% comment %} {% url 'TicketOptionsPage' show_id temp_booking_id %} {% endcomment %}
+                        <i class="flaticon-double-right-arrows-angles"></i>back
+                    </a>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock bodyContent %}

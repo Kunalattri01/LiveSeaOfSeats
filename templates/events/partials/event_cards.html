@@ -1,0 +1,25 @@
+{% for row in events_data %}
+    <div class="col-sm-6 col-lg-4">
+        <div class="event-grid">
+            <div class="movie-thumb c-thumb">
+                <a href="{% url 'EventDetailsPage' row.id %}">
+                    <img src="{{ row.template_media.0.image.url }}" alt="event">
+                </a>
+                <div class="event-date">
+                    <h6 class="date-title">{{ row.start_date|date:'d' }}</h6>
+                    <span>{{ row.start_date|date:'M' }}</span>
+                </div>
+            </div>
+            <div class="movie-content bg-one">
+                <h5 class="title m-0">
+                    <a href="{% url 'EventDetailsPage' row.id %}">{{ row.title }}</a>
+                </h5>
+                <div class="event-basic-details">
+                    <span>  {{ row.category }} </span>
+                    <span> <i class="fas fa-map-marker-alt"></i> {{ row.venue }} </span>
+                    <span> {% if row.lowest_price %}  ₹ {{ row.lowest_price }} Onwards {% endif %} </span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}

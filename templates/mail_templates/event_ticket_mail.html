@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Booking Confirmation</title>
+</head>
+
+
+<body style="margin:0; padding:0; background:#f4f6f8; font-family:Arial, sans-serif;">
+
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f8; padding:20px 0;">
+        <tr>
+            <td align="center">
+
+                <!-- MAIN CONTAINER -->
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:10px; overflow:hidden; border:1px solid #e5e7eb;">
+
+                    <!-- HEADER -->
+                    <tr>
+                        <td style="background:#0f2c5c; color:white; padding:18px;">
+                            <h2 style="margin:0; font-size:20px;">🎟 Booking Confirmed</h2>
+                        </td>
+                    </tr>
+
+                    <!-- BODY -->
+                    <tr>
+                        <td style="padding:20px; color:#111827;">
+
+                            <p style="margin:0 0 10px;">Hi {{ booking_data.user.username }},</p>
+
+                            <p style="margin:0 0 15px; color:#374151;"> Your booking has been successfully confirmed. </p>
+
+                            <!-- EVENT -->
+                            <h3 style="margin:0 0 5px;">{{ booking_data.event.title }}</h3>
+
+                            <p style="margin:0 0 15px; font-size:13px; color:#6b7280;">
+                                📍 {{ booking_data.event.venue.name }} <br>
+                                📅 {{ booking_data.showtime.show_date|date:'D, d M' }} &nbsp;&nbsp; 
+                                ⏰ {{ booking_data.showtime.start_time|time:"h:i A" }}
+                            </p>
+
+                            <hr style="border:none; border-top:1px solid #e5e7eb; margin:15px 0;">
+
+                            <!-- ORDER -->
+                            <p style="margin:0 0 10px;">
+                                <strong>Order ID:</strong>
+                                # {{ booking_data.order_id }}
+                            </p>
+
+                            <p style="margin:0 0 15px; color:#374151;"> Your ticket is attached with this email. Please show it at entry. </p>
+
+                            <!-- BUTTON -->
+                            <table cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td style="background:#0f2c5c; padding:10px 16px; border-radius:6px;">
+                                        <a href="#payment_details_page_to_be_create" style="color:white; text-decoration:none; font-size:14px;"> View Booking </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- FOOTER -->
+                    <tr>
+                        <td style="background:#f9fafb; padding:15px; font-size:12px; color:#6b7280;">
+
+                            <strong>Important Instructions:</strong>
+                            <ul style="padding-left:18px; margin:8px 0;">
+                                <li>Carry valid ID proof along with this ticket.</li>
+                                <li>QR code is valid for one-time entry only.</li>
+                                <li>No refund or cancellation allowed.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>

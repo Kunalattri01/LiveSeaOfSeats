@@ -1,0 +1,480 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %} Boleto  - Online Ticket Booking Website HTML Template {% endblock title %}
+
+{% block banner-section %}
+<!-- Event-Banner-Section -->
+<!-- <section class="event-banner-section bg_img" data-background="{% static 'assets/images/banner/banner06.jpg' %}"> -->
+<section class="event-banner-section bg_img" data-background="{% if event_detail.banner_media %}{{ event_detail.banner_media.0.image.url }}{% endif %}">
+    <div class="container">
+        <div class="event-banner">
+            <!-- <a href="{{ event_detail.youtube_url }}" class="video-popup"> -->
+            <a href="https://www.youtube.com/embed/GT6-H4BRyqQ" class="video-popup">
+                <span></span>
+                <i class="flaticon-play-button"></i>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock banner-section %}
+
+
+{% block bodyContent %}
+<!-- Event-Book-Search -->
+<section class="event-book-search padding-top pt-lg-0">
+    <div class="container">
+        <!-- <div class="event-search bg_img" data-background="{% static 'assets/images/ticket/ticket-bg01.jpg' %}"> -->
+        <div class="event-search bg_img" data-background="{% static 'assets/images/ticket/ticket-bg01-mine.jpg' %}">
+            <div class="event-search-top">
+                <div class="left">
+                    <h3 class="title">{{ event_detail.title }} </h3>
+                    <span>
+                        <i class="fas fa-solid fa-film"></i>
+                        {{ event_detail.category.name }} | 
+                    </span>
+
+                    <!-- <span>
+                        <i class="fas fa-solid fa-language"></i>
+                        {{ event_detail.languages.all|join:", " }}
+                    </span>
+
+                    <span>
+                        <i class="fas fa-solid fa-user"></i>
+                        {{ event_detail.age_limit|default:'' }}+
+                    </span> -->
+
+                    <span>
+                        <i class="fas fa-regular fa-calendar"></i>
+                        {{ event_detail.start_date|date:"d M " }} | {{ event_detail.start_date|time:"h:i A" }}
+                    </span>
+                </div>
+                <div class="right">
+                    <ul class="countdown" data-date="{{ event_detail.start_date|date:'Y-m-d H:i:s' }}">
+                        <li>
+                            <h2><span class="days">00</span></h2>
+                            <p class="days_text">days</p>
+                        </li>
+                        <li>
+                            <h2><span class="hours">00</span></h2>
+                            <p class="hours_text">hrs</p>
+                        </li>
+                        <li>
+                            <h2><span class="minutes">00</span></h2>
+                            <p class="minu_text">min</p>
+                        </li>
+                        <li>
+                            <h2><span class="seconds">00</span></h2>
+                            <p class="seco_text">sec</p>
+                        </li>
+                    </ul>
+                    <!-- <a href="{% url 'EventTicketPage' event_detail.id %}" class="custom-button">book tickets</a> -->
+                    <a href="{% url 'EventTimingPage' event_detail.id %}" class="custom-button">book tickets</a>
+                </div>
+            </div>
+
+
+            <div class="event-search-bottom">
+                <div class="contact-side">
+                    <div class="item">
+                        <div class="item-thumb">
+                            <img src="{% static 'assets/images/event/icon/event-icon01.png' %}" alt="event">
+                        </div>
+                        <div class="item-content">
+                            <span class="up">{{ total_days }} Days 
+                                (   {% if total_days != 1 %}
+                                        {{ event_detail.start_date|date:'l' }} - {{ event_detail.end_date|date:'l' }}
+                                    {% else %}
+                                        {{ event_detail.start_date|date:'l' }}
+                                    {% endif %}
+                                )
+                            </span>
+                            <!-- <span>70+ Workshops</span> -->
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-thumb">
+                            <img src="{% static 'assets/images/event/icon/event-icon02.png' %}" alt="event">
+                        </div>
+                        <div class="item-content">
+                            <span class="up">{{ event_detail.venue }}</span>
+                            <span>{{ event_detail.venue.address }}</span>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-thumb">
+                            <img src="{% static 'assets/images/event/icon/event-icon03.png' %}" alt="event">
+                        </div>
+                        <div class="item-content">
+                            <span class="up">Drop us a line:</span>
+                            <a href="MailTo:{{ event_detail.organizer.email }}">{{ event_detail.organizer.email }}</a>
+                        </div>
+                    </div>
+                </div>
+
+                <ul class="social-icons">
+                    <li>
+                        <a href="{{ event_detail.organizer.facebook }}" target="_blank">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ event_detail.organizer.twitter }}" class="" target="_blank">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#0" class="active">
+                            <i class="fab fa-pinterest-p"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ event_detail.organizer.website }}" class="" target="_blank"> 
+                            <i class="fab fa-google"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ event_detail.organizer.instagram }}" target="_blank">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>    
+
+
+<!-- Event-About -->
+<section class="event-about padding-top padding-bottom">
+    <div class="container">
+        <div class="row justify-content-between flex-wrap-reverse">
+            <div class="col-lg-7 col-xl-6">
+                <div class="event-about-content">
+                    <div class="section-header-3 left-style m-0">
+                        <span class="cate">are you ready to attend?</span>
+                        <h2 class="title">{{ event_detail.title }}</h2>
+                        <p>{{ event_detail.description }}
+                        </p>
+                        <!-- <a href="{% url 'EventTicketPage' event_detail.id  %}" class="custom-button">book tickets</a> -->
+                        <a href="{% url 'EventTimingPage' event_detail.id  %}" class="custom-button">book tickets</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-7">
+                <div class="event-about-thumb">
+                    <!-- <img src="{% static 'assets/images/event/event-about.jpg' %}" alt="event"> -->
+                    <img src="{{ event_detail.thumbnail_media.0.image.url }}" alt="event">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Gallery-Section -->
+<div class="speaker-gallery">
+    <div class="row m-0">
+        <div class="col-md-6 p-0">
+            <div class="row m-0">
+                <div class="col-sm-6 p-0">
+                    <div class="gallery-item two">
+                        <div class="gallery-thumb">
+                            <!-- <a href="{% static 'assets/images/gallery/gallery01.jpg' %}" class="img-pop"> -->
+                            <a href="{{ event_detail.gallery_media.0.image.url }}" class="img-pop">
+                                <i class="flaticon-loupe"></i>
+                            </a>
+                            <!-- <img src="{% static 'assets/images/gallery/gallery01.jpg' %}" alt="gallery"> -->
+                            <img src="{{ event_detail.gallery_media.0.image.url }}" alt="gallery">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 p-0">
+                    <div class="gallery-item two">
+                        <div class="gallery-thumb">
+                            <!-- <a href="{% static 'assets/images/gallery/gallery02.jpg' %}" class="img-pop"> -->
+                            <a href="{{ event_detail.gallery_media.1.image.url }}" class="img-pop">
+                                <i class="flaticon-loupe"></i>
+                            </a>
+                            <!-- <img src="{% static 'assets/images/gallery/gallery02.jpg' %}" alt="gallery"> -->
+                            <img src="{{ event_detail.gallery_media.1.image.url }}" alt="gallery">
+                        </div>
+                    </div>
+                    <div class="gallery-item two">
+                        <div class="gallery-thumb">
+                            <!-- <a href="{% static 'assets/images/gallery/gallery03.jpg' %}" class="img-pop"> -->
+                            <a href="{{ event_detail.gallery_media.2.image.url }}" class="img-pop">
+                                <i class="flaticon-loupe"></i>
+                            </a>
+                            <!-- <img src="{% static 'assets/images/gallery/gallery03.jpg' %}" alt="gallery"> -->
+                            <img src="{{ event_detail.gallery_media.2.image.url }}" alt="gallery">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 p-0">
+            <div class="gallery-item">
+                <div class="gallery-thumb">
+                    <!-- <a href="{% static 'assets/images/gallery/gallery04.jpg' %}" class="img-pop"> -->
+                    <a href="{{ event_detail.gallery_media.3.image.url }}" class="img-pop">
+                        <i class="flaticon-loupe"></i>
+                    </a>
+                    <!-- <img src="{% static 'assets/images/gallery/gallery04.jpg' %}" alt="gallery"> -->
+                    <img src="{{ event_detail.gallery_media.3.image.url }}" alt="gallery">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- event layout -->
+{% if event_layout.layout_image %}
+    <div class="demo-section padding-top-medium">
+        <div class="venue-layout-wrapper">
+            <!-- header -->
+            <div class="venue-layout-header" onclick="toggleVenueLayout()">
+                <h4 class="mb-0">
+                    <i class="fa-solid fa-map-location-dot me-2 text-info"></i>
+                    Venue Layout
+                </h4> 
+
+                <span id="layoutIcon">
+                    <i class="fas fa-solid fa-chevron-down"></i>
+                </span>
+            </div>
+
+            <!-- content -->
+            <div id="venueLayoutContent" class="venue-layout-content">
+                <div class="layout-image-container">
+                    <!-- test image -->
+                    <img src="/media/{{ event_layout.layout_image }}" alt="Venue Layout">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+
+<!-- Speaker-Section -->
+{% include "events/partials/speaker_section.html" %}
+
+
+<!-- Statistics-Section -->
+<section class="statistics-section padding-top padding-bottom bg_img pb-lg-0" data-background="{% static 'assets/images/statistics/statistics-bg01-mine.jpg' %}">
+    <div class="container">
+        <div class="section-header-3">
+            <span class="cate">what we have done</span>
+            <h2 class="title">our recent STATISTICS</h2>
+            <p>Our growing numbers reflect the trust of thousands of users who rely on us for seamless and memorable event experiences</p>
+        </div>
+        <div class="statistics-wrapper">
+            <div class="row mb--20">
+                <div class="col-md-4">
+                    <div class="stat-item">
+                        <div class="stat-thumb">
+                            <img src="{% static 'assets/images/statistics/stat01.png' %}" alt="statistics">
+                        </div>
+                        <div class="stat-content">
+                            <h3 class=" counter-item odometer" data-odometer-final="450"></h3>
+                            <span class="info">Tickets Booked</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-item">
+                        <div class="stat-thumb">
+                            <img src="{% static 'assets/images/statistics/stat02.png' %}" alt="statistics">
+                        </div>
+                        <div class="stat-content">
+                            <h3 class=" counter-item odometer" data-odometer-final="500"></h3>
+                            <span class="info">Usefull Sessions</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-item">
+                        <div class="stat-thumb">
+                            <img src="{% static 'assets/images/statistics/stat03.png' %}" alt="statistics">
+                        </div>
+                        <div class="stat-content">
+                            <h3 class=" counter-item odometer" data-odometer-final="28"></h3>
+                            <span class="info">Talented Speakers</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Faq-Section -->
+{% if faqs_detail %}
+    <section class="faq-section padding-top">
+        <div class="container">
+            <div class="section-header-3">
+                <span class="cate">HOW CAN WE HELP?</span>
+                <h2 class="title">Frequently Asked Questions</h2>
+                <p>Find quick answers to common questions to make your booking experience smooth and hassle-free</p>
+            </div>
+            <div class="faq-area padding-bottom">
+                <div class="faq-wrapper">
+                    {% for row in faqs_detail %}
+                        <div class="faq-item">
+                            <div class="faq-title">
+                                <h6 class="title">{{ row.question }}</h6>
+                                <span class="right-icon"></span>
+                            </div>
+                            <div class="faq-content">
+                                <p> {{ row.answer }} </p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endif %}
+
+
+<!-- Event Sponsors Section -->
+{% if sponsors_detail %}
+<section class="event-details padding-bottom padding-top">
+    <div class="container">
+        <div class="section-header-3">
+            <span class="cate">EVENT SPONSORS</span>
+            <h2 class="title">Partners & Sponsors</h2>
+            <p>We collaborate with trusted partners and sponsors to deliver high-quality and impactful events</p>
+        </div>
+        <div class="tabTwo sponsor-tab">
+            <!-- <ul class="tab-menu">
+                <li class="active">
+                    Platinum Sponsors
+                </li>
+                <li>
+                    gold Sponsors
+                </li>
+                <li>
+                    silver Sponsors
+                </li>
+            </ul> -->
+            <div class="tab-area">
+                <div class="tab-item active">
+                    <div class="owl-theme owl-carousel sponsor-slider">
+                        {% for row in sponsors_detail %}
+                            <div class="sponsor-thumb">
+                                <a href="#0">
+                                    <img src="{{ row.logo.url }}" alt="sponsor">
+                                    <!-- <img src="{% static 'assets/images/sponsor/2.png' %}" alt="sponsor"> -->
+                                </a>
+                            </div>
+                        {% endfor %}
+                        <!-- <div class="sponsor-thumb">
+                            <a href="#0">
+                                <img src="{% static 'assets/images/sponsor/2.png' %}" alt="sponsor">
+                            </a>
+                        </div>
+                        <div class="sponsor-thumb">
+                            <a href="#0">
+                                <img src="{% static 'assets/images/sponsor/3.png' %}" alt="sponsor">
+                            </a>
+                        </div>
+                        <div class="sponsor-thumb">
+                            <a href="#0">
+                                <img src="{% static 'assets/images/sponsor/4.png' %}" alt="sponsor">
+                            </a>
+                        </div>
+                        <div class="sponsor-thumb">
+                            <a href="#0">
+                                <img src="{% static 'assets/images/sponsor/5.png' %}" alt="sponsor">
+                            </a>
+                        </div> -->
+                    </div>
+                </div>
+                <!-- <div class="tab-item">
+                    <div class="owl-theme owl-carousel sponsor-slider">
+                        <div class="sponsor-thumb">
+                            <a href="#0">
+                                <img src="{% static 'assets/images/sponsor/3.png' %}" alt="sponsor">
+                            </a>
+                        </div>
+                        <div class="sponsor-thumb">
+                            <a href="#0">
+                                <img src="{% static 'assets/images/sponsor/4.png' %}" alt="sponsor">
+                            </a>
+                        </div>
+                        <div class="sponsor-thumb">
+                            <a href="#0">
+                                <img src="{% static 'assets/images/sponsor/5.png' %}" alt="sponsor">
+                            </a>
+                        </div>
+                        <div class="sponsor-thumb">
+                            <a href="#0">
+                                <img src="{% static 'assets/images/sponsor/1.png' %}" alt="sponsor">
+                            </a>
+                        </div>
+                        <div class="sponsor-thumb">
+                            <a href="#0">
+                                <img src="{% static 'assets/images/sponsor/2.png' %}" alt="sponsor">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-item">
+                    <div class="owl-theme owl-carousel sponsor-slider">
+                        <div class="sponsor-thumb">
+                            <a href="#0">
+                                <img src="{% static 'assets/images/sponsor/3.png' %}" alt="sponsor">
+                            </a>
+                        </div>
+                        <div class="sponsor-thumb">
+                            <a href="#0">
+                                <img src="{% static 'assets/images/sponsor/1.png' %}" alt="sponsor">
+                            </a>
+                        </div>
+                        <div class="sponsor-thumb">
+                            <a href="#0">
+                                <img src="{% static 'assets/images/sponsor/4.png' %}" alt="sponsor">
+                            </a>
+                        </div>
+                        <div class="sponsor-thumb">
+                            <a href="#0">
+                                <img src="{% static 'assets/images/sponsor/2.png' %}" alt="sponsor">
+                            </a>
+                        </div>
+                        <div class="sponsor-thumb">
+                            <a href="#0">
+                                <img src="{% static 'assets/images/sponsor/5.png' %}" alt="sponsor">
+                            </a>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock bodyContent %}
+
+{% block extraJs %}
+<script>
+    function toggleVenueLayout(){
+
+        const content = document.getElementById("venueLayoutContent");
+        const icon = document.getElementById("layoutIcon");
+
+        if(content.style.display === "block"){
+            content.style.display = "none";
+            icon.style.transform = "rotate(0deg)";
+        }
+        else{
+            content.style.display = "block";
+            icon.style.transform = "rotate(180deg)";
+        }
+    }
+</script>
+{% endblock extraJs %}
