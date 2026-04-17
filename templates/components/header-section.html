@@ -53,6 +53,9 @@
                     <a href="{% url 'EventPage' %}" class="{% if '/events/' in request.path %}active{% endif %}"> Events </a>
                 </li>
                 <li>
+                    <a href="{% url 'SportsPage' %}" class="{% if request.resolver_match.url_name == 'SportsPage' %}active{% endif %}"> IPL </a>
+                </li>
+                <li>
                     <a href="{% url 'SportsPage' %}" class="{% if request.resolver_match.url_name == 'SportsPage' %}active{% endif %}"> Sports </a>
                 </li>
                 <li>
