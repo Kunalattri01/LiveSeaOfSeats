@@ -1,7 +1,7 @@
 {% extends "base/base.html" %}
 {% load static %}
 {% load custom_filters %}
-{% block title %} Boleto  - Online Ticket Booking Website HTML Template {% endblock title %}
+{% block title %} SeaOfSeats  - Online Ticket Booking Website HTML Template {% endblock title %}
 
 
 {% block bodyContent %}
@@ -167,7 +167,7 @@ function openRazorpay(data) {
         amount: data.amount,
         currency: "INR",
 
-        name: "Boleto",
+        name: "SeaOfSeats",
         description: "Secure Ticket Booking",
 
         order_id: data.order_id,
@@ -189,7 +189,7 @@ function openRazorpay(data) {
         },
 
         notes: {
-            platform: "Boleto",
+            platform: "SeaOfSeats",
             type: "Event Ticket"
         },
         
