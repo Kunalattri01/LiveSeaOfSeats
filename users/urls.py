@@ -7,4 +7,5 @@ urlpatterns = [
     path('sign_in/', SignInView.as_view(), name='SignInPage'),
     path('set-city/', SetCityView.as_view(), name='SetCity'),
     path('search/', SearchPageView.as_view(), name='SearchPage'),
+    path("robots.txt", robots_txt),
 ]
