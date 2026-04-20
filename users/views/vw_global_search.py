@@ -11,9 +11,6 @@ class SearchPageView(TemplateView):
         query = self.request.GET.get('q')
         city = self.request.session.get('city')
 
-        print('query : ', query)
-        print('city : ', city)
-
         results = global_search(query, city)
 
         context.update({

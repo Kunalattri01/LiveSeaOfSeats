@@ -32,7 +32,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # DEBUG = True
 
 SECRET_KEY = os.getenv("SECRET_KEY")
-DEBUG = os.getenv("DEBUG") == "True"
+# DEBUG = os.getenv("DEBUG") == "True"
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 # ALLOWED_HOSTS = ['seaofseats.com', 'www.seaofseats.com']
@@ -43,6 +44,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     # 'jazzmin',
     # 'unfold',
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -60,8 +62,8 @@ INSTALLED_APPS = [
     'payments',
     'reviews',
     'access_control',
-    'organizer'
-    # 'dashboard',
+    'organizer',
+    'ticketmaster',
 ]
 
 MIDDLEWARE = [
@@ -97,6 +99,13 @@ TEMPLATES = [
         },
     },
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ]
+}
+
 
 WSGI_APPLICATION = 'ticket_platform.wsgi.application'
 
@@ -207,10 +216,8 @@ STATICFILES_DIRS = [
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "development")
 
 if ENVIRONMENT == "production":
-    print('dfdafdafd-------------------')
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 else:
-    print('fkajfkljakfja')
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 MEDIA_URL = '/media/'
@@ -229,3 +236,5 @@ RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET")
 TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
 TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
+
+TICKETMASTER_API_KEY = os.getenv('TICKETMASTER_API_KEY')

@@ -28,6 +28,7 @@ urlpatterns = [
     path('contact/', include('contact.urls')),
     path('blog/', include('blog.urls')),
     path('access_control/', include('access_control.urls')),
+    path('ticketmaster/', include('ticketmaster.urls')),
     # path('organizer/', include('organizer.urls')),
 ]
 

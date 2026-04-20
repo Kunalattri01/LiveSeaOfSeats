@@ -9,4 +9,10 @@ def global_search(queryset, query):
             Q(description__icontains=query)
         )
 
+        if not queryset:
+            print('hhhhhh')
+            queryset = {
+                'events': []
+            }
+    print('queryset : ', queryset)
     return queryset

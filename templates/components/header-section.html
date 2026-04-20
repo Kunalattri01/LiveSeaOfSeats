@@ -68,6 +68,9 @@
                     <a href="{% url 'HomePage' %}" class="{% if request.resolver_match.url_name == 'HomePage' %}active{% endif %}"> DINING </a>
                 </li>
                 <li>
+                    <a href="{% url 'TicketMasterEventsPage' %}" class="{% if '/ticketmaster/' in request.path %}active{% endif %}"> TICKET MASTER </a>
+                </li>
+                <li>
                     <a href="{% url 'BlogPage' %}" class="{% if request.resolver_match.url_name == 'BlogPage' %}active{% endif %}"> Blog </a>
                 </li>
                 <li>
