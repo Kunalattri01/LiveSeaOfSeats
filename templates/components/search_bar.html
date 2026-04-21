@@ -1,116 +1,26 @@
 {% load static %}
+<form method="GET" action="{% url 'SearchPage' %}" class="header-search relative">
 
-<style>
-    /* Fixed Container to prevent layout shift */
-    .search-container {
-        position: relative;
-        width: 100%;
-        max-width: 600px; /* Adjust based on your header size */
-    }
+    <input type="search" name="q" id="searchInput" placeholder="Search for Movies, Events..." value="{{ request.GET.q }}" autocomplete="off">
 
-    #searchInput {
-        border-radius: 4px;
-        border: 1px solid #ced4da;
-        padding: 8px 12px;
-    }
+    <div id="suggestionsBox"
+        class="absolute left-0 top-full w-full bg-white border mt-1 rounded shadow hidden z-50">
+    </div>
+</form>
 
-    /* The Results Box - Floating above other content */
-    #suggestionsBox {
-        position: absolute;
-        top: 100%; /* Sits exactly below the input */
-        left: 0;
-        right: 0;
-        background: white;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        z-index: 9999; /* Higher than other elements */
-        max-height: 400px;
-        overflow-y: auto;
-    }
-
-    /* Category Pill Styling */
-    .pill-scroll {
-        display: flex;
-        overflow-x: auto;
-        white-space: nowrap;
-        padding: 10px;
-        border-bottom: 1px solid #eee;
-        scrollbar-width: none;
-    }
-    .pill-scroll::-webkit-scrollbar { display: none; }
-
-    .category-badge {
-        font-size: 12px;
-        padding: 4px 12px;
-        border: 1px solid #ddd;
-        border-radius: 20px;
-        margin-right: 8px;
-        color: #666;
-        text-decoration: none;
-    }
-
-    /* Trending Label */
-    .trending-header {
-        font-size: 11px;
-        font-weight: 600;
-        color: #999;
-        padding: 10px 15px 5px;
-        text-transform: uppercase;
-    }
-
-    /* Individual Result Item */
-    .search-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 12px 15px;
-        border-bottom: 1px solid #f8f9fa;
-        color: #333;
-        text-decoration: none;
-        transition: background 0.2s;
-    }
-    .search-item:hover {
-        background-color: #f8f9fa;
-        color: #000;
-    }
-</style>
-
-<div class="search-container mx-auto">
-    <form method="GET" action="{% url 'SearchPage' %}">
-        <input type="search" name="q" id="searchInput" class="form-control" 
-               placeholder="Search for Movies, Events, Plays & more" 
-               value="{{ request.GET.q }}" autocomplete="off">
-        
-        <div id="suggestionsBox" class="d-none">
-            <div class="pill-scroll">
-                <span class="category-badge border-danger text-danger">Movies</span>
-                <span class="category-badge">Stream</span>
-                <span class="category-badge">Events</span>
-                <span class="category-badge">Plays</span>
-                <span class="category-badge">Sports</span>
-            </div>
-
-            <div class="trending-header">Trending Searches</div>
-            
-            <div id="resultsList"></div>
-        </div>
-    </form>
-</div>
-
-<script>
+<Script>
     const input = document.getElementById("searchInput");
     const box = document.getElementById("suggestionsBox");
-    const resultsList = document.getElementById("resultsList");
 
     let debounceTimer;
 
     input.addEventListener("input", function () {
         clearTimeout(debounceTimer);
+
         const query = this.value.trim();
 
         if (query.length < 2) {
-            box.classList.add("d-none");
+            box.classList.add("hidden");
             return;
         }
 
@@ -118,35 +28,30 @@
             fetch(`/search/suggestions?q=${query}`)
                 .then(res => res.json())
                 .then(data => {
-                    resultsList.innerHTML = "";
+                    box.innerHTML = "";
 
                     if (!data.results.length) {
-                        resultsList.innerHTML = `<div class="p-3 text-muted">No matches found.</div>`;
+                        box.innerHTML = `<div class="p-2 text-gray-500">No results</div>`;
                     }
 
                     data.results.forEach(item => {
-                        const link = document.createElement("a");
-                        link.href = item.url;
-                        link.className = "search-item";
+                        const div = document.createElement("div");
+                        div.className = "p-3 hover:bg-gray-100 cursor-pointer border-b";
 
-                        // This replicates the layout: Title on Left, Icon on Right
-                        link.innerHTML = `
-                            <span class="fw-normal" style="font-size: 14px;">${item.title}</span>
-                            <span class="text-muted opacity-50">🎬</span>
+                        div.innerHTML = `
+                            <div class="font-medium">${item.title}</div>
+                            <div class="text-xs text-gray-500">${item.type}</div>
                         `;
 
-                        resultsList.appendChild(link);
+                        div.onclick = () => {
+                            window.location.href = item.url;
+                        };
+
+                        box.appendChild(div);
                     });
 
-                    box.classList.remove("d-none");
+                    box.classList.remove("hidden");
                 });
         }, 300);
-    });
-
-    // Close results if user clicks outside the search box
-    document.addEventListener("click", function(e) {
-        if (!e.target.closest(".search-container")) {
-            box.classList.add("d-none");
-        }
     });
 </script>
