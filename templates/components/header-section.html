@@ -13,11 +13,6 @@
                 </a>
             </div>
 
-            <!-- SEARCH (CENTER LIKE BMS) -->
-            <!-- <form method="GET" action="{% url 'SearchPage' %}" class="header-search">
-                <input type="search" name="q" placeholder="Search for Movies, Events..." value="{{ request.GET.q }}">
-            </form> -->
-
             {% include 'components/search_bar.html' %}
 
             <!-- RIGHT SIDE -->
@@ -25,9 +20,12 @@
 
                 <!-- LOCATION -->
                 <select class="header-location" onchange="setCity(this.value)">
+                    <option value="">All Cities</option>
+
                     {% for row in all_cities %}
-                        <option value="{{ row.name }}" {% if request.session.city == row.name %}selected{% endif %}>
-                            {{ row.name }}
+                        <option value="{{ row.name }},{{ row.country_code }}"
+                            {% if request.session.city == row.name %}selected{% endif %}>
+                            {{ row.name }}, {{ row.country_code }}
                         </option>
                     {% endfor %}
                 </select>
@@ -86,14 +84,16 @@
 </header>
 
 <script>
-    function setCity(city) {
+    function setCity(value) {
+        const [city, country] = value.split(",");
+
         fetch("{% url 'SetCity' %}", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRFToken": "{{ csrf_token }}"
             },
-            body: JSON.stringify({ city: city })
+            body: JSON.stringify({ city: city, country: country })
         }).then(() => location.reload());
     }
 </script>

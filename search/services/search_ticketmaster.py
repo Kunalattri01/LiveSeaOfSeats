@@ -1,25 +1,45 @@
 import requests
 from django.conf import settings
+from django.urls import reverse
 
-def tm_search(query, size=5):
+def tm_search(query, size=5, city=None, date=None):
     url = "https://app.ticketmaster.com/discovery/v2/events.json"
+
     params = {
         "apikey": settings.TICKETMASTER_API_KEY,
         "keyword": query,
         "size": size,
     }
-    data = requests.get(url, params=params).json()
+
+    if city:
+        # params["city"] = city.title()
+        params["city"] = city
+
+    if date:
+        params["startDateTime"] = f"{date}T00:00:00Z"
+        # params["endDateTime"] = f"{date}T23:59:59Z"
+
+    try:
+        response = requests.get(url, params=params)
+        data = response.json()
+    except Exception:
+        return []
+
     events = data.get("_embedded", {}).get("events", [])
 
-    # normalize here (important)
     return [
         {
             "id": e.get("id"),
             "title": e.get("name"),
-            "type": "ticketmaster",
-            "url": f"/events/ticketmaster/{e.get('id')}/",
-            "subtitle": (
-                (e.get("dates", {}).get("start", {}).get("localDate") or "")
+            "type": "events",
+            # "url": f"/event_details/{e.get('id')}/",
+            "url": reverse("TicketMasterEventDetailsPage", args=[e.get("id")]),
+            "subtitle": e.get("dates", {}).get("start", {}).get("localDate", ""),
+            "city": (
+                e.get("_embedded", {})
+                 .get("venues", [{}])[0]
+                 .get("city", {})
+                 .get("name", "")
             ),
         }
         for e in events

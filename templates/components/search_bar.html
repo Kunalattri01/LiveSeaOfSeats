@@ -1,57 +1,207 @@
 {% load static %}
-<form method="GET" action="{% url 'SearchPage' %}" class="header-search relative">
+<style>
+    .header-search { position: relative; width: 100%; }
 
-    <input type="search" name="q" id="searchInput" placeholder="Search for Movies, Events..." value="{{ request.GET.q }}" autocomplete="off">
+    #suggestionsBox {
+        position: absolute;
+        top: 105%;
+        left: 0;
+        width: 100%;
+        background: #0a1e5e;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        z-index: 9999;
+        overflow: hidden;
+    }
 
-    <div id="suggestionsBox"
-        class="absolute left-0 top-full w-full bg-white border mt-1 rounded shadow hidden z-50">
+    .pill-container {
+        display: flex;
+        overflow-x: auto;
+        padding: 15px;
+        gap: 10px;
+        border-bottom: 1px solid #1c2f6e;
+        scrollbar-width: none;
+    }
+
+    .pill-container::-webkit-scrollbar { display: none; }
+    
+    .search-pill {
+        white-space: nowrap;
+        padding: 6px 16px;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        font-size: 13px;
+        color: #d1d1d1;
+        background: #0a1e5e;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .search-pill.active {
+        border-color: #f84464;
+        background-color: rgb(253, 112, 112);
+        color: white;
+        font-weight: 600;
+    }
+
+    .section-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #d1d1d1;
+        padding: 15px 15px 5px;
+        text-transform: uppercase;
+    }
+
+    .suggest-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 18px;
+        cursor: pointer;
+        color: #d1d1d1;
+        font-size: 14px;
+    }
+
+    .suggest-item:hover { background-color: #122a75; }
+
+    .item-icon { font-size: 18px; }
+</style>
+
+<form class="header-search">
+    <!-- Search filter -->
+    <input type="search" id="searchInput" placeholder="Search for Movies, Events, Plays & more" autocomplete="off">
+
+    <div id="suggestionsBox" class="hidden">
+
+        <!-- FILTER PILLS -->
+        <div class="pill-container">
+
+            <label>
+                <input type="checkbox" value="events" class="filter-checkbox hidden" checked>
+                <span class="search-pill active">Events</span>
+            </label>
+
+            <label>
+                <input type="checkbox" value="movies" class="filter-checkbox hidden">
+                <span class="search-pill">Movies</span>
+            </label>
+
+            <label>
+                <input type="checkbox" value="sports" class="filter-checkbox hidden">
+                <span class="search-pill">Sports</span>
+            </label>
+
+            <label>
+                <input type="checkbox" value="plays" class="filter-checkbox hidden">
+                <span class="search-pill">Plays</span>
+            </label>
+
+        </div>
+
+        <div class="section-label">Trending Searches</div>
+        <div id="resultsList"></div>
+
     </div>
 </form>
 
-<Script>
-    const input = document.getElementById("searchInput");
-    const box = document.getElementById("suggestionsBox");
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
 
-    let debounceTimer;
+        const input = document.getElementById("searchInput");
+        const box = document.getElementById("suggestionsBox");
+        const list = document.getElementById("resultsList");
+        const checkboxes = document.querySelectorAll(".filter-checkbox");
 
-    input.addEventListener("input", function () {
-        clearTimeout(debounceTimer);
+        let debounceTimer;
 
-        const query = this.value.trim();
+        // SHOW ITEMS
+        function showItems(items) {
+            list.innerHTML = "";
 
-        if (query.length < 2) {
-            box.classList.add("hidden");
-            return;
+            let html = "";
+            console.log('items : ',items)
+            items.forEach(item => {
+
+                let icon = "🎭";
+                if (item.type === "movies") icon = "🎬";
+                if (item.type === "sports") icon = "🏏";
+
+                const url = item.url 
+                    ? item.url 
+                    : `/search?q=${encodeURIComponent(item.title)}`;
+
+                html += `
+                    <a href="${url}" class="suggest-item">
+                        <div style="display:flex; flex-direction:column;">
+                            <span style="font-weight:500;">${item.title}</span>
+                            
+                            <span style="font-size:12px; color:#aaa;">
+                                ${item.venue || "aa"} 
+                                ${item.start_date ? " • " + item.start_date : "aaaa"}
+                            </span>
+                        </div>
+
+                        <span class="item-icon">${icon}</span>
+                    </a>
+                `;
+            });
+
+            list.innerHTML = html;
+        }
+        
+        checkboxes.forEach(cb => {
+            cb.addEventListener("change", function () {
+
+                // Toggle active class only for this pill
+                this.nextElementSibling.classList.toggle("active", this.checked);
+
+                // Trigger search with multiple filters
+                triggerSearch();
+            });
+        });
+
+        // GET SELECTED FILTER
+        function getSelectedTypes() {
+            return Array.from(document.querySelectorAll(".filter-checkbox:checked"))
+                .map(cb => cb.value);
         }
 
-        debounceTimer = setTimeout(() => {
-            fetch(`/search/suggestions?q=${query}`)
-                .then(res => res.json())
-                .then(data => {
-                    box.innerHTML = "";
+        // MAIN SEARCH FUNCTION
+        function triggerSearch() {
+            clearTimeout(debounceTimer);
 
-                    if (!data.results.length) {
-                        box.innerHTML = `<div class="p-2 text-gray-500">No results</div>`;
-                    }
+            const query = input.value.trim();
+            const types = getSelectedTypes();
 
-                    data.results.forEach(item => {
-                        const div = document.createElement("div");
-                        div.className = "p-3 hover:bg-gray-100 cursor-pointer border-b";
+            if (query.length < 2) {
+                return;
+            }
 
-                        div.innerHTML = `
-                            <div class="font-medium">${item.title}</div>
-                            <div class="text-xs text-gray-500">${item.type}</div>
-                        `;
-
-                        div.onclick = () => {
-                            window.location.href = item.url;
-                        };
-
-                        box.appendChild(div);
+            debounceTimer = setTimeout(() => {
+                fetch(`/search/suggestions?q=${query}&type=${types.join(",")}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.results.length > 0) {
+                            showItems(data.results);
+                        } else {
+                            list.innerHTML = `<div class="p-3 text-muted small">No matches found</div>`;
+                        }
                     });
+            }, 300);
+        }
 
-                    box.classList.remove("hidden");
-                });
-        }, 300);
+        // INPUT EVENTS
+        input.addEventListener("focus", () => {
+            box.classList.remove("hidden");
+        });
+
+        input.addEventListener("input", triggerSearch);
+
+        // CLOSE DROPDOWN
+        document.addEventListener("click", (e) => {
+            if (!e.target.closest(".header-search")) {
+                box.classList.add("hidden");
+            }
+        });
     });
 </script>
