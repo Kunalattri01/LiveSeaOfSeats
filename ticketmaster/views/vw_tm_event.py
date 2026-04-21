@@ -18,6 +18,7 @@ class TicketMasterEventsView(View):
 
     def get(self, request):
 
+        # ALWAYS first page only
         page = 0
 
         url = "https://app.ticketmaster.com/discovery/v2/events.json"
@@ -25,11 +26,12 @@ class TicketMasterEventsView(View):
         city = request.session.get("city")
         country = request.session.get("country")
 
-        if city:
-            city = city.title()
-
+        
         params = {
             "apikey": settings.TICKETMASTER_API_KEY,
+            # "classificationName": "artist",
+            # "keyword": "WWE",
+            # "countryCode": "US",
             "size": 10,
             "page": page
         }
@@ -40,11 +42,8 @@ class TicketMasterEventsView(View):
         if country:
             params["countryCode"] = country
 
-        try:
-            response = requests.get(url, params=params, timeout=10)
-            data = response.json()
-        except Exception:
-            data = {}
+        response = requests.get(url, params=params)
+        data = response.json()
 
         raw_events = data.get('_embedded', {}).get('events', [])
 
@@ -53,22 +52,24 @@ class TicketMasterEventsView(View):
         for row in raw_events:
             start = row.get("dates", {}).get("start", {})
 
+            date_str = start.get("localDate")
+            time_str = start.get("localTime")
+
             events_data.append({
                 "id": row.get("id"),
                 "name": row.get("name"),
                 "image": self.get_best_image(row.get("images", [])),
-                "date": start.get("localDate"),
-                "time": start.get("localTime"),
+                "date": datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else None,
+                "time": datetime.strptime(time_str, "%H:%M:%S").time() if time_str else None,
                 "city": row.get("_embedded", {}).get("venues", [{}])[0].get("city", {}).get("name"),
                 "url": row.get("url"),
             })
 
         return render(request, 'ticketmaster/tm_events.html', {
             'events_data': events_data,
-            'selected_city': city,
-            'ask_user_mail': True
+            'ask_user_mail' : True
         })
-        
+    
 
 
 
