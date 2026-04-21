@@ -21,15 +21,16 @@ from users.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('users.urls')),
+    path('', include('ticketmaster.urls')), # comment it in future (make change in header component)
+    path('users/', include('users.urls')),  # make it '' in future 
     path('events/', include('events.urls')),
     path('sports/', include('sports.urls')),
     path('movies/', include('movies.urls')),
     path('contact/', include('contact.urls')),
     path('blog/', include('blog.urls')),
     path('access_control/', include('access_control.urls')),
-    path('ticketmaster/', include('ticketmaster.urls')),
-    # path('organizer/', include('organizer.urls')),
+    path("search/", include("search.urls")),
+    # path('ticketmaster/', include('ticketmaster.urls')), # remove comment in future
 ]
 
 handler404 = "ticket_platform.views.custom_404"

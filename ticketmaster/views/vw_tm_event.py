@@ -25,8 +25,9 @@ class TicketMasterEventsView(View):
 
         params = {
             "apikey": settings.TICKETMASTER_API_KEY,
-            "classificationName": "music",
-            "countryCode": "US",
+            # "classificationName": "artist",
+            "keyword": "WWE",
+            # "countryCode": "US",
             "size": 10,
             "page": page
         }
