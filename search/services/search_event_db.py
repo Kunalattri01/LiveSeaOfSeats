@@ -22,7 +22,7 @@ def search_my_events(query, city=None, date=None):
             'start_date' : e.start_date,
             'venue': e.venue.name if e.venue else "",
             "url": reverse('EventDetailsPage', args=[e.id]),
-            "subtitle": getattr(e, "date", "") or "",
+            # "subtitle": getattr(e, "date", "") or "",
         }
         for e in qs
     ]
@@ -43,4 +43,4 @@ def global_suggestions(query, types=None, city=None, date=None):
         results += search_my_events(query, city, date)
         results += tm_search(query, city, date)
 
-    return results[:10]
+    return results[:5]

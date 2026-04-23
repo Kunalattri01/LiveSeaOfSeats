@@ -1,279 +1,174 @@
 {% extends "base/base.html" %}
 {% load static %}
 
-{% block title %} {{ event.name|default:"Elite Event Explorer" }} {% endblock title %}
+{% block title %} {{ event.name|default:"Event Details" }} {% endblock title %}
 
 {% block bodyContent %}
 <style>
-    :root { --accent: #00d4ff; --dark: #0a1e5e; --glass: rgba(255, 255, 255, 0.05); }
+    :root { 
+        --accent: #00d4ff; 
+        --dark: #0a1e5e; 
+        --glass: rgba(255, 255, 255, 0.05); 
+        --border: rgba(255, 255, 255, 0.1);
+    }
     
-    /* RESPONSIVE ENGINE */
-    .elite-grid { display: grid; grid-template-columns: 1fr 380px; gap: 40px; }
-    .hero-split { display: flex; min-height: 600px; background: var(--dark); overflow: hidden; }
-    .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; grid-template-rows: 250px 250px; }
-    .performer-circle { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover; }
+    body { background-color: var(--dark); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+    /* HERO BANNER - RESPONSIVE HEIGHT */
+    .attraction-banner {
+        position: relative; 
+        min-height: 400px;
+        height: 60vh;
+        display: flex; 
+        align-items: flex-end; 
+        padding: 40px 5%;
+        background: linear-gradient(0deg, var(--dark) 0%, rgba(10, 30, 94, 0.2) 100%), url('{{ event.image }}');
+        background-size: cover; 
+        background-position: center;
+    }
+
+    /* GRID SYSTEM */
+    .elite-grid { 
+        display: grid; 
+        grid-template-columns: 1fr 350px; 
+        gap: 30px; 
+        padding: 40px 5%; 
+    }
+
+    /* SCHEDULE CONTAINER */
+    .schedule-container { border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-top: 10px; }
     
-    /* New Scroll Elements */
-    .info-tag { background: var(--glass); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 4px; }
-    .timeline-item { border-left: 2px solid var(--accent); padding-left: 20px; position: relative; margin-bottom: 25px; }
-    .timeline-item::before { content: ''; position: absolute; left: -7px; top: 0; width: 12px; height: 12px; background: var(--accent); border-radius: 50%; }
-    
+    .schedule-row {
+        display: grid; 
+        grid-template-columns: 80px 1fr 140px;
+        padding: 20px; 
+        border-bottom: 1px solid var(--border);
+        align-items: center; 
+        background: rgba(255,255,255,0.01);
+        transition: background 0.3s ease;
+    }
+    .schedule-row:last-child { border-bottom: none; }
+    .schedule-row:hover { background: rgba(255,255,255,0.04); }
+
+    .date-box { border-right: 1px solid var(--border); line-height: 1.1; }
+    .date-box b { font-size: 20px; font-weight: 900; display: block; }
+    .date-box small { font-size: 10px; color: var(--accent); text-transform: uppercase; font-weight: 800; }
+
+    /* SIDEBAR BUTTON */
+    .sidebar-btn {
+        display: block; 
+        text-align: center; 
+        background: var(--accent); 
+        color: var(--dark);
+        padding: 15px; 
+        border-radius: 4px; 
+        font-weight: 900; 
+        text-decoration: none;
+        text-transform: uppercase; 
+        font-size: 12px; 
+        letter-spacing: 1px;
+        transition: transform 0.2s;
+    }
+    .sidebar-btn:hover { transform: translateY(-2px); color: var(--dark); }
+
+    /* RESPONSIVE BREAKPOINTS */
     @media (max-width: 1100px) {
         .elite-grid { grid-template-columns: 1fr; }
-        .hero-split { flex-direction: column-reverse; }
-        .hero-content { padding: 40px 5% !important; width: 100% !important; }
-        .hero-visual { height: 350px; width: 100% !important; }
-        .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+        aside { order: -1; } /* Sidebar moves to top on tablets */
+        aside div[style*="position: sticky"] { position: relative !important; top: 0 !important; }
+    }
+
+    @media (max-width: 600px) {
+        .attraction-banner { height: 350px; padding: 20px; }
+        .attraction-banner h1 { font-size: 2rem !important; }
+        
+        .schedule-row {
+            grid-template-columns: 1fr; /* Stack elements vertically */
+            gap: 15px;
+            text-align: center;
+        }
+        .date-box { border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .schedule-row div { padding-left: 0 !important; }
+        .schedule-row div:last-child { text-align: center !important; }
     }
 </style>
 
-<div style="background: inherit; color: #fff; min-height: 100vh; font-family: 'Inter', sans-serif;">
-
-    <section class="hero-split">
-        <div class="hero-content" style="flex: 1; padding: 80px 5%; display: flex; flex-direction: column; justify-content: center;">
-            <div style="margin-bottom: 20px;">
-                <span style="background: var(--accent); color: var(--dark); padding: 5px 12px; font-weight: 900; font-size: 11px; text-transform: uppercase;">Verified Official</span>
-            </div>
-            <h1 style="font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; line-height: 1; margin-bottom: 25px; letter-spacing: -2px;">
-                <span style="color: var(--accent);">{{ event.name|upper }}</span>
-            </h1>
-            <div style="display: flex; flex-wrap: wrap; gap: 30px; border-left: 3px solid var(--accent); padding-left: 20px;">
-                <div><small style="display:block; opacity:0.6; font-size:10px; text-transform:uppercase;">Venue</small><strong>{{ event.venue_name }}, {{ event.city }}</strong></div>
-                <div><small style="display:block; opacity:0.6; font-size:10px; text-transform:uppercase;">Date</small><strong>{{ event.date|date:'d M y' }} | {{ event.time|time:'g A' }}</strong></div>
-                <div><small style="display:block; opacity:0.6; font-size:10px; text-transform:uppercase;">Status</small><strong style="color: #22c55e;">{{ event.status|default:"On Sale"|upper }}</strong></div>
-            </div>
-        </div>
-        <div class="hero-visual" style="flex: 1.2; position: relative;">
-            <img src="{{ event.image }}" style="width:100%; height:100%; object-fit:cover;">
-            <div style="position:absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to right, #0a1e5e 0%, transparent 100%);"></div>
-        </div>
-    </section>
-
-    <div class="container-fluid" style="padding: 60px 5%;">
-        <div class="elite-grid">
-            
-            <div>
-                <div style="margin-bottom: 50px;">
-                    <h5 style="color: var(--accent); text-transform: uppercase; letter-spacing: 2px; font-size: 12px; margin-bottom: 20px;">Featured Performers</h5>
-                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                        {% for artist in event.performers %}
-                        <div style="display: flex; align-items: center; gap: 15px; background: var(--glass); padding: 10px 20px;">
-                            <img src="{{ artist.image|default:'/static/default-user.png' }}" class="performer-circle">
-                            <div>
-                                <strong>{{ artist.name }}</strong> <br>
-                                <small style="opacity:0.6;">Performer</small>
-                            </div>
-                        </div>
-                        {% empty %}
-                            <p>No performers available</p>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <div style="margin-bottom: 60px;">
-                    <h5 style="color: var(--accent); text-transform: uppercase; letter-spacing: 2px; font-size: 12px; margin-bottom: 25px;">
-                        Event Timeline
-                    </h5>
-
-                    <div class="timeline-item">
-                        <strong>{{ event.date }} — EVENT DATE</strong>
-                        <p style="opacity:0.6; font-size:14px;">
-                            Scheduled event day.
-                        </p>
-                    </div>
-
-                    {% if event.time %}
-                    <div class="timeline-item">
-                        <strong>{{ event.time }} — START TIME</strong>
-                        <p style="opacity:0.6; font-size:14px;">
-                            Gates typically open 1 hour before start.
-                        </p>
-                    </div>
-                    {% endif %}
-
-                    <div class="timeline-item" style="border-color: transparent;">
-                        <strong>STATUS — {{ event.status|title|upper }}</strong>
-                        <p style="opacity:0.6; font-size:14px;">
-                            Tickets currently available.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="gallery-grid" style="margin-bottom: 60px;">
-                    {% for img in event.gallery %}
-                        <div {% if forloop.first %}style="grid-column: span 2; grid-row: span 2;"{% endif %}>
-                            <img src="{{ img }}" style="width:100%; height:100%; object-fit:cover;">
-                        </div>
-                    {% endfor %}
-                </div>
-
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 60px;">
-                    <div class="info-tag">
-                        <i class="fas fa-ticket-alt" style="color:var(--accent); margin-bottom:10px;"></i>
-                        <strong>Digital Tickets</strong>
-                        <p style="font-size:12px; opacity:0.6; margin:0;">Mobile entry only. No paper tickets.</p>
-                    </div>
-                    <div class="info-tag">
-                        <i class="fas fa-user-shield" style="color:var(--accent); margin-bottom:10px;"></i>
-                        <strong>Age Limit</strong>
-                        <p style="font-size:12px; opacity:0.6; margin:0;">16+ Only. Valid ID required at door.</p>
-                    </div>
-                    <div class="info-tag">
-                        <i class="fas fa-camera-flash" style="color:var(--accent); margin-bottom:10px;"></i>
-                        <strong>Flash Policy</strong>
-                        <p style="font-size:12px; opacity:0.6; margin:0;">No professional cameras allowed.</p>
-                    </div>
-                </div>
-
-                <div style="margin-bottom: 60px; background: var(--glass); padding: 40px; border: 1px solid rgba(255,255,255,0.1);">
-                    
-                    <h3 style="font-weight: 800; margin-bottom: 20px;">Venue Experience</h3>
-
-                    {% if event.description %}
-                        <p style="font-size: 16px; line-height: 1.7; opacity: 0.85; margin-bottom: 25px;">
-                            {{ event.description }}
-                        </p>
-                    {% endif %}
-
-                    <!-- GRID DETAILS -->
-                    <div style="margin-top: 20px;">
-
-                        {% if event.venue_extra.rules %}
-                            <div style="display:flex; gap:15px; padding:15px 0; border-bottom:1px solid rgba(255,255,255,0.08);">
-
-                                <div style="min-width:30px;">
-                                    <i class="fas fa-exclamation-triangle" style="color:var(--accent); font-size:18px;"></i>
-                                </div>
-
-                                <div>
-                                    <p style="margin:0; font-weight:600;">Venue Rules</p>
-                                    <p style="margin:5px 0 0; opacity:0.7; font-size:13px; line-height:1.6;">
-                                        {{ event.venue_extra.rules }}
-                                    </p>
-                                </div>
-
-                            </div>
-                        {% endif %}
-
-
-                        {% if event.venue_extra.child_rule %}
-                            <div style="display:flex; gap:15px; padding:15px 0; border-bottom:1px solid rgba(255,255,255,0.08);">
-
-                                <div style="min-width:30px;">
-                                    <i class="fas fa-child" style="color:var(--accent); font-size:18px;"></i>
-                                </div>
-
-                                <div>
-                                    <p style="margin:0; font-weight:600;">Child Policy</p>
-                                    <p style="margin:5px 0 0; opacity:0.7; font-size:13px; line-height:1.6;">
-                                        {{ event.venue_extra.child_rule }}
-                                    </p>
-                                </div>
-
-                            </div>
-                        {% endif %}
-
-
-                        {% if event.venue_extra.open_hours %}
-                            <div style="display:flex; gap:15px; padding:15px 0;">
-
-                                <div style="min-width:30px;">
-                                    <i class="fas fa-clock" style="color:var(--accent); font-size:18px;"></i>
-                                </div>
-
-                                <div>
-                                    <p style="margin:0; font-weight:600;">Box Office Hours</p>
-                                    <p style="margin:5px 0 0; opacity:0.7; font-size:13px; line-height:1.6;">
-                                        {{ event.venue_extra.open_hours }}
-                                    </p>
-                                </div>
-
-                            </div>
-                        {% endif %}
-
-                    </div>
-                </div>
-
-                <div style="background: #fff; color: #000; padding: 40px; border-radius: 4px; display: flex; flex-wrap: wrap; gap: 30px; align-items: center;">
-                    <div style="flex: 1; min-width: 250px;">
-                        <small style="color: var(--dark); font-weight: 900; text-transform: uppercase; font-size: 10px;">Venue Logistics</small>
-                        <h4 style="font-weight: 900; margin: 10px 0;">{{ event.venue_name|upper }}</h4>
-                        <p style="opacity: 0.7; font-size: 21px; margin-bottom: 20px;">{{ event.address }}, {{ event.city }}, {{ event.country }}</p>
-                        <a href="https://www.google.com/maps/search/?api=1&query={{ event.venue_name }} {{ event.city }}" target="_blank" style="background:var(--dark); color:#fff; border:none; padding:10px 20px; font-size:12px; font-weight:800;">GET DIRECTIONS</a>
-                    </div>
-                    <div style="flex: 1; min-width: 250px; height: 200px; background: #eee;">
-                        {% if event.latitude and event.longitude %}
-
-                        <!-- <img 
-                            src="https://maps.googleapis.com/maps/api/staticmap?center={{ event.latitude|floatformat:6 }},{{ event.longitude|floatformat:6 }}&zoom=15&size=600x300&markers=color:red%7C{{ event.latitude|floatformat:6 }},{{ event.longitude|floatformat:6 }}&key={{ticketmaster_apikeyxx }}"
-                            style="width:100%; height:100%; object-fit:cover; border-radius:6px;"> -->
-
-                            <div style="display:flex; align-items:center; justify-content:center; height:100%; background:#eee;">
-                                <span>Comming Soon</span>
-                            </div>
-
-                        {% else %}
-                            <div style="display:flex; align-items:center; justify-content:center; height:100%; background:#eee;">
-                                <span>Location not available</span>
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-
-            <aside>
-                <!-- <div style="position: sticky; top: 40px; background: #fff; color: var(--dark); padding: 40px; box-shadow: 0 40px 80px rgba(0,0,0,0.5);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                        <span style="font-weight: 900; font-size: 12px; letter-spacing: 1px;">PRICE RANGE</span>
-                        <span style="color: #22c55e; font-weight: 900; font-size: 11px;">● LIVE</span>
-                    </div>
-                    <h2 style="font-size: 48px; font-weight: 900; margin: 0; color: #807e7e;">
-                        {% if event.price_min %}
-                            {{ event.price_min }} — {{ event.price_max }}
-                        {% else %}
-                            Price Not Available
-                        {% endif %}
-
-                    </h2>
-                    <p style="opacity: 0.6; font-size: 12px; margin-top: 10px; margin-bottom: 40px;">Standard to VIP Platinum Tiers.</p>
-                    
-                     <a href="{{ event.ticket_url }}" target="_blank"
-                        style="display:block; text-align:center; background:var(--dark); color:#fff; padding:22px;">
-                        Find Best Seats
-                    </a>
-                </div> -->
-                <a href="{{ event.ticket_url }}" target="_blank" style="display:block; text-align:center; background:var(--dark); color:#fff; padding:22px; border-radius: 10px;">
-                    Find Best Seats
-                </a>
-            </aside>
-        </div>
-
-        <div style="margin-top: 100px;">
-            <h5 style="color: var(--accent); text-transform: uppercase; letter-spacing: 2px; font-size: 12px; margin-bottom: 30px; text-align: center;">
-                Explore Similar Events
-            </h5>
-            <div style="display: flex; gap: 25px; overflow-x: auto; padding-bottom: 30px; scrollbar-width: none;">
-                {% for ev in similar_events %}
-                    <a href="{% url 'TicketMasterEventDetailsPage' ev.id %}" style="flex: 0 0 350px; text-decoration:none; color:white;">
-                        <div style="background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; transition: 0.3s;">
-                            <img src="{{ ev.image }}" style="width:100%; height:200px; object-fit:cover;">
-
-                            <div style="padding: 25px;">
-                                <strong style="display:block; font-size:18px;">
-                                    {{ ev.name|truncatechars:25 }}
-                                </strong>
-
-                                <small style="opacity:0.6;">
-                                    {{ ev.venue }}, {{ ev.city }}
-                                </small>
-                            </div>
-                        </div>
-                    </a>
-                {% empty %}
-                    <p style="opacity:0.6;">No similar events found.</p>
-                {% endfor %}
-            </div>
+<section class="attraction-banner">
+    <div style="max-width: 800px; width: 100%;">
+        <span style="background: var(--accent); color: var(--dark); padding: 4px 10px; font-weight: 900; font-size: 10px; text-transform: uppercase; border-radius: 2px;">Verified Attraction</span>
+        <h1 style="font-size: clamp(2rem, 5vw, 4rem); font-weight: 900; margin: 15px 0; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.5);">{{ event.name|upper }}</h1>
+        <div style="display: flex; gap: 15px; align-items: center; opacity: 0.9; font-weight: 600; font-size: 14px;">
+            <span style="color: #ffcc00;">★ 4.8 Rating</span>
+            <span>•</span>
+            <span>{{ event.city }}, {{ event.country }}</span>
         </div>
     </div>
+</section>
+
+<div class="elite-grid">
+    <main>
+        {% if event.pleaseNote %}
+        <section style="margin-bottom: 40px;">
+            <h3 style="font-weight: 800; text-transform: uppercase; font-size: 14px; letter-spacing: 1px; margin-bottom: 15px; color: var(--accent);">
+                • Important Note
+            </h3>
+            <div style="padding: 20px; background: rgba(0, 212, 255, 0.05); border-left: 4px solid var(--accent); font-size: 14px; line-height: 1.6; opacity: 0.9;">
+                {{ event.pleaseNote }}
+            </div>
+        </section>
+        {% endif %}
+
+        <section style="margin-bottom: 40px;">
+            <h3 style="font-weight: 800; text-transform: uppercase; font-size: 14px; letter-spacing: 1px; margin-bottom: 15px;">
+                Show Timings & Venue Details
+            </h3>
+            
+            <div class="schedule-container">
+                {% for item in venue %}
+                <div class="schedule-row">
+                    <div class="date-box">
+                        <small>{{ item.date|date:"M" }}</small>
+                        <b>{{ item.date|date:"d" }}</b>
+                    </div>
+
+                    <div style="padding-left: 25px;">
+                        <strong style="font-size: 16px; display: block; margin-bottom: 4px;">
+                            {{ item.event_name|default:event.name }}
+                        </strong>
+                        <p style="margin: 0; opacity: 0.6; font-size: 13px;">
+                            {{ item.address }} • {{ item.city }} <br>
+                            <span style="color: var(--accent); font-weight: 700;">Doors: {{ item.time|time:"g:i A" }}</span>
+                        </p>
+                    </div>
+
+                    <div style="text-align: right;">
+                        <a href="{{ item.ticket_url|default:event.ticket_url }}" target="_blank" class="sidebar-btn" style="padding: 10px 20px; font-size: 11px;">
+                            Find Seats
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <div style="padding: 20px; opacity: 0.5; text-align: center;">No upcoming dates scheduled.</div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+
+    <aside>
+        <div style="position: sticky; top: 20px;">
+            <div style="background: var(--glass); border: 1px solid var(--border); padding: 25px; border-radius: 4px; backdrop-filter: blur(10px);">
+                <h4 style="font-size: 11px; font-weight: 900; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">Official Booking</h4>
+                <p style="font-size: 13px; opacity: 0.7; margin-bottom: 20px; line-height: 1.5;">Secure your verified tickets directly through our platform for guaranteed entry.</p>
+                <a href="{{ event.ticket_url }}" class="sidebar-btn">Find Best Seats</a>
+            </div>
+
+            <!-- <div style="margin-top: 20px; padding: 20px; border: 1px dashed var(--border); text-align: center; border-radius: 4px;">
+                <small style="opacity: 0.4; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: 1px;">Featured Location</small>
+                <img src="{{ event.venue_image|default:'/static/venue.jpg' }}" style="width:100%; height:140px; object-fit:cover; margin: 15px 0; border-radius: 2px; border: 1px solid var(--border);">
+                <p style="font-weight: 800; font-size: 14px; margin: 0; color: var(--accent);">{{ event.venue_name }}</p>
+                <p style="font-size: 12px; opacity: 0.5; margin: 5px 0 0;">{{ event.city }}, {{ event.country }}</p>
+            </div> -->
+        </div>
+    </aside>
 </div>
 {% endblock bodyContent %}

@@ -20,55 +20,101 @@ class TicketMasterEventsView(View):
 
         # ALWAYS first page only
         page = 0
-
         url = "https://app.ticketmaster.com/discovery/v2/events.json"
 
         city = request.session.get("city")
         country = request.session.get("country")
 
-        
         params = {
             "apikey": settings.TICKETMASTER_API_KEY,
-            # "classificationName": "artist",
-            # "keyword": "WWE",
+            # "classificationName": "wwe",
+            "page": page,
             # "countryCode": "US",
-            "size": 10,
-            "page": page
+            "size": 20,
         }
 
-        if city:
-            params["city"] = city
+        # if city:
+        #     params["city"] = city
 
-        if country:
-            params["countryCode"] = country
+        # if country:
+        #     params["countryCode"] = country
 
-        response = requests.get(url, params=params)
-        data = response.json()
+        try:
+            response = requests.get(url, params=params, timeout=10)
+            data = response.json()
+        except Exception:
+            data = {}
 
+        # return JsonResponse(data)
+    
         raw_events = data.get('_embedded', {}).get('events', [])
 
         events_data = []
+        unique_result = set()
 
         for row in raw_events:
-            start = row.get("dates", {}).get("start", {})
 
-            date_str = start.get("localDate")
-            time_str = start.get("localTime")
+            attractions = row.get("_embedded", {}).get("attractions", [])
 
-            events_data.append({
-                "id": row.get("id"),
-                "name": row.get("name"),
-                "image": self.get_best_image(row.get("images", [])),
-                "date": datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else None,
-                "time": datetime.strptime(time_str, "%H:%M:%S").time() if time_str else None,
-                "city": row.get("_embedded", {}).get("venues", [{}])[0].get("city", {}).get("name"),
-                "url": row.get("url"),
-            })
+            if attractions and attractions[0].get("name"):
+                Name = attractions[0].get("name")
+                Unique_id = attractions[0].get("id")
+            else:
+                Name = row.get("name")
+                Unique_id = row.get("id")
+
+            if Unique_id not in unique_result:
+                unique_result.add(Unique_id)
+
+                start = row.get("dates", {}).get("start", {})
+
+                date_str = start.get("localDate")
+                time_str = start.get("localTime")
+
+                try:
+                    event_date = datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else None
+                except:
+                    event_date = None
+
+                try:
+                    event_time = datetime.strptime(time_str, "%H:%M:%S").time() if time_str else None
+                except:
+                    event_time = None
+                print('event_id : ', row.get("id"),)
+                events_data.append({
+                    "id": Unique_id,
+                    "event_id": row.get("id"),
+                    "name": Name,
+                    "image": self.get_best_image(row.get("images", [])),
+                    "date": event_date,
+                    "time": event_time,
+                    "city": row.get("_embedded", {}).get("venues", [{}])[0].get("city", {}).get("name"),
+                    "url": row.get("url"),
+                })
 
         return render(request, 'ticketmaster/tm_events.html', {
             'events_data': events_data,
-            'ask_user_mail' : True
+            'TitleSearch' : True,
+            'ask_user_mail' : True,
         })
+    
+
+
+        # for row in raw_events:
+        #     start = row.get("dates", {}).get("start", {})
+
+        #     date_str = start.get("localDate")
+        #     time_str = start.get("localTime")
+
+        #     events_data.append({
+        #         "id": row.get("id"),
+        #         "name": row.get("name"),
+        #         "image": self.get_best_image(row.get("images", [])),
+        #         "date": datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else None,
+        #         "time": datetime.strptime(time_str, "%H:%M:%S").time() if time_str else None,
+        #         "city": row.get("_embedded", {}).get("venues", [{}])[0].get("city", {}).get("name"),
+        #         "url": row.get("url"),
+        #     })
     
 
 

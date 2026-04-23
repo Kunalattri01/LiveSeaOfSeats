@@ -34,8 +34,8 @@ def tm_search(query, size=5, city=None, date=None):
             "type": "events",
             # "url": f"/event_details/{e.get('id')}/",
             "url": reverse("TicketMasterEventDetailsPage", args=[e.get("id")]),
-            "subtitle": e.get("dates", {}).get("start", {}).get("localDate", ""),
-            "city": (
+            "start_date": e.get("dates", {}).get("start", {}).get("localDate", ""),
+            "venue": (
                 e.get("_embedded", {})
                  .get("venues", [{}])[0]
                  .get("city", {})

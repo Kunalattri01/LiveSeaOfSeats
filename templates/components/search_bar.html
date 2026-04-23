@@ -137,7 +137,7 @@
                             
                             <span style="font-size:12px; color:#aaa;">
                                 ${item.venue || "aa"} 
-                                ${item.start_date ? " • " + item.start_date : "aaaa"}
+                                ${item.start_date ? " • " + formatDate(item.start_date) : ""}
                             </span>
                         </div>
 
@@ -204,4 +204,16 @@
             }
         });
     });
+
+
+    function formatDate(dateStr) {
+        const date = new Date(dateStr);
+
+        return date.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "2-digit"
+        });
+    }
+
 </script>

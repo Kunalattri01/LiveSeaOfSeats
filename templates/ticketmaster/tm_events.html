@@ -3,15 +3,83 @@
 {% block title %} SeaOfSeats  - Online Ticket Booking Website HTML Template {% endblock title %}
 
 {% block banner-section %}
-    <section class="banner-section">
-        <div class="banner-bg bg_img" data-background="{% static 'assets/images/banner/banner-ticketmaster.png' %}"></div>
-        <div class="container">
-            <div class="banner-content event-content">
-                <h1 class="title bold">get <span class="color-theme">events</span> tickets</h1>
-                <p>Buy event tickets in advance, find event times and much more</p>
+<style>
+    .banner-item {
+        position: relative;
+        padding: 150px 0 120px; /* Adjust padding to match your original banner height */
+        overflow: hidden;
+    }
+    .banner-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center center;
+        z-index: -1;
+    }
+    /* Add a dark overlay so text stays white and readable */
+    .banner-item::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 18, 50, 0.7); /* Matches your navy theme */
+        z-index: -1;
+    }
+    .owl-dots {
+        position: absolute;
+        bottom: 30px;
+        width: 100%;
+        text-align: center;
+    }
+    .owl-dot span {
+        background: rgba(255, 255, 255, 0.5) !important;
+    }
+    .owl-dot.active span {
+        background: #31d7a9 !important; /* Theme Cyan */
+    }
+</style>
+
+
+<section class="">
+    <div class="banner-slider owl-carousel owl-theme">
+        
+        <div class="banner-item">
+            <div class="banner-bg bg_img" data-background="{% static 'assets/images/banner/banner-ticketmaster.png' %}"></div>
+            <div class="container">
+                <div class="banner-content event-content">
+                    <h1 class="title bold">get <span class="color-theme">Music</span> tickets</h1>
+                    <p>Experience the best live concerts and music festivals</p>
+                    <a href="#music-container" class="custom-button">Browse Music</a>
+                </div>
             </div>
         </div>
-    </section>
+
+        <div class="banner-item">
+            <div class="banner-bg bg_img" data-background="{% static 'assets/images/banner/banner01.jpg' %}"></div>
+            <div class="container">
+                <div class="banner-content event-content">
+                    <h1 class="title bold">Top <span class="color-theme">Sports</span> Events</h1>
+                    <p>Catch your favorite teams live in action</p>
+                    <a href="#sports-container" class="custom-button">Browse Sports</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="banner-item">
+            <div class="banner-bg bg_img" data-background="{% static 'assets/images/banner/banner02.jpg' %}"></div>
+            <div class="container">
+                <div class="banner-content event-content">
+                    <h1 class="title bold">Arts & <span class="color-theme">Theatre</span></h1>
+                    <p>Discover the finest plays, musicals, and exhibitions</p>
+                    <a href="#arts-container" class="custom-button">Browse Arts</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
 {% endblock banner-section %}
 
 {% block bodyContent %}
@@ -134,17 +202,17 @@
                     <div class="row g-4" id="container-events">
                         {% for event in events_data %}
                             <div class="col-6 col-lg-4">
-                                <div class="event-grid">
+                                <div class="event-grid" data-artist-id="{{ event.id }}">
                                     <div class="movie-thumb c-thumb">
                                         <!-- <a href="{{ event.url }}" target="_blank"> -->
                                         <a href="{% url 'TicketMasterEventDetailsPage' event.id %}" target="_blank">
                                             <img src="{{ event.image }}" class="w-full h-48 object-cover" alt="event">
                                         </a>
 
-                                        <div class="event-date">
+                                        <!-- <div class="event-date">
                                             <h6 class="date-title"> {{ event.date|date:"d" }} </h6>
                                             <span>{{ event.date|date:"M" }}</span>
-                                        </div>
+                                        </div> -->
                                     </div>
 
                                     <div class="movie-content"> <!-- bg-one -->
@@ -175,10 +243,37 @@
 
 {% block extraJs %}
 <script>
-// let nextUrl = "/ticketmaster/api/events/?page=2";
 let nextUrl = "api/events/?page=2";
 let loading = false;
 
+//  track artist IDs (NOT names)
+const seenArtists = new Set();
+
+//  capture initial page (server rendered)
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll("#container-events .event-grid").forEach(card => {
+        const artistId = card.getAttribute("data-artist-id");
+        if (artistId) seenArtists.add(artistId);
+    });
+
+    const slider = window.jQuery(".banner-slider");
+    if (slider.length) {
+        slider.owlCarousel({
+            items: 1,
+            loop: true,
+            autoplay: true,
+            autoplayTimeout: 5000,
+            animateOut: 'fadeOut',
+            animateIn: 'fadeIn',
+            nav: false,
+            dots: true,
+            smartSpeed: 1000
+        });
+    }
+});
+
+//  infinite scroll
 window.addEventListener("scroll", function () {
 
     if (loading || !nextUrl) return;
@@ -190,25 +285,30 @@ window.addEventListener("scroll", function () {
         fetch(nextUrl)
             .then(res => res.json())
             .then(data => {
+
                 nextUrl = data.next ? data.next : null;
-                // nextUrl = data.next ? "/ticketmaster" + data.next : null;
 
                 const container = document.getElementById("container-events");
 
                 data.results.forEach(event => {
 
+                    // 🔥 dedup by artist id
+                    if (seenArtists.has(event.id)) return;
+
+                    seenArtists.add(event.id);
+
+                    const eventDate = event.date ? new Date(event.date) : null;
+                    const day = eventDate ? eventDate.getDate() : '';
+                    const month = eventDate ? eventDate.toLocaleString('default', { month: 'short' }) : '';
+
+
                     container.insertAdjacentHTML("beforeend", `
                         <div class="col-6 col-lg-4">
-                            <div class="event-grid">
+                            <div class="event-grid" data-artist-id="${event.id}">
                                 <div class="movie-thumb c-thumb">
-                                    <a href="event_details/${event.id}" target="_blank">
+                                    <a href="/event_details/${event.id}/" target="_blank">
                                         <img src="${event.image}" class="w-full h-48 object-cover">
                                     </a>
-
-                                    <div class="event-date">
-                                        <h6 class="date-title">${event.date ? new Date(event.date).getDate() : ''}</h6>
-                                        <span>${event.date ? new Date(event.date).toLocaleString('default', { month: 'short' }) : ''}</span>
-                                    </div>
                                 </div>
 
                                 <div class="movie-content">
@@ -219,19 +319,22 @@ window.addEventListener("scroll", function () {
                                     </h5>
 
                                     <div class="event-basic-details">
-                                        <span>${event.category || "Event"}</span>
+                                        <span>Event</span>
                                         <span>
                                             <i class="fas fa-map-marker-alt"></i>
-                                            ${event.venue || "Venue TBA"}, ${event.city || ""}
+                                            ${event.city || ""}
                                         </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     `);
-
                 });
 
+                loading = false;
+            })
+            .catch(err => {
+                console.error("Error loading events:", err);
                 loading = false;
             });
     }
