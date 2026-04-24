@@ -1,238 +1,324 @@
 {% extends "base/base.html" %}
 {% load static %}
-{% block title %} SeaOfSeats  - Online Ticket Booking Website HTML Template {% endblock title %}
+
+{% block title %} SeaOfSeats | Premium Event Ticketing {% endblock title %}
 
 {% block banner-section %}
 <style>
-    .banner-item {
-        position: relative;
-        padding: 150px 0 120px; /* Adjust padding to match your original banner height */
-        overflow: hidden;
+    :root {
+        --theme-vibrant: #31d7a9;
+        --theme-navy: #0a1e5e;
+        --glass-bg: rgba(255, 255, 255, 0.05);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --accent-gradient: linear-gradient(135deg, #31d7a9 0%, #22b38a 100%);
     }
-    .banner-bg {
-        position: absolute;
-        top: 0;
-        left: 0;
+
+    /* --- Hero Carousel Section --- */
+    .hero-container-full {
+        position: relative;
+        height: 60vh; 
+        background: var(--theme-navy);
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .hero-slider-container { height: 100%; }
+
+    .hero-item { 
+        position: relative; 
+        height: 60vh; 
+        overflow: hidden; 
+    }
+
+    .hero-item img {
         width: 100%;
         height: 100%;
-        background-size: cover;
-        background-position: center center;
-        z-index: -1;
+        object-fit: cover;
+        transition: transform 8s linear;
     }
-    /* Add a dark overlay so text stays white and readable */
-    .banner-item::before {
+
+    .owl-item.active .hero-item img { transform: scale(1.1); }
+
+    /* Left-weighted vignette for text readability */
+    .hero-item::after {
         content: '';
         position: absolute;
         top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 18, 50, 0.7); /* Matches your navy theme */
-        z-index: -1;
+        background: linear-gradient(to right, rgba(10,30,94,0.95) 0%, rgba(10,30,94,0.4) 50%, transparent 100%);
+        z-index: 1;
     }
-    .owl-dots {
+
+    /* Event Content Overlay */
+    .carousel-event-info {
         position: absolute;
-        bottom: 30px;
+        top: 0; left: 0; width: 100%; height: 100%;
+        z-index: 10; display: flex; align-items: center; padding: 0 6%;
+        pointer-events: none;
+    }
+
+    .event-details-box { max-width: 550px; pointer-events: auto; }
+
+    .trending-badge {
+        color: var(--theme-vibrant);
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    /* --- Responsive Filter Sidebar --- */
+    .filter-sidebar {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 24px;
+        backdrop-filter: blur(15px);
+    }
+
+    @media (min-width: 992px) {
+        .filter-sidebar {
+            position: sticky;
+            top: 100px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+    }
+
+    .filter-section-title {
+        color: var(--theme-vibrant);
+        font-weight: 800;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        margin-bottom: 15px;
+        display: block;
+        border-bottom: 1px solid rgba(49, 215, 169, 0.1);
+        padding-bottom: 5px;
+    }
+
+    .filter-group { margin-bottom: 25px; }
+
+    .filter-input {
         width: 100%;
+        background: rgba(255,255,255,0.07);
+        border: 1px solid var(--glass-border);
+        border-radius: 10px;
+        padding: 10px 12px;
+        color: white;
+        font-size: 0.85rem;
+        outline: none;
+    }
+
+    .filter-pill {
+        display: inline-block;
+        padding: 6px 14px;
+        border-radius: 30px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--glass-border);
+        color: #ccc;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .filter-pill:hover, .filter-pill.active {
+        background: var(--theme-vibrant);
+        color: var(--theme-navy);
+        border-color: var(--theme-vibrant);
+        font-weight: 700;
+    }
+
+    /* --- Modern Meta Tag Toggle Chips --- */
+    .meta-tag-checkbox { display: none; }
+    .meta-tag-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 14px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        color: #bbb;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: 0.3s ease;
+        margin-bottom: 8px;
+    }
+    .meta-tag-label:hover { background: rgba(255,255,255,0.08); }
+    
+    .meta-tag-checkbox:checked + .meta-tag-label {
+        background: rgba(49, 215, 169, 0.1);
+        border-color: var(--theme-vibrant);
+        color: var(--theme-vibrant);
+    }
+    .meta-tag-checkbox:checked + .meta-tag-label::after {
+        content: '✓';
+        font-weight: 900;
+    }
+
+    /* --- Event Cards --- */
+    .event-card-compact {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 18px;
+        overflow: hidden;
+        transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .event-card-compact:hover {
+        border-color: var(--theme-vibrant);
+        transform: translateY(-8px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .img-container { width: 100%; aspect-ratio: 16 / 10; overflow: hidden; background: #11255d; }
+    .img-container img { width: 100%; height: 100%; object-fit: cover; }
+    
+    .btn-book-sm {
+        background: var(--accent-gradient);
+        color: var(--theme-navy) !important;
+        font-size: 0.75rem;
+        font-weight: 800;
+        padding: 12px 0;
+        border-radius: 10px;
         text-align: center;
+        text-transform: uppercase;
+        text-decoration: none;
+        display: block;
+        border: none;
+        transition: 0.3s;
     }
-    .owl-dot span {
-        background: rgba(255, 255, 255, 0.5) !important;
+    .btn-book-sm:hover { filter: brightness(1.1); transform: scale(1.02); }
+
+    /* Mobile Filter Trigger */
+    .filter-mobile-btn {
+        display: none;
+        width: 100%;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        color: white;
+        padding: 12px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        font-weight: 600;
     }
-    .owl-dot.active span {
-        background: #31d7a9 !important; /* Theme Cyan */
+
+    @media (max-width: 991px) {
+        .filter-mobile-btn { display: flex; justify-content: space-between; align-items: center; }
+        .hero-container-full, .hero-item { height: 45vh; }
+        .event-details-box h2 { font-size: 2.2rem !important; }
     }
 </style>
 
-
-<section class="">
-    <div class="banner-slider owl-carousel owl-theme">
-        
-        <div class="banner-item">
-            <div class="banner-bg bg_img" data-background="{% static 'assets/images/banner/banner-ticketmaster.png' %}"></div>
-            <div class="container">
-                <div class="banner-content event-content">
-                    <h1 class="title bold">get <span class="color-theme">Music</span> tickets</h1>
-                    <p>Experience the best live concerts and music festivals</p>
-                    <a href="#music-container" class="custom-button">Browse Music</a>
+<section class="hero-container-full">
+    <div class="hero-slider-container owl-carousel owl-theme h-100">
+        {% for event in events_data|slice:":3" %}
+        <div class="hero-item">
+            <img src="{{ event.image }}" alt="{{ event.name }}">
+            <div class="carousel-event-info">
+                <div class="event-details-box">
+                    <span class="trending-badge">Trending Now</span>
+                    <h2 class="text-white fw-black" style="font-size: 3.5rem; line-height: 1.1; margin-bottom: 15px; font-weight: 900;">
+                        {{ event.name|upper }}
+                    </h2>
+                    <p class="text-white opacity-75 mb-4" style="font-size: 1.1rem;">
+                        <i class="bi bi-geo-alt-fill"></i> {{ event.city }} &nbsp;•&nbsp; {{ event.category }}
+                    </p>
+                    <a href="{% url 'TicketMasterEventDetailsPage' event.id %}" class="btn-book-sm" style="width: 240px;">Book Tickets Now</a>
                 </div>
             </div>
         </div>
-
-        <div class="banner-item">
-            <div class="banner-bg bg_img" data-background="{% static 'assets/images/banner/banner01.jpg' %}"></div>
-            <div class="container">
-                <div class="banner-content event-content">
-                    <h1 class="title bold">Top <span class="color-theme">Sports</span> Events</h1>
-                    <p>Catch your favorite teams live in action</p>
-                    <a href="#sports-container" class="custom-button">Browse Sports</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="banner-item">
-            <div class="banner-bg bg_img" data-background="{% static 'assets/images/banner/banner02.jpg' %}"></div>
-            <div class="container">
-                <div class="banner-content event-content">
-                    <h1 class="title bold">Arts & <span class="color-theme">Theatre</span></h1>
-                    <p>Discover the finest plays, musicals, and exhibitions</p>
-                    <a href="#arts-container" class="custom-button">Browse Arts</a>
-                </div>
-            </div>
-        </div>
-
+        {% endfor %}
     </div>
 </section>
 {% endblock banner-section %}
 
 {% block bodyContent %}
-    
-<section class="event-section padding-bottom padding-top"> <!-- padding-top -->
-    <div class="container">
-        <!-- <div class="row flex-wrap-reverse justify-content-center"> -->
-        <div class="row justify-content-center">
-            <div class="col-sm-10 col-md-8 col-lg-3">
+<section class="py-5" style="background: #060e29;">
+    <div class="container-fluid px-lg-5">
+        
+        <button class="filter-mobile-btn d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarCollapse">
+            <span><i class="bi bi-sliders"></i> Refine Events</span>
+            <i class="bi bi-chevron-down"></i>
+        </button>
 
-                <!-- IMPORANT FILTERS TEMPLATE  -->
-                <!-- <div class="widget-1 widget-check">
-                    <div class="widget-header">
-                        <h5 class="m-title">Filter By</h5> <a href="#0" class="clear-check">Clear All</a>
-                    </div>
-                    <div class="widget-1-body">
-                        <h6 class="subtitle">categories</h6>
-                        <div class="check-area">
-                            <div class="form-group">
-                                <input type="checkbox" name="lang" id="cat1"><label for="cat1">all</label>
-                            </div>
-                            <div class="form-group">
-                                <input type="checkbox" name="lang" id="cat2"><label for="cat2">Screening</label>
-                            </div>
-                            <div class="form-group">
-                                <input type="checkbox" name="lang" id="cat3"><label for="cat3">meetings</label>
-                            </div>
-                            <div class="form-group">
-                                <input type="checkbox" name="lang" id="cat4"><label for="cat4">Performances</label>
-                            </div>
-                            <div class="form-group">
-                                <input type="checkbox" name="lang" id="cat5"><label for="cat5">workshops</label>
-                            </div>
-                            <div class="form-group">
-                                <input type="checkbox" name="lang" id="cat6"><label for="cat6">Exhibitions </label>
-                            </div>
-                            <div class="form-group">
-                                <input type="checkbox" name="lang" id="cat8"><label for="cat8">music shows</label>
-                            </div>
-                            <div class="form-group">
-                                <input type="checkbox" name="lang" id="cat9"><label for="cat9">comedy shows</label>
-                            </div>
-                            <div class="form-group">
-                                <input type="checkbox" name="lang" id="cat10"><label for="cat10">Award shows</label>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-                <!-- IMPORANT FILTERS TEMPLATE  -->
-
-
-                <form  id="filter-form">
-                    <div class="widget-1 widget-check">
-                        <div class="widget-header">
-                            <h5 class="m-title">Filters</h5> 
-                            <!-- <a href="#0" class="clear-check">Clear All</a> -->
-                        </div>
-
-                        <div class="widget-1-body">
-                            <h6 class="subtitle">categories</h6>
-                            <div class="check-area">
-                                {% for row in categories_filters %}
-                                    <div class="form-group">
-                                        <input type="checkbox" name="cat" id="cat_{{ row.slug }}" value="{{ row.slug }}" {% if row.slug in selected_categories %}checked{% endif %}>
-                                        <label for="cat_{{ row.slug }}">{{ row.name }}</label>
-                                    </div>
-                                {% endfor %}
+        <div class="row">
+            <aside class="col-lg-3 col-xl-2">
+                <div class="collapse d-lg-block" id="sidebarCollapse">
+                    <div class="filter-sidebar">
+                        <h5 class="text-white fw-bold mb-4 d-none d-lg-block">Filters</h5>
+                        
+                        <form id="filter-form">
+                            <div class="filter-group">
+                                <span class="filter-section-title">Language</span>
+                                <select name="language" class="filter-input">
+                                    <option value="en">English</option>
+                                    <option value="es">Spanish</option>
+                                    <option value="fr">French</option>
+                                </select>
                             </div>
 
-                            <div class="pt-4">
-                                <h6 class="subtitle">LANGUAGE</h6>
-                            </div>
-                            <div class="check-area">
-                                {% for row in language_filters %}
-                                    <div class="form-group">
-                                        <input type="checkbox" name="lang" id="lang_{{ row.name|lower }}" value="{{ row.name|lower }}" {% if row.name|lower in selected_languages %} checked {% endif %}>
-                                        <label for="lang_{{ row.name|lower }}">{{ row.name }}</label>
-                                    </div>
-                                {% endfor %}
-                            </div>
-
-                            <div class="pt-4">
-                                <h6 class="subtitle">EVENT TAGS</h6>
-                            </div>
-                            <div class="check-area">
-                                {% for row in eventtags_filters %}
-                                    <div class="form-group">
-                                        <input type="checkbox" name="tags" id="tag_{{ row.slug }}" value="{{ row.slug }}" {% if row.slug in selected_tags %} checked {% endif %}>
-                                        <label for="tag_{{ row.slug }}">{{ row.name }}</label>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                </form>
-
-            </div>
-            <div class="col-lg-9 mb-50 mb-lg-0">
-                <div class="filter-tab">
-                    {% comment %}
-                    <div>
-                        {% if request.GET.type == 'upcoming' %}{% url 'EventPage' %}{% else %}{% url 'EventPage' %}?type=upcoming{% endif %}
-                        <a href="#0" id="Upcoming-events">
-                            {% if request.GET.type == 'upcoming' %}
-                                Show Running Events
-                            {% else %}
-                                View Upcoming Events
-                            {% endif %}
-                            <i class="fas fa-solid fa-angle-right"></i>
-                        </a>
-                    </div>
-                    {% endcomment %}
-
-                    {% comment %}
-                        <div class="row mb-10 justify-content-center" id="event-container">
-                            {% include "events/partials/event_cards.html" %}
-                        </div>
-                    {% endcomment %}
-
-                    <div class="row g-4" id="container-events">
-                        {% for event in events_data %}
-                            <div class="col-6 col-lg-4">
-                                <div class="event-grid" data-artist-id="{{ event.id }}">
-                                    <div class="movie-thumb c-thumb">
-                                        <!-- <a href="{{ event.url }}" target="_blank"> -->
-                                        <a href="{% url 'TicketMasterEventDetailsPage' event.id %}" target="_blank">
-                                            <img src="{{ event.image }}" class="w-full h-48 object-cover" alt="event">
-                                        </a>
-
-                                        <!-- <div class="event-date">
-                                            <h6 class="date-title"> {{ event.date|date:"d" }} </h6>
-                                            <span>{{ event.date|date:"M" }}</span>
-                                        </div> -->
-                                    </div>
-
-                                    <div class="movie-content"> <!-- bg-one -->
-                                        <h5 class="title m-0">
-                                            <a href="{{ event.url }}" target="_blank"> {{ event.name|truncatechars:26 }} </a>
-                                        </h5>
-
-                                        <div class="event-basic-details">
-                                            <span>{{ event.category|default:"Event" }}</span>
-                                            <span>
-                                                <i class="fas fa-map-marker-alt"></i>
-                                                {{ event.venue|default:"Venue TBA" }},
-                                                {{ event.city|default:"" }}
-                                            </span>
-                                        </div>
-                                    </div>
+                            <div class="filter-group">
+                                <span class="filter-section-title">Categories</span>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <div class="filter-pill active">Music</div>
+                                    <div class="filter-pill">Sports</div>
+                                    <div class="filter-pill">Arts</div>
+                                    <div class="filter-pill">Family</div>
                                 </div>
                             </div>
-                        {% endfor %}
+
+                            <div class="filter-group">
+                                <span class="filter-section-title">Event Features</span>
+                                
+                                <input type="checkbox" id="tagResale" name="resale" class="meta-tag-checkbox">
+                                <label for="tagResale" class="meta-tag-label">
+                                    <span>Verified Resale</span>
+                                </label>
+
+                                <input type="checkbox" id="tagMobile" name="mobile" class="meta-tag-checkbox">
+                                <label for="tagMobile" class="meta-tag-label">
+                                    <span>Mobile Entry</span>
+                                </label>
+
+                                <input type="checkbox" id="tagVip" name="vip" class="meta-tag-checkbox">
+                                <label for="tagVip" class="meta-tag-label">
+                                    <span>VIP Packages</span>
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn-book-sm w-100 border-0 mt-2">Apply Filters</button>
+                        </form>
                     </div>
+                </div>
+            </aside>
+
+            <div class="col-lg-9 col-xl-10">
+                <h4 class="text-white fw-bold mb-4">Live <span style="color: var(--theme-vibrant)">Events</span></h4>
+                <div class="row g-4" id="container-events">
+                    {% for event in events_data %}
+                    <div class="col-xxl-3 col-xl-3 col-md-6 p-1">
+                        <div class="event-card-compact" data-artist-id="{{ event.id }}">
+                            <div class="img-container">
+                                <a href="{% url 'TicketMasterEventDetailsPage' event.id %}">
+                                    <img src="{{ event.image }}" alt="{{ event.name }}">
+                                </a>
+                            </div>
+                            <div class="p-3">
+                                <h6 class="text-white text-truncate mb-1">{{ event.name }}</h6>
+                                <span class="small text-white-50"><i class="bi bi-geo-alt"></i> {{ event.city }}</span>
+                                <a href="{% url 'TicketMasterEventDetailsPage' event.id %}" class="btn-book-sm w-100 mt-3">Book Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div id="loading-spinner" class="text-center py-5" style="display: none;">
+                    <div class="spinner-border" style="color: var(--theme-vibrant)" role="status"></div>
                 </div>
             </div>
         </div>
@@ -240,104 +326,77 @@
 </section>
 {% endblock bodyContent %}
 
-
 {% block extraJs %}
 <script>
-let nextUrl = "api/events/?page=2";
-let loading = false;
-
-//  track artist IDs (NOT names)
-const seenArtists = new Set();
-
-//  capture initial page (server rendered)
 document.addEventListener("DOMContentLoaded", function () {
+    const seenArtists = new Set();
+    let loading = false;
+    const container = document.getElementById("container-events");
+    const currentParams = new URLSearchParams(window.location.search);
+    let nextUrl = `api/events/?page=2&${currentParams.toString()}`;
 
-    document.querySelectorAll("#container-events .event-grid").forEach(card => {
-        const artistId = card.getAttribute("data-artist-id");
-        if (artistId) seenArtists.add(artistId);
+    // Mark initial events
+    document.querySelectorAll(".event-card-compact").forEach(card => {
+        seenArtists.add(String(card.getAttribute("data-artist-id")));
     });
 
-    const slider = window.jQuery(".banner-slider");
-    if (slider.length) {
-        slider.owlCarousel({
-            items: 1,
-            loop: true,
-            autoplay: true,
-            autoplayTimeout: 5000,
-            animateOut: 'fadeOut',
-            animateIn: 'fadeIn',
-            nav: false,
-            dots: true,
-            smartSpeed: 1000
+    // Owl Carousel Initializer
+    if (window.jQuery && window.jQuery.fn.owlCarousel) {
+        window.jQuery(".hero-slider-container").owlCarousel({
+            items: 1, loop: true, autoplay: true, 
+            autoplayTimeout: 6000, smartSpeed: 1000,
+            animateOut: 'fadeOut', dots: false, nav: false
         });
     }
-});
 
-//  infinite scroll
-window.addEventListener("scroll", function () {
+    // Pill Toggle UI Logic
+    document.querySelectorAll('.filter-pill').forEach(pill => {
+        pill.addEventListener('click', () => pill.classList.toggle('active'));
+    });
 
-    if (loading || !nextUrl) return;
-
-    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200) {
-
+    // Infinite Scroll Logic
+    const loadMore = () => {
+        if (loading || !nextUrl) return;
         loading = true;
+        document.getElementById('loading-spinner').style.display = 'block';
 
         fetch(nextUrl)
             .then(res => res.json())
             .then(data => {
-
-                nextUrl = data.next ? data.next : null;
-
-                const container = document.getElementById("container-events");
-
+                nextUrl = data.next || null;
                 data.results.forEach(event => {
+                    if (seenArtists.has(String(event.id))) return;
+                    seenArtists.add(String(event.id));
 
-                    // 🔥 dedup by artist id
-                    if (seenArtists.has(event.id)) return;
-
-                    seenArtists.add(event.id);
-
-                    const eventDate = event.date ? new Date(event.date) : null;
-                    const day = eventDate ? eventDate.getDate() : '';
-                    const month = eventDate ? eventDate.toLocaleString('default', { month: 'short' }) : '';
-
-
-                    container.insertAdjacentHTML("beforeend", `
-                        <div class="col-6 col-lg-4">
-                            <div class="event-grid" data-artist-id="${event.id}">
-                                <div class="movie-thumb c-thumb">
-                                    <a href="/event_details/${event.id}/" target="_blank">
-                                        <img src="${event.image}" class="w-full h-48 object-cover">
-                                    </a>
+                    const cardHtml = `
+                        <div class="col-xxl-3 col-xl-3 col-md-6 p-1">
+                            <div class="event-card-compact" data-artist-id="${event.id}">
+                                <div class="img-container">
+                                    <a href="/event_details/${event.id}/"><img src="${event.image}"></a>
                                 </div>
-
-                                <div class="movie-content">
-                                    <h5 class="title m-0">
-                                        <a href="${event.url}" target="_blank">
-                                            ${event.name}
-                                        </a>
-                                    </h5>
-
-                                    <div class="event-basic-details">
-                                        <span>Event</span>
-                                        <span>
-                                            <i class="fas fa-map-marker-alt"></i>
-                                            ${event.city || ""}
-                                        </span>
-                                    </div>
+                                <div class="p-3">
+                                    <h6 class="text-white text-truncate mb-1">${event.name}</h6>
+                                    <span class="small text-white-50"><i class="bi bi-geo-alt"></i> ${event.city || ''}</span>
+                                    <a href="/event_details/${event.id}/" class="btn-book-sm w-100 mt-3">Book Now</a>
                                 </div>
                             </div>
-                        </div>
-                    `);
+                        </div>`;
+                    container.insertAdjacentHTML("beforeend", cardHtml);
                 });
-
                 loading = false;
+                document.getElementById('loading-spinner').style.display = 'none';
             })
-            .catch(err => {
-                console.error("Error loading events:", err);
+            .catch(() => {
                 loading = false;
+                document.getElementById('loading-spinner').style.display = 'none';
             });
-    }
+    };
+
+    window.addEventListener("scroll", () => {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 1000) {
+            loadMore();
+        }
+    });
 });
 </script>
 {% endblock extraJs %}
