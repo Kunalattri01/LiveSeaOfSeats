@@ -13,203 +13,199 @@
         --accent-gradient: linear-gradient(135deg, #31d7a9 0%, #22b38a 100%);
     }
 
-    /* --- Hero Carousel Section --- */
+    /* --- REDESIGNED CINEMATIC HERO --- */
     .hero-container-full {
         position: relative;
-        height: 60vh; 
-        background: var(--theme-navy);
+        height: 65vh;
+        background-color: var(--theme-navy);
+        width: 100%;
         overflow: hidden;
-        width: 100%;
     }
 
-    .hero-slider-container { height: 100%; }
-
-    .hero-item { 
-        position: relative; 
-        height: 60vh; 
-        overflow: hidden; 
+    .hero-slider-container, .hero-slider-container .owl-stage-outer, .hero-slider-container .owl-stage, .hero-slider-container .owl-item {
+        height: 100% !important;
     }
 
-    .hero-item img {
-        width: 100%;
+    .hero-item {
+        position: relative;
         height: 100%;
-        object-fit: cover;
-        transition: transform 8s linear;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        padding: 0 8%;
     }
 
-    .owl-item.active .hero-item img { transform: scale(1.1); }
-
-    /* Left-weighted vignette for text readability */
-    .hero-item::after {
-        content: '';
+    .hero-visual-layer {
         position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: linear-gradient(to right, rgba(10,30,94,0.95) 0%, rgba(10,30,94,0.4) 50%, transparent 100%);
+        top: 0;
+        right: 0;
+        width: 65%;
+        height: 100%;
         z-index: 1;
+        background-size: cover;
+        background-position: center;
+        clip-path: polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%);
     }
 
-    /* Event Content Overlay */
-    .carousel-event-info {
+    .hero-overlay {
         position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        z-index: 10; display: flex; align-items: center; padding: 0 6%;
-        pointer-events: none;
+        inset: 0;
+        background: linear-gradient(to right, 
+            var(--theme-navy) 20%, 
+            rgba(10, 30, 94, 0.8) 45%, 
+            transparent 80%
+        );
+        z-index: 2;
     }
 
-    .event-details-box { max-width: 550px; pointer-events: auto; }
+    .hero-content-stack {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        max-width: 650px;
+    }
 
-    .trending-badge {
+    .hero-badge {
         color: var(--theme-vibrant);
         font-weight: 700;
-        font-size: 0.8rem;
+        letter-spacing: 3px;
+        font-size: 0.85rem;
+        margin-bottom: 12px;
+        background: rgba(49, 215, 169, 0.1);
+        padding: 4px 12px;
+        border-radius: 4px;
+    }
+
+    .hero-title {
+        color: #fff;
+        font-size: clamp(2.5rem, 5vw, 4.5rem);
+        font-weight: 900;
+        line-height: 1;
+        margin-bottom: 12px;
+        text-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .hero-loc {
+        color: rgba(255,255,255,0.8);
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+    }
+
+    .hero-btn {
+        background: var(--accent-gradient);
+        color: var(--theme-navy) !important;
+        padding: 16px 40px;
+        border-radius: 12px;
+        font-weight: 800;
         text-transform: uppercase;
-        letter-spacing: 2px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .hero-btn:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 15px 30px rgba(49, 215, 169, 0.3);
+    }
+
+    /* --- ORIGINAL COMPONENT CSS --- */
+    .hero-slider-container .owl-nav {
+        position: absolute; top: 50%; width: 100%; display: flex;
+        justify-content: space-between; transform: translateY(-50%); z-index: 20; pointer-events: none;
+    }
+
+    .filter-sidebar {
+        background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border);
+        border-radius: 20px; padding: 24px; backdrop-filter: blur(15px);
+    }
+    .filter-section-title {
+        color: var(--theme-vibrant); font-weight: 800; font-size: 0.7rem;
+        text-transform: uppercase; border-bottom: 1px solid rgba(49, 215, 169, 0.1); padding-bottom: 5px; margin-bottom: 15px; display: block;
+    }
+    .filter-pill {
+        display: inline-block; padding: 6px 14px; border-radius: 30px; background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--glass-border); color: #ccc; font-size: 0.75rem; cursor: pointer; transition: 0.3s;
+    }
+    .filter-pill.active { background: var(--theme-vibrant); color: var(--theme-navy); border-color: var(--theme-vibrant); }
+
+    /* REDESIGNED FEATURE CHECKBOXES */
+    .feature-checkbox-wrapper {
+        position: relative;
         display: block;
         margin-bottom: 10px;
-    }
-
-    /* --- Responsive Filter Sidebar --- */
-    .filter-sidebar {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid var(--glass-border);
-        border-radius: 20px;
-        padding: 24px;
-        backdrop-filter: blur(15px);
-    }
-
-    @media (min-width: 992px) {
-        .filter-sidebar {
-            position: sticky;
-            top: 100px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-    }
-
-    .filter-section-title {
-        color: var(--theme-vibrant);
-        font-weight: 800;
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 1.2px;
-        margin-bottom: 15px;
-        display: block;
-        border-bottom: 1px solid rgba(49, 215, 169, 0.1);
-        padding-bottom: 5px;
-    }
-
-    .filter-group { margin-bottom: 25px; }
-
-    .filter-input {
-        width: 100%;
-        background: rgba(255,255,255,0.07);
-        border: 1px solid var(--glass-border);
-        border-radius: 10px;
-        padding: 10px 12px;
-        color: white;
-        font-size: 0.85rem;
-        outline: none;
-    }
-
-    .filter-pill {
-        display: inline-block;
-        padding: 6px 14px;
-        border-radius: 30px;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid var(--glass-border);
-        color: #ccc;
-        font-size: 0.75rem;
         cursor: pointer;
-        transition: 0.3s;
     }
 
-    .filter-pill:hover, .filter-pill.active {
-        background: var(--theme-vibrant);
-        color: var(--theme-navy);
-        border-color: var(--theme-vibrant);
-        font-weight: 700;
+    .feature-checkbox-wrapper input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
     }
 
-    /* --- Modern Meta Tag Toggle Chips --- */
-    .meta-tag-checkbox { display: none; }
-    .meta-tag-label {
+    .feature-custom-label {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 10px 14px;
-        background: rgba(255,255,255,0.04);
+        padding: 10px 15px;
+        background: rgba(255, 255, 255, 0.03);
         border: 1px solid var(--glass-border);
         border-radius: 12px;
-        color: #bbb;
-        font-size: 0.8rem;
-        cursor: pointer;
-        transition: 0.3s ease;
-        margin-bottom: 8px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.85rem;
+        transition: 0.3s all ease;
     }
-    .meta-tag-label:hover { background: rgba(255,255,255,0.08); }
-    
-    .meta-tag-checkbox:checked + .meta-tag-label {
+
+    .feature-checkbox-wrapper:hover .feature-custom-label {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(49, 215, 169, 0.3);
+    }
+
+    .feature-checkbox-wrapper input:checked ~ .feature-custom-label {
         background: rgba(49, 215, 169, 0.1);
         border-color: var(--theme-vibrant);
-        color: var(--theme-vibrant);
-    }
-    .meta-tag-checkbox:checked + .meta-tag-label::after {
-        content: '✓';
-        font-weight: 900;
+        color: #fff;
     }
 
-    /* --- Event Cards --- */
-    .event-card-compact {
-        background: var(--glass-bg);
-        border: 1px solid var(--glass-border);
-        border-radius: 18px;
-        overflow: hidden;
-        transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-        height: 100%;
+    .feature-checkbox-wrapper .check-icon {
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--glass-border);
+        border-radius: 4px;
         display: flex;
-        flex-direction: column;
-    }
-    .event-card-compact:hover {
-        border-color: var(--theme-vibrant);
-        transform: translateY(-8px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    }
-    .img-container { width: 100%; aspect-ratio: 16 / 10; overflow: hidden; background: #11255d; }
-    .img-container img { width: 100%; height: 100%; object-fit: cover; }
-    
-    .btn-book-sm {
-        background: var(--accent-gradient);
-        color: var(--theme-navy) !important;
-        font-size: 0.75rem;
-        font-weight: 800;
-        padding: 12px 0;
-        border-radius: 10px;
-        text-align: center;
-        text-transform: uppercase;
-        text-decoration: none;
-        display: block;
-        border: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
         transition: 0.3s;
     }
-    .btn-book-sm:hover { filter: brightness(1.1); transform: scale(1.02); }
 
-    /* Mobile Filter Trigger */
-    .filter-mobile-btn {
-        display: none;
-        width: 100%;
-        background: var(--glass-bg);
-        border: 1px solid var(--glass-border);
-        color: white;
-        padding: 12px;
-        border-radius: 12px;
-        margin-bottom: 20px;
-        font-weight: 600;
+    .feature-checkbox-wrapper input:checked ~ .feature-custom-label .check-icon {
+        background: var(--theme-vibrant);
+        border-color: var(--theme-vibrant);
+        color: var(--theme-navy);
     }
 
+    .event-card-compact {
+        background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 18px;
+        overflow: hidden; transition: 0.4s; height: 100%; display: flex; flex-direction: column;
+    }
+    .img-container { width: 100%; aspect-ratio: 16 / 10; overflow: hidden; }
+    .img-container img { width: 100%; height: 100%; object-fit: cover; }
+
     @media (max-width: 991px) {
-        .filter-mobile-btn { display: flex; justify-content: space-between; align-items: center; }
-        .hero-container-full, .hero-item { height: 45vh; }
-        .event-details-box h2 { font-size: 2.2rem !important; }
+        .hero-container-full, .hero-item { height: 50vh; }
+        .hero-visual-layer { width: 100%; opacity: 0.3; clip-path: none; }
+        .hero-content-stack { align-items: center; text-align: center; width: 100%; }
+        .filter-mobile-btn {
+            width: 100%; background: var(--theme-navy); color: white; border: 1px solid var(--glass-border);
+            padding: 12px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between;
+        }
     }
 </style>
 
@@ -217,18 +213,18 @@
     <div class="hero-slider-container owl-carousel owl-theme h-100">
         {% for event in hero_events|slice:":3" %}
             <div class="hero-item">
-                <img src="{{ event.image }}" alt="{{ event.name }}">
-                <div class="carousel-event-info">
-                    <div class="event-details-box">
-                        <span class="trending-badge">Trending Now</span>
-                        <h2 class="text-white fw-black" style="font-size: 3.5rem; line-height: 1.1; margin-bottom: 15px; font-weight: 900;">
-                            {{ event.name|upper }}
-                        </h2>
-                        <p class="text-white opacity-75 mb-4" style="font-size: 1.1rem;">
-                            <i class="bi bi-geo-alt-fill"></i> {{ event.city }} &nbsp;•&nbsp; {{ event.category }}
-                        </p>
-                        <a href="{% url 'TicketMasterEventDetailsPage' event.id %}" class="btn-book-sm" style="width: 240px;">Book Tickets Now</a>
+                <div class="hero-visual-layer" style="background-image: url('{{ event.image }}');"></div>
+                <div class="hero-overlay"></div>
+
+                <div class="hero-content-stack">
+                    <span class="hero-badge">TRENDING NOW</span>
+                    <h1 class="hero-title">{{ event.name|upper }}</h1>
+                    <div class="hero-loc">
+                        <i class="bi bi-geo-alt-fill"></i> {{ event.city }}
                     </div>
+                    <a href="{% url 'TicketMasterEventDetailsPage' event.id %}" class="hero-btn">
+                        Book Tickets Now <i class="bi bi-arrow-right"></i>
+                    </a>
                 </div>
             </div>
         {% endfor %}
@@ -252,16 +248,16 @@
                         <h5 class="text-white fw-bold mb-4 d-none d-lg-block">Filters</h5>
                         
                         <form id="filter-form">
-                            <div class="filter-group">
+                            <div class="filter-group mb-4">
                                 <span class="filter-section-title">Language</span>
-                                <select name="language" class="filter-input">
-                                    <option value="en">English</option>
-                                    <option value="es">Spanish</option>
-                                    <option value="fr">French</option>
+                                <select name="language" class="filter-input w-100 bg-transparent text-white border-secondary p-2 rounded" style="outline: none;">
+                                    <option value="en" class="bg-dark">English</option>
+                                    <option value="es" class="bg-dark">Spanish</option>
+                                    <option value="fr" class="bg-dark">French</option>
                                 </select>
                             </div>
 
-                            <div class="filter-group">
+                            <div class="filter-group mb-4">
                                 <span class="filter-section-title">Categories</span>
                                 <div class="d-flex flex-wrap gap-2">
                                     <div class="filter-pill active">Music</div>
@@ -271,26 +267,27 @@
                                 </div>
                             </div>
 
-                            <div class="filter-group">
+                            <div class="filter-group mb-4">
                                 <span class="filter-section-title">Event Features</span>
                                 
-                                <input type="checkbox" id="tagResale" name="resale" class="meta-tag-checkbox">
-                                <label for="tagResale" class="meta-tag-label">
-                                    <span>Verified Resale</span>
+                                <label class="feature-checkbox-wrapper">
+                                    <input type="checkbox" id="tagResale" name="resale">
+                                    <div class="feature-custom-label">
+                                        <span><i class="bi bi-patch-check-fill me-2 text-info"></i> Verified Resale</span>
+                                        <div class="check-icon"><i class="bi bi-check-lg"></i></div>
+                                    </div>
                                 </label>
 
-                                <input type="checkbox" id="tagMobile" name="mobile" class="meta-tag-checkbox">
-                                <label for="tagMobile" class="meta-tag-label">
-                                    <span>Mobile Entry</span>
-                                </label>
-
-                                <input type="checkbox" id="tagVip" name="vip" class="meta-tag-checkbox">
-                                <label for="tagVip" class="meta-tag-label">
-                                    <span>VIP Packages</span>
+                                <label class="feature-checkbox-wrapper">
+                                    <input type="checkbox" id="tagMobile" name="mobile">
+                                    <div class="feature-custom-label">
+                                        <span><i class="bi bi-phone-fill me-2 text-warning"></i> Mobile Entry</span>
+                                        <div class="check-icon"><i class="bi bi-check-lg"></i></div>
+                                    </div>
                                 </label>
                             </div>
 
-                            <button type="submit" class="btn-book-sm w-100 border-0 mt-2">Apply Filters</button>
+                            <button type="submit" class="btn-book-sm w-100 border-0 mt-2 py-3" style="background: var(--theme-vibrant); color: var(--theme-navy); font-weight: 800; border-radius: 12px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Apply Filters</button>
                         </form>
                     </div>
                 </div>
@@ -310,7 +307,7 @@
                             <div class="p-3">
                                 <h6 class="text-white text-truncate mb-1">{{ event.name }}</h6>
                                 <span class="small text-white-50"><i class="bi bi-geo-alt"></i> {{ event.city }}</span>
-                                <a href="{% url 'TicketMasterEventDetailsPage' event.id %}" class="btn-book-sm w-100 mt-3">Book Now</a>
+                                <a href="{% url 'TicketMasterEventDetailsPage' event.id %}" class="btn-book-sm w-100 mt-3 d-block text-center text-decoration-none py-2" style="background: var(--theme-vibrant); color: var(--theme-navy); font-weight: 700; border-radius: 8px;">Book Now</a>
                             </div>
                         </div>
                     </div>
@@ -328,75 +325,80 @@
 
 {% block extraJs %}
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const seenArtists = new Set();
-    let loading = false;
-    const container = document.getElementById("container-events");
-    const currentParams = new URLSearchParams(window.location.search);
-    let nextUrl = `api/events/?page=2&${currentParams.toString()}`;
+    document.addEventListener("DOMContentLoaded", function () {
+        const seenArtists = new Set();
+        let loading = false;
+        const container = document.getElementById("container-events");
+        const currentParams = new URLSearchParams(window.location.search);
+        let nextUrl = `api/events/?page=2&${currentParams.toString()}`;
 
-    // Mark initial events
-    document.querySelectorAll(".event-card-compact").forEach(card => {
-        seenArtists.add(String(card.getAttribute("data-artist-id")));
-    });
-
-    // Owl Carousel Initializer
-    if (window.jQuery && window.jQuery.fn.owlCarousel) {
-        window.jQuery(".hero-slider-container").owlCarousel({
-            items: 1, loop: true, autoplay: true, 
-            autoplayTimeout: 6000, smartSpeed: 1000,
-            animateOut: 'fadeOut', dots: false, nav: false
+        // Mark initial items
+        document.querySelectorAll(".event-card-compact").forEach(card => {
+            seenArtists.add(String(card.getAttribute("data-artist-id")));
         });
-    }
 
-    // Pill Toggle UI Logic
-    document.querySelectorAll('.filter-pill').forEach(pill => {
-        pill.addEventListener('click', () => pill.classList.toggle('active'));
-    });
-
-    // Infinite Scroll Logic
-    const loadMore = () => {
-        if (loading || !nextUrl) return;
-        loading = true;
-        document.getElementById('loading-spinner').style.display = 'block';
-
-        fetch(nextUrl)
-            .then(res => res.json())
-            .then(data => {
-                nextUrl = data.next || null;
-                data.results.forEach(event => {
-                    if (seenArtists.has(String(event.id))) return;
-                    seenArtists.add(String(event.id));
-
-                    const cardHtml = `
-                        <div class="col-xxl-3 col-xl-3 col-md-6 p-1">
-                            <div class="event-card-compact" data-artist-id="${event.id}">
-                                <div class="img-container">
-                                    <a href="/event_details/${event.id}/"><img src="${event.image}"></a>
-                                </div>
-                                <div class="p-3">
-                                    <h6 class="text-white text-truncate mb-1">${event.name}</h6>
-                                    <span class="small text-white-50"><i class="bi bi-geo-alt"></i> ${event.city || ''}</span>
-                                    <a href="/event_details/${event.id}/" class="btn-book-sm w-100 mt-3">Book Now</a>
-                                </div>
-                            </div>
-                        </div>`;
-                    container.insertAdjacentHTML("beforeend", cardHtml);
-                });
-                loading = false;
-                document.getElementById('loading-spinner').style.display = 'none';
-            })
-            .catch(() => {
-                loading = false;
-                document.getElementById('loading-spinner').style.display = 'none';
+        // Initialize Carousel
+        if (window.jQuery && window.jQuery.fn.owlCarousel) {
+            window.jQuery(".hero-slider-container").owlCarousel({
+                items: 1, 
+                loop: true, 
+                autoplay: true, 
+                autoplayTimeout: 6000, 
+                smartSpeed: 1000,
+                animateOut: 'fadeOut', 
+                dots: false,
+                nav: false
             });
-    };
-
-    window.addEventListener("scroll", () => {
-        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 1000) {
-            loadMore();
         }
+
+        // Category Pill Logic
+        document.querySelectorAll('.filter-pill').forEach(pill => {
+            pill.addEventListener('click', () => pill.classList.toggle('active'));
+        });
+
+        // Infinite Scroll
+        const loadMore = () => {
+            if (loading || !nextUrl) return;
+            loading = true;
+            document.getElementById('loading-spinner').style.display = 'block';
+
+            fetch(nextUrl)
+                .then(res => res.json())
+                .then(data => {
+                    nextUrl = data.next || null;
+                    data.results.forEach(event => {
+                        if (seenArtists.has(String(event.id))) return;
+                        seenArtists.add(String(event.id));
+
+                        const cardHtml = `
+                            <div class="col-xxl-3 col-xl-3 col-md-6 p-1">
+                                <div class="event-card-compact" data-artist-id="${event.id}">
+                                    <div class="img-container">
+                                        <a href="/event_details/${event.id}/"><img src="${event.image}"></a>
+                                    </div>
+                                    <div class="p-3">
+                                        <h6 class="text-white text-truncate mb-1">${event.name}</h6>
+                                        <span class="small text-white-50"><i class="bi bi-geo-alt"></i> ${event.city || ''}</span>
+                                        <a href="/event_details/${event.id}/" class="btn-book-sm w-100 mt-3 d-block text-center text-decoration-none py-2" style="background: var(--theme-vibrant); color: var(--theme-navy); font-weight: 700; border-radius: 8px;">Book Now</a>
+                                    </div>
+                                </div>
+                            </div>`;
+                        container.insertAdjacentHTML("beforeend", cardHtml);
+                    });
+                    loading = false;
+                    document.getElementById('loading-spinner').style.display = 'none';
+                })
+                .catch(() => {
+                    loading = false;
+                    document.getElementById('loading-spinner').style.display = 'none';
+                });
+        };
+
+        window.addEventListener("scroll", () => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 1000) {
+                loadMore();
+            }
+        });
     });
-});
 </script>
 {% endblock extraJs %}

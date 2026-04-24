@@ -2,6 +2,7 @@ from django.views import View
 from django.shortcuts import render
 import requests
 from django.conf import settings
+from django.http import JsonResponse
 from datetime import datetime
 
 
@@ -14,7 +15,7 @@ class TicketMasterEventsView(View):
         return images[0].get("url") if images else None
 
 
-    # ✅ SAME FORMAT as events_data
+    # SAME FORMAT as events_data
     def build_event(self, row):
         start = row.get("dates", {}).get("start", {})
 
@@ -49,7 +50,7 @@ class TicketMasterEventsView(View):
         }
 
 
-    # ✅ Fetch 1 event per keyword (hero)
+    # Fetch 1 event per keyword (hero)
     def fetch_hero_event(self, keyword):
         url = "https://app.ticketmaster.com/discovery/v2/events.json"
 
@@ -88,20 +89,21 @@ class TicketMasterEventsView(View):
         except Exception:
             data = {}
 
+        # return JsonResponse(data)
         raw_events = data.get('_embedded', {}).get('events', [])
 
-        # 🔥 STEP 1: HERO EVENTS (WWE → BTS → Shakira)
+        # STEP 1: HERO EVENTS (WWE → BTS → Shakira)
         hero_events = []
         hero_ids = set()
 
-        for keyword in ["wwe", "bts", "shakira"]:
+        for keyword in ["wwe", "bts", "shakira", "p!nk"]:
             event = self.fetch_hero_event(keyword)
             if event:
                 hero_events.append(event)
                 hero_ids.add(event["id"])
 
 
-        # 🔥 STEP 2: MAIN EVENTS (REMOVE HERO DUPLICATES)
+        # STEP 2: MAIN EVENTS (REMOVE HERO DUPLICATES)
         events_data = []
         unique_result = set()
 
@@ -111,7 +113,7 @@ class TicketMasterEventsView(View):
             if event["id"] in unique_result:
                 continue
 
-            if event["id"] in hero_ids:   # ✅ avoid duplicates
+            if event["id"] in hero_ids:
                 continue
 
             unique_result.add(event["id"])
@@ -120,14 +122,14 @@ class TicketMasterEventsView(View):
 
         return render(request, 'ticketmaster/tm_events.html', {
             'events_data': events_data,
-            'hero_events': hero_events,   # 🔥 use in carousel
+            'hero_events': hero_events,
             'TitleSearch': True,
             'ask_user_mail': True,
         })
 
 
 
-
+#  --------------------------------------- [ Important before changing the crausel requirement ] ---------------------------------------
 
 # from django.views import View
 # from django.shortcuts import render
