@@ -4,6 +4,7 @@ import requests
 from django.conf import settings
 from django.http import JsonResponse
 from datetime import datetime
+from events.services.event_service import get_filter_language, get_filter_categories
 
 
 class TicketMasterEventsView(View):
@@ -119,15 +120,17 @@ class TicketMasterEventsView(View):
             unique_result.add(event["id"])
             events_data.append(event)
 
+        print(get_filter_categories())
+        print(get_filter_language())
 
         return render(request, 'ticketmaster/tm_events.html', {
             'events_data': events_data,
             'hero_events': hero_events,
+            'categories_filters' : get_filter_categories(), # categories filters
+            'language_filters' : get_filter_language(), # language filters
             'TitleSearch': True,
             'ask_user_mail': True,
         })
-
-
 
 #  --------------------------------------- [ Important before changing the crausel requirement ] ---------------------------------------
 
