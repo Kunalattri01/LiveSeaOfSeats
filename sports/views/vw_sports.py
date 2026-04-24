@@ -3,4 +3,9 @@ from django.shortcuts import render, redirect
 
 class SportsView(View):
     def get(self, request):
-        return render(request, 'sports/sports.html')
+
+        context = {
+            'TitleSearch' : True
+        }
+
+        return render(request, 'sports/sports.html', context)

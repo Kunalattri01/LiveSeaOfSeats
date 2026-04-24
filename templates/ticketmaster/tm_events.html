@@ -215,22 +215,22 @@
 
 <section class="hero-container-full">
     <div class="hero-slider-container owl-carousel owl-theme h-100">
-        {% for event in events_data|slice:":3" %}
-        <div class="hero-item">
-            <img src="{{ event.image }}" alt="{{ event.name }}">
-            <div class="carousel-event-info">
-                <div class="event-details-box">
-                    <span class="trending-badge">Trending Now</span>
-                    <h2 class="text-white fw-black" style="font-size: 3.5rem; line-height: 1.1; margin-bottom: 15px; font-weight: 900;">
-                        {{ event.name|upper }}
-                    </h2>
-                    <p class="text-white opacity-75 mb-4" style="font-size: 1.1rem;">
-                        <i class="bi bi-geo-alt-fill"></i> {{ event.city }} &nbsp;•&nbsp; {{ event.category }}
-                    </p>
-                    <a href="{% url 'TicketMasterEventDetailsPage' event.id %}" class="btn-book-sm" style="width: 240px;">Book Tickets Now</a>
+        {% for event in hero_events|slice:":3" %}
+            <div class="hero-item">
+                <img src="{{ event.image }}" alt="{{ event.name }}">
+                <div class="carousel-event-info">
+                    <div class="event-details-box">
+                        <span class="trending-badge">Trending Now</span>
+                        <h2 class="text-white fw-black" style="font-size: 3.5rem; line-height: 1.1; margin-bottom: 15px; font-weight: 900;">
+                            {{ event.name|upper }}
+                        </h2>
+                        <p class="text-white opacity-75 mb-4" style="font-size: 1.1rem;">
+                            <i class="bi bi-geo-alt-fill"></i> {{ event.city }} &nbsp;•&nbsp; {{ event.category }}
+                        </p>
+                        <a href="{% url 'TicketMasterEventDetailsPage' event.id %}" class="btn-book-sm" style="width: 240px;">Book Tickets Now</a>
+                    </div>
                 </div>
             </div>
-        </div>
         {% endfor %}
     </div>
 </section>
