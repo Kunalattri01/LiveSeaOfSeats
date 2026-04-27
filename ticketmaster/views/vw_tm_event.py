@@ -71,7 +71,8 @@ class TicketMasterEventsView(View):
             "apikey": settings.TICKETMASTER_API_KEY,
             "keyword": keyword,
             "size": 1,
-            'segmentName' : "Music"
+            # 'segmentName' : "Music",
+            "countryCode": "IN" 
         }
 
         try:
