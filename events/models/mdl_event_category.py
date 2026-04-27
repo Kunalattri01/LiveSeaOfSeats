@@ -1,6 +1,6 @@
 from django.db import models
 
-class Categories(models.Model):
+class Category(models.Model):
 
     id = models.AutoField(db_column='ID', primary_key=True)
     name = models.CharField(max_length=100, db_column='NAME')
@@ -14,4 +14,4 @@ class Categories(models.Model):
         return self.name
     
     class Meta:
-        db_table = 'CATEGORIES'
+        db_table = 'EVENT_CATEGORY'

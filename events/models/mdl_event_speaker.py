@@ -1,7 +1,7 @@
 from django.db import models
 from .mdl_event import Event
 
-class Speaker(models.Model):
+class EventSpeaker(models.Model):
 
     id = models.AutoField(db_column='ID', primary_key=True)
     seq_no = models.IntegerField(db_column='SEQ_NO')
@@ -29,4 +29,4 @@ class Speaker(models.Model):
     #     return self.name
 
     class Meta:
-        db_table = 'SPEAKER_MT'
+        db_table = 'EVENT_SPEAKER'

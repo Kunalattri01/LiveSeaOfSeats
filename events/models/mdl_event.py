@@ -1,7 +1,7 @@
 from django.db import models
 from venues.models import Venue
 from organizer.models import Organizer
-from .mdl_category import Categories
+from .mdl_event_category import Category
 from .mdl_language import Language
 from .mdl_event_tag import EventTag
 from .mdl_ticket_mode import *
@@ -19,13 +19,12 @@ class Event(models.Model):
     end_date = models.DateTimeField(db_column='END_DATE')
     venue = models.ForeignKey(Venue, on_delete=models.CASCADE, db_column='VENUE_ID') # just removed to show the multiple venue for a event (like year tour of a artist)
     organizer = models.ForeignKey(Organizer, on_delete=models.CASCADE, db_column="ORGANIZER_ID")
-    category = models.ForeignKey(Categories, on_delete=models.CASCADE, db_column='CATEGORIES_ID')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, db_column='CATEGORY_ID')
     languages = models.ManyToManyField(Language, blank=True)
     tags = models.ManyToManyField(EventTag, blank=True)
     youtube_url = models.URLField(blank=True, null=True, db_column='YOUTUBE_URL')
     terms_and_conditions = models.TextField(blank=True, db_column='TERMS')
     refund_policy = models.TextField(blank=True, db_column='REFUND_POLICY')
-    # m_ticket_instructions = models.TextField(blank=True, db_column='M_TICKET')
 
     status = models.CharField(
         max_length=20, db_column='STATUS',
@@ -38,6 +37,17 @@ class Event(models.Model):
     )
 
     ticket_modes = models.ManyToManyField(TicketMode, blank=True)
+    source_type = models.CharField(
+        max_length=20,
+        choices=[
+            ("internal", "Internal"),
+            ("external", "External")
+        ],
+        default="internal"
+    )
+
+    external_id = models.CharField(max_length=255, null=True, blank=True)
+    is_external = models.BooleanField(default=True)
 
     # delivery_mode = models.CharField(
     #     max_length=20,

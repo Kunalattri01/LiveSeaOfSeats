@@ -50,7 +50,7 @@ def get_filter_language(): # language filters
 
 
 def get_filter_categories(): # Categories filters
-    return Categories.objects.filter(is_active = True)
+    return Category.objects.filter(is_active = True)
 
 
 def get_filter_eventtags(): # EventTag filters

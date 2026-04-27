@@ -2,7 +2,7 @@ from django.db import models
 from .mdl_event import Event
 
 
-class Sponsor(models.Model):
+class EventSponsor(models.Model):
 
     id = models.AutoField(db_column='ID', primary_key=True)
     event = models.ForeignKey(Event, on_delete=models.CASCADE, db_column='EVENT_ID')
@@ -16,4 +16,4 @@ class Sponsor(models.Model):
         return self.name
 
     class Meta:
-        db_table = 'SPONSOR_MT'
+        db_table = 'EVENT_SPONSOR'

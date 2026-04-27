@@ -1,12 +1,12 @@
 from django.db import models
 from users.models import User
-from .mdl_show_time import ShowTime
+from events.models import ShowTime, Event
 
 class Booking(models.Model):
 
     id = models.AutoField(db_column='ID', primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_column='USER_ID')
-    event = models.ForeignKey('events.Event', on_delete=models.CASCADE, db_column='EVENT_ID')
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, db_column='EVENT_ID')
     showtime = models.ForeignKey(ShowTime, on_delete=models.CASCADE, db_column='SHOWTIME_ID')
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, db_column='TOTAL_AMOUNT')
     payment_id = models.CharField(max_length=100, null=True, blank=True, db_column='PAYMENT_ID')

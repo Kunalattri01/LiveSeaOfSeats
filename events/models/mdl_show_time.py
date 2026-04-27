@@ -1,15 +1,18 @@
 from django.db import models
 from venues.models import Hall
+from .mdl_event import Event
 
 class ShowTime(models.Model):
 
     id = models.AutoField(db_column='ID', primary_key=True)
-    event = models.ForeignKey('events.Event', on_delete=models.CASCADE, db_column='EVENT_ID')
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, db_column='EVENT_ID')
     hall = models.ForeignKey(Hall, on_delete=models.CASCADE, db_column='HALL_ID')
     show_date = models.DateField(db_column='SHOW_DATE', null=True, blank=True) 
     start_time = models.TimeField(db_column='START_TIME', null=True, blank=True)
     end_time = models.TimeField(db_column='END_TIME', null=True, blank=True)
     layout_image = models.ImageField(upload_to="venue_layouts/", blank=True, null=True, db_column='LAYOUT_IMAGE')
+    external_id = models.CharField(max_length=255, null=True, blank=True)
+    booking_url = models.URLField(null=True, blank=True)
     is_active = models.BooleanField(default=True, db_column='IS_ACTIVE')
     created_at = models.DateTimeField(auto_now_add=True, db_column='CREATED_AT')
 
@@ -18,3 +21,4 @@ class ShowTime(models.Model):
 
     class Meta:
         db_table = 'SHOWTIME_MT'
+        unique_together = ('external_id', 'event')

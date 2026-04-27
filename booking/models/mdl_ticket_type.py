@@ -1,10 +1,11 @@
 from django.db import models
+from events.models import ShowTime
 
 class TicketType(models.Model):
 
     id = models.AutoField(db_column='ID', primary_key=True)
     # event = models.ForeignKey(Event, on_delete=models.CASCADE, db_column='EVENT_ID', related_name='event_tickets')
-    show = models.ForeignKey('booking.ShowTime', on_delete=models.CASCADE, db_column='SHOWTIME_ID', related_name='event_tickets')
+    show = models.ForeignKey(ShowTime, on_delete=models.CASCADE, db_column='SHOWTIME_ID', related_name='event_tickets')
     name = models.CharField(max_length=100, db_column='NAME')
     price = models.DecimalField(max_digits=10, decimal_places=2, db_column='PRICE')
     sold = models.IntegerField(default=0, db_column='SOLD')

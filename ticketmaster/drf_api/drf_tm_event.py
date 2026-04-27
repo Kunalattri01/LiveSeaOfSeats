@@ -34,12 +34,15 @@ class TicketMasterAPIView(APIView):
 
         url = "https://app.ticketmaster.com/discovery/v2/events.json"
 
+        segment = request.GET.get("segment", "sports")
+
         params = {
             "apikey": settings.TICKETMASTER_API_KEY,
-            # "classificationName": "wwe",
             "page": page,
             "size": 20,  # increase size (important)
-            "sort": "name,asc"  # stabilize results
+            "sort": "name,asc",  # stabilize results
+            "segmentName": segment,
+            # "classificationName": "wwe",
         }
 
         try:

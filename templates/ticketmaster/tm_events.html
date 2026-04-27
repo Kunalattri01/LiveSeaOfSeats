@@ -42,8 +42,9 @@
         width: 65%;
         height: 100%;
         z-index: 1;
-        background-size: cover;
-        background-position: center;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: right;
         clip-path: polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%);
     }
 
@@ -256,11 +257,11 @@
 
                             <div class="filter-group mb-4">
                                 <span class="filter-section-title">Categories</span>
-                                <div class="d-flex flex-wrap gap-2">
-                                    <div class="filter-pill active">Music</div>
-                                    <div class="filter-pill">Sports</div>
-                                    <div class="filter-pill">Arts</div>
-                                    <div class="filter-pill">Family</div>
+                                <div class="d-flex flex-wrap gap-4">
+                                <div class="filter-pill" data-segment="Music">Music</div> <!-- active -->
+                                <div class="filter-pill" data-segment="Sports">Sports</div>
+                                <div class="filter-pill" data-segment="Arts & Theatre">Arts & Theatre</div>
+                                <div class="filter-pill" data-segment="Miscellaneous">Miscellaneous</div>
                                 </div>
                             </div>
 
@@ -298,7 +299,8 @@
                         <div class="event-card-compact" data-artist-id="{{ event.id }}">
                             <div class="img-container">
                                 <a href="{% url 'TicketMasterEventDetailsPage' event.id %}">
-                                    <img src="{{ event.image }}" alt="{{ event.name }}">
+                                    <!-- <img src="{{ event.image }}" alt="{{ event.name }}"> -->
+                                    <img src="{{ event.image|default:'/static/images/no-image.png' }}">
                                 </a>
                             </div>
                             <div class="p-3">
@@ -327,7 +329,10 @@
         let loading = false;
         const container = document.getElementById("container-events");
         const currentParams = new URLSearchParams(window.location.search);
-        let nextUrl = `api/events/?page=2&${currentParams.toString()}`;
+
+        // let nextUrl = `api/events/?page=2&${currentParams.toString()}`;
+        let selectedSegment = "Music"
+        let nextUrl = `/api/events/?page=1&segment=${selectedSegment}`
 
         // Mark initial items
         document.querySelectorAll(".event-card-compact").forEach(card => {
@@ -397,5 +402,28 @@
             }
         });
     });
+
+
+    let selectedSegment = "sports"; // default
+
+    document.querySelectorAll(".filter-pill").forEach(pill => {
+        pill.addEventListener("click", function () {
+
+            document.querySelectorAll(".filter-pill").forEach(p => p.classList.remove("active"))
+            this.classList.add("active")
+
+            selectedSegment = this.dataset.segment
+
+            // reset container
+            document.getElementById("container-events").innerHTML = ""
+            seenArtists.clear()
+
+            // reset pagination
+            nextUrl = `/api/events/?page=1&segment=${encodeURIComponent(selectedSegment)}`
+
+            loadMore()
+        })
+    })
+
 </script>
 {% endblock extraJs %}

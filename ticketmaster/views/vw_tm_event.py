@@ -9,11 +9,23 @@ from events.services.event_service import get_filter_language, get_filter_catego
 
 class TicketMasterEventsView(View):
 
+    # def get_best_image(self, images):
+    #     for img in images:
+    #         if img.get("ratio") == "3_2" and img.get("width", 0) >= 600:
+    #             return img.get("url")
+    #     return images[0].get("url") if images else None
+
     def get_best_image(self, images):
         for img in images:
-            if img.get("ratio") == "3_2" and img.get("width", 0) >= 600:
+            if (
+                img.get("ratio") == "3_2"
+                and img.get("width", 0) >= 600
+                and "DEFAULT" not in img.get("url", "").upper()
+            ):
                 return img.get("url")
-        return images[0].get("url") if images else None
+
+        # ❌ Instead of returning random fallback
+        return None
 
 
     # SAME FORMAT as events_data
@@ -59,6 +71,7 @@ class TicketMasterEventsView(View):
             "apikey": settings.TICKETMASTER_API_KEY,
             "keyword": keyword,
             "size": 1,
+            'segmentName' : "Music"
         }
 
         try:
@@ -78,10 +91,13 @@ class TicketMasterEventsView(View):
 
         url = "https://app.ticketmaster.com/discovery/v2/events.json"
 
+        segment = request.GET.get("segment", "sports")
+
         params = {
             "apikey": settings.TICKETMASTER_API_KEY,
             "page": 0,
-            "size": 20,
+            "size": 1,
+            "segmentName": segment,
         }
 
         try:
@@ -90,7 +106,7 @@ class TicketMasterEventsView(View):
         except Exception:
             data = {}
 
-        # return JsonResponse(data)
+        return JsonResponse(data)
         raw_events = data.get('_embedded', {}).get('events', [])
 
         # STEP 1: HERO EVENTS (WWE → BTS → Shakira)
@@ -120,9 +136,6 @@ class TicketMasterEventsView(View):
             unique_result.add(event["id"])
             events_data.append(event)
 
-        print(get_filter_categories())
-        print(get_filter_language())
-
         return render(request, 'ticketmaster/tm_events.html', {
             'events_data': events_data,
             'hero_events': hero_events,
@@ -131,7 +144,7 @@ class TicketMasterEventsView(View):
             'TitleSearch': True,
             'ask_user_mail': True,
         })
-
+    
 #  --------------------------------------- [ Important before changing the crausel requirement ] ---------------------------------------
 
 # from django.views import View

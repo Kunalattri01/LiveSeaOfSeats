@@ -51,14 +51,14 @@ def process_ticket_email_worker(request, booking):
 
         pdf_path = generate_ticket_pdf(request, booking_data, booking.id)
 
-        # ✅ EMAIL
+        # EMAIL
         send_ticket_email(
             'kunalnana77@gmail.com',  # replace later with booking.user.email
             booking_data,
             pdf_path
         )
 
-        # ✅ WHATSAPP (ADD THIS PART)
+        # WHATSAPP (ADD THIS PART)
 
         # generate ticket URL
         ticket_url = request.build_absolute_uri(

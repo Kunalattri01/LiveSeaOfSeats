@@ -14,3 +14,4 @@ class City(models.Model):
     
     class Meta:
         db_table = 'CITY_MT'
+        unique_together = ('name', 'state', 'country')

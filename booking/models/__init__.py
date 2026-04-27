@@ -1,4 +1,3 @@
-from .mdl_show_time import *
 from .mdl_booking import *
 from .mdl_ticket import *
 from .mdl_booking_item import *
