@@ -41,8 +41,8 @@ class TicketMasterAPIView(APIView):
             "page": page,
             "size": 20,  # increase size (important)
             "sort": "name,asc",  # stabilize results
-            "segmentName": segment,
-            "countryCode": "IN"
+            # "segmentName": segment,
+            # "countryCode": "IN",
             # "classificationName": "wwe",
         }
 

@@ -70,9 +70,9 @@ class TicketMasterEventsView(View):
         params = {
             "apikey": settings.TICKETMASTER_API_KEY,
             "keyword": keyword,
-            "size": 1,
+            "size": 20,
+            # "countryCode": "IN",
             # 'segmentName' : "Music",
-            "countryCode": "IN" 
         }
 
         try:
@@ -97,8 +97,9 @@ class TicketMasterEventsView(View):
         params = {
             "apikey": settings.TICKETMASTER_API_KEY,
             "page": 0,
-            "size": 1,
-            "segmentName": segment,
+            "size": 20,
+            # "segmentName": segment,
+            # "countryCode": "IN",
         }
 
         try:
