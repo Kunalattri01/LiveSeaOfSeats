@@ -116,7 +116,7 @@ def get_selected_faqs(event_id): # FAQs in a selected event
 
 
 def get_sponsors(event_id): # Sponsors details in a selected event
-    return Sponsor.objects.select_related('event').filter(event = event_id, is_active = True)
+    return EventSponsor.objects.select_related('event').filter(event = event_id, is_active = True)
 
 
 
@@ -126,11 +126,11 @@ def get_sponsors(event_id): # Sponsors details in a selected event
 # -------------------------- [ vw_event_details & vw_event_speaker ] ---------------------------
 
 def get_speaker_details(event_id): # details of the speakers in an event
-    return Speaker.objects.select_related('event').filter(event=event_id, is_active = True)
+    return EventSpeaker.objects.select_related('event').filter(event=event_id, is_active = True)
 
 
 def selected_speaker_details(speaker_id):
-    return Speaker.objects.filter(id = speaker_id).first()
+    return EventSpeaker.objects.filter(id = speaker_id).first()
 
 
 

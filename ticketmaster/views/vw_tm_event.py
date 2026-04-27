@@ -106,7 +106,7 @@ class TicketMasterEventsView(View):
         except Exception:
             data = {}
 
-        return JsonResponse(data)
+        # return JsonResponse(data)
         raw_events = data.get('_embedded', {}).get('events', [])
 
         # STEP 1: HERO EVENTS (WWE → BTS → Shakira)

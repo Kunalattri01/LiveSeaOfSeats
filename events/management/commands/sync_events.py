@@ -3,17 +3,16 @@ from ticketmaster.services.api import fetch_events
 from events.services.venue_service import get_or_create_venue
 from events.services.organizer_service import get_or_create_organizer
 from events.services.category_service import get_or_create_category
-# from events.services.event_service import save_event
+from events.services.event_sync_service import sync_event
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         events = fetch_events()
 
         for event in events:
-
-            # get_or_create_venue(event) # un-comment later
-            # get_or_create_organizer(event) # un-comment later
-            get_or_create_category(event) # un-comment later
+            
+            sync_event(event)
+            
 
     # def handle(self, *args, **kwargs):
     #     events = fetch_events()
