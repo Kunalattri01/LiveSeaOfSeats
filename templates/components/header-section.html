@@ -84,8 +84,96 @@
     </div>
 </header>
 
+
 <script>
+    function autoDetectLocation() {
+
+        // prevent running every time
+        if (localStorage.getItem("city_set")) return;
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(success, error);
+        }
+
+        function success(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+
+            // Reverse geocode (OpenStreetMap)
+            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
+                .then(res => res.json())
+                .then(data => {
+
+                    const city =
+                        data.address.city ||
+                        data.address.town ||
+                        data.address.village;
+
+                    const country = data.address.country_code?.toUpperCase();
+
+                    if (city) {
+                        setCityAuto(city, country, lat, lng);
+                    }
+                })
+                .catch(() => {
+                    console.log("Geocoding failed");
+                });
+        }
+
+        function error(err) {
+            console.log("Location access denied or failed");
+        }
+    }
+
+
+    // Auto set (GPS)
+    function setCityAuto(city, country, lat, lng) {
+
+        fetch("{% url 'SetCity' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({
+                city: city,
+                country: country,
+                lat: lat,
+                lng: lng
+            })
+        })
+        .then(() => {
+            localStorage.setItem("city_set", "true");
+            location.reload();
+        });
+    }
+
+
+    // Manual dropdown selection
     function setCity(value) {
+
+        // Clear selection
+        if (!value) {
+            fetch("{% url 'SetCity' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({
+                    city: null,
+                    country: null,
+                    lat: null,
+                    lng: null
+                })
+            }).then(() => {
+                localStorage.removeItem("city_set");
+                location.reload();
+            });
+
+            return;
+        }
+
         const [city, country] = value.split(",");
 
         fetch("{% url 'SetCity' %}", {
@@ -94,7 +182,19 @@
                 "Content-Type": "application/json",
                 "X-CSRFToken": "{{ csrf_token }}"
             },
-            body: JSON.stringify({ city: city, country: country })
-        }).then(() => location.reload());
+            body: JSON.stringify({
+                city: city,
+                country: country,
+                lat: null,
+                lng: null
+            })
+        }).then(() => {
+            localStorage.setItem("city_set", "manual");
+            location.reload();
+        });
     }
+
+    // Run auto-detection on page load
+    document.addEventListener("DOMContentLoaded", autoDetectLocation);
+
 </script>

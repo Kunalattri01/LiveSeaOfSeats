@@ -5,14 +5,15 @@ class EventMedia(models.Model):
 
     id = models.AutoField(db_column='ID', primary_key=True)
     event = models.ForeignKey(Event, on_delete=models.CASCADE, db_column='EVENT_ID', related_name='event_media')
-    image = models.ImageField(upload_to="events/", db_column='IMAGE')
+    image = models.ImageField(upload_to="events/", db_column='IMAGE', null=True, blank=True)
+    image_url = models.URLField(null=True, blank=True, db_column='IMAGE_URL')
 
     media_type = models.CharField(
         max_length=20, db_column='MEDIA_TYPE',
         choices=[
-            ('banner','Banner'),
-            ('gallery','Gallery'),
-            ('thumbnail','Thumbnail')
+            ('BANNER','BANNER'),
+            ('GALLERY','GALLERY'),
+            ('THUMBNAIL','THUMBNAIL')
         ]
     )
     is_active = models.BooleanField(default=True, db_column='IS_ACTIVE')
@@ -23,3 +24,4 @@ class EventMedia(models.Model):
     
     class Meta: 
         db_table = 'EVENT_MEDIA'
+        unique_together = ('event', 'image_url')

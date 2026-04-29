@@ -5,6 +5,7 @@ from django.conf import settings
 from django.http import JsonResponse
 from datetime import datetime
 from events.services.event_service import get_filter_language, get_filter_categories
+from events.models import Event, ShowTime, EventMedia
 
 
 class TicketMasterEventsView(View):
@@ -94,6 +95,10 @@ class TicketMasterEventsView(View):
 
         segment = request.GET.get("segment", "sports")
 
+        print('aaaaa : ', len(Event.objects.all()))
+        print('aaaaa : ', len(ShowTime.objects.all()))
+        print('aaaaa : ', len(EventMedia.objects.all()))
+
         params = {
             "apikey": settings.TICKETMASTER_API_KEY,
             "page": 0,
@@ -108,7 +113,7 @@ class TicketMasterEventsView(View):
         except Exception:
             data = {}
 
-        # return JsonResponse(data)
+        return JsonResponse(data)
         raw_events = data.get('_embedded', {}).get('events', [])
 
         # STEP 1: HERO EVENTS (WWE → BTS → Shakira)

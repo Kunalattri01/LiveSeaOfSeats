@@ -5,7 +5,6 @@ def get_or_create_organizer(api_event):
     attractions = api_event.get("_embedded", {}).get("attractions", [])
 
     if not attractions:
-        print("❌ No Organizer Found")
         return None
 
     attraction = attractions[0]
@@ -44,12 +43,6 @@ def get_or_create_organizer(api_event):
             "facebook": facebook,
             "twitter": twitter,
         }
-    )
-
-    if created:
-        print(f"Organizer Created: {organizer_name}")
-    else:
-        print(f"Organizer Exists: {organizer_name}")
-        
+    )      
 
     return organizer

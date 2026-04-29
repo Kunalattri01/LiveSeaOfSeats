@@ -7,10 +7,9 @@ class SetCityView(View):
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
 
-        city = data.get("city")
-        country = data.get("country")
-
-        request.session['city'] = city
-        request.session['country'] = country
+        request.session['city'] = data.get("city")
+        request.session['country'] = data.get("country")
+        request.session['lat'] = data.get("lat")
+        request.session['lng'] = data.get("lng")
 
         return JsonResponse({"status": "success"})

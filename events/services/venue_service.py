@@ -6,7 +6,6 @@ def get_or_create_venue(api_event):
     venue_list  = api_event.get("_embedded", {}).get("venues", [])
 
     if not venue_list:
-        print('No Venue Found')
         return None
 
     venue_data = venue_list[0]
@@ -26,9 +25,6 @@ def get_or_create_venue(api_event):
         country=country_name,
     )
 
-    print("City:", city_name, "| Created:", city_created)
-
-
     # ---------------- [ Venue Model Data ] ----------------
     venue_name = venue_data.get('name')
     venue_address = venue_data.get('address', {}).get("line1", "")
@@ -45,7 +41,5 @@ def get_or_create_venue(api_event):
             "latitude": latitude,
         }
     )
-
-    print("Venue:", venue_name, "| Created:", venue_created)
 
     return venue

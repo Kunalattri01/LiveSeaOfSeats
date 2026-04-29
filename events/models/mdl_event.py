@@ -40,8 +40,8 @@ class Event(models.Model):
     source_type = models.CharField(
         max_length=20,
         choices=[
-            ("internal", "Internal"),
-            ("external", "External")
+            ("INTERNAL", "INTERNAL"),
+            ("EXTERNAL", "EXTERNAL")
         ],
         default="internal"
     )

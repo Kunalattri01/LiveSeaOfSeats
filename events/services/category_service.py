@@ -6,7 +6,6 @@ def get_or_create_category(api_event):
     classifications = api_event.get("classifications", [])
 
     if not classifications:
-        print("No Category Found")
         return None
     
     classification = classifications[0]
@@ -26,10 +25,5 @@ def get_or_create_category(api_event):
             "tm_param": "segmentId",
         }
     )
-
-    if created:
-        print(f"Category Created: {name}")
-    else:
-        print(f"Category Exists: {name}")
 
     return category
