@@ -10,7 +10,7 @@ class TicketMasterEventsPageView(View):
 
     def get(self, request):
 
-        city = request.session.get("city")
+        country = request.session.get("country")
 
         events = Event.objects.select_related('venue__city')\
                 .prefetch_related(
@@ -21,9 +21,9 @@ class TicketMasterEventsPageView(View):
                     )
                 )
         
-        # if city:
-        #     events = events.filter(venue__city__name__iexact=city)
-
+        if country:
+            events = events.filter(venue__city__country__iexact=country)
+            
         events_data = []
 
         for event in events:

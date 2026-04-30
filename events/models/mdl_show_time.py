@@ -1,5 +1,5 @@
 from django.db import models
-from venues.models import Hall
+from venues.models import Hall, Venue
 from .mdl_event import Event
 
 
@@ -12,6 +12,7 @@ class ShowTime(models.Model):
     show_date = models.DateField(db_column='SHOW_DATE', null=True, blank=True)
     start_time = models.TimeField(db_column='START_TIME', null=True, blank=True)
     end_time = models.TimeField(db_column='END_TIME', null=True, blank=True)
+    venue = models.ForeignKey(Venue, on_delete=models.CASCADE, db_column='VENUE_ID')
     layout_image = models.ImageField(upload_to="venue_layouts/", blank=True, null=True, db_column='LAYOUT_IMAGE')
     layout_image_url = models.URLField(null=True, blank=True, db_column='LAYOUT_IMAGE_URL')
     external_id = models.CharField(max_length=255, unique=True)

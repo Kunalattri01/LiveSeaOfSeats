@@ -94,7 +94,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'access_control.context_processors.menu_permissions.allowed_menus',
-                'access_control.context_processors.global_cities.global_cities',
+                'access_control.context_processors.global_locations.global_cities',
+                'access_control.context_processors.global_locations.global_countries',
             ],
         },
     },
@@ -112,45 +113,6 @@ WSGI_APPLICATION = 'ticket_platform.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'mssql',
-#         'NAME': 'TEST',
-#         'USER': '',  # or leave blank for trusted_connection
-#         'PASSWORD': '',
-#         'HOST': 'localhost\\SQLEXPRESS',  # use instance name if not default
-#         'PORT': '',  # usually blank unless using non-default port
-#         'OPTIONS': {
-#             'driver': 'ODBC Driver 17 for SQL Server',
-#             # 'trusted_connection': 'yes',  # uncomment if using Windows Auth
-#         },
-#     }
-# }
-
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'mssql',
-#         'NAME': os.getenv('DB_NAME'),
-#         'USER': os.getenv('DB_USER'),
-#         'PASSWORD': os.getenv('DB_PASSWORD'),
-#         'HOST': os.getenv('DB_HOST'),
-#         'PORT': os.getenv('DB_PORT'),
-#         'OPTIONS': {
-#             'driver': 'ODBC Driver 17 for SQL Server',
-#             'extra_params': 'Encrypt=yes;TrustServerCertificate=no;'
-#         },
-#     },
-# }
-
 DATABASES = {
     'default': dj_database_url.config(
         default=os.environ.get('DATABASE_URL'),
@@ -158,6 +120,17 @@ DATABASES = {
         ssl_require=True
     )
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'tickets_db',
+#         'USER': 'postgres',
+#         'PASSWORD': 'admin123',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

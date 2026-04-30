@@ -1,8 +1,9 @@
 from django.utils.text import slugify
-from events.models import Event, EventTag, EventMedia
-from booking.models import ShowTime
-from datetime import datetime
 from django.utils import timezone
+from datetime import datetime
+
+from events.models import Event, EventTag, EventMedia, Language
+from booking.models import ShowTime
 
 from .venue_service import get_or_create_venue
 from .organizer_service import get_or_create_organizer
@@ -20,7 +21,7 @@ def sync_event(api_event):
     group_name = attraction[0].get("name") if attraction else "General Event"
 
     slug = slugify(group_name)[:50]
-    description = api_event.get('info') or group_name
+    description = api_event.get('info') or api_event.get('pleaseNote') or group_name
 
     # age_limit = None
     # release_date = None
@@ -71,8 +72,22 @@ def sync_event(api_event):
     # ----------------- [ Showtime Insertion ] ----------------------
     match_title = api_event.get("name")
 
+    showtime_date_str = api_event.get('dates', {}).get('start', {}).get('localDate')
+    showtime_time_str = api_event.get('dates', {}).get('start', {}).get('localTime')
+
+    start_date = None
+
+    if showtime_date_str and showtime_time_str:
+        start_date = datetime.strptime(
+            f"{showtime_date_str} {showtime_time_str}",
+            "%Y-%m-%d %H:%M:%S"
+        )
+    elif showtime_date_str:
+        # fallback if time is missing
+        start_date = datetime.strptime(showtime_date_str, "%Y-%m-%d")
+
     show_date = start_date.date() if start_date else None
-    start_time = start_date.time() if start_date else None
+    start_time = start_date.time() if start_date and showtime_time_str else None
 
     layout_image_url = api_event.get("seatmap", {}).get('staticUrl') or None # future Cause : this is a URL (string) but field expects file Uploaded
 
@@ -85,6 +100,7 @@ def sync_event(api_event):
             "event": event,
             "match_title": match_title,
             "show_date": show_date,
+            "venue": venue,
             "start_time": start_time,
             "booking_url": booking_url,
             "layout_image_url": layout_image_url,
@@ -185,3 +201,23 @@ def sync_event(api_event):
 
     if tag_objs:
         event.tags.set(tag_objs)
+
+
+    # ------------------- [ LANGUAGES (M2M) ] -------------------
+
+    locale = api_event.get("locale")  # e.g. "en-us"
+
+    language_objs = []
+
+    if locale:
+        lang, _ = Language.objects.get_or_create(
+            tm_locale=locale.lower(),
+            defaults={
+                "name": locale.upper(),
+                "seq_no": 1
+            }
+        )
+        language_objs.append(lang)
+
+    if language_objs:
+        event.languages.add(*language_objs)

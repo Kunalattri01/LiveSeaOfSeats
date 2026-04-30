@@ -29,7 +29,7 @@ class TicketMasterAPINewView(APIView):
         if cached:
             return Response(cached)
 
-        city = request.session.get("city")
+        country = request.session.get("country")
 
         # --------------[ BASE QUERY ] -----------------
         queryset = Event.objects.select_related('venue__city')\
@@ -44,9 +44,8 @@ class TicketMasterAPINewView(APIView):
                 )
             ).filter(is_active=True)
 
-        print('language_ids : ', language_ids)
-        # if city:
-        #     queryset = queryset.filter(venue__city__name__iexact=city)
+        if country:
+            queryset = queryset.filter(venue__city__country__iexact=country)
 
         # APPLY FILTERS
         if category_ids:

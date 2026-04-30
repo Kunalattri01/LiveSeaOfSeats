@@ -25,7 +25,8 @@ def fetch_all_events():
         all_events.extend(events)
 
         print(f"Fetched page {page} | events: {len(events)}")
-
         page += 1
+        
+    print("TOTAL API EVENTS:", len(all_events))
 
     return all_events

@@ -14,6 +14,12 @@
     
     body { background-color: var(--dark); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
 
+    #eventPopup .btn-close {
+        background-color: transparent !important;
+        filter: none !important;
+        opacity: 0.5;
+    }
+
     /* HERO BANNER - RESPONSIVE HEIGHT */
     .attraction-banner {
         position: relative; 
@@ -134,18 +140,28 @@
 
                     <div style="padding-left: 25px;">
                         <strong style="font-size: 16px; display: block; margin-bottom: 4px;">
-                            {{ item.match_title }}
+                            {{ item.venue__city__name }},  {{ item.venue__city__state }}  •  {{ item.venue__name }}
                         </strong>
                         <p style="margin: 0; opacity: 0.6; font-size: 13px;">
-                            {{ item.address }} • {{ item.city }} <br>
+                            {{ item.match_title }} <br>
                             <span style="color: var(--accent); font-weight: 700;">Doors: {{ item.start_time|time:"g:i A" }}</span>
                         </p>
                     </div>
 
                     <div style="text-align: right;">
-                        <a href="{{ item.booking_url }}" target="_blank" class="sidebar-btn" style="padding: 10px 20px; font-size: 11px;">
+                        <!-- href="{{ item.booking_url }}" -->
+                        <!-- <a target="_blank" class="sidebar-btn openPopupBtn" style="padding: 10px 20px; font-size: 11px;">
                             Find Seats
-                        </a>
+                        </a> -->
+                        {% if request.user.is_authenticated %}
+                            <a href="{{ item.booking_url }}" class="sidebar-btn">
+                                Find Seats
+                            </a>
+                        {% else %}
+                            <a class="sidebar-btn" data-bs-toggle="modal" data-bs-target="#eventPopup" onclick="setBookingUrl('{{ item.booking_url }}')">
+                                Find Seats
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
                 {% empty %}
@@ -160,16 +176,97 @@
             <div style="background: var(--glass); border: 1px solid var(--border); padding: 25px; border-radius: 4px; backdrop-filter: blur(10px);">
                 <h4 style="font-size: 11px; font-weight: 900; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">Official Booking</h4>
                 <p style="font-size: 13px; opacity: 0.7; margin-bottom: 20px; line-height: 1.5;">Secure your verified tickets directly through our platform for guaranteed entry.</p>
-                <a href="{{ event.booking_url }}" class="sidebar-btn">Find Best Seats</a>
+                <!-- href="{{ event.booking_url }}" -->
+                <a class="sidebar-btn openPopupBtn" data-bs-toggle="modal" data-bs-target="#eventPopup">Find Best Seats</a>
             </div>
-
-            <!-- <div style="margin-top: 20px; padding: 20px; border: 1px dashed var(--border); text-align: center; border-radius: 4px;">
-                <small style="opacity: 0.4; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: 1px;">Featured Location</small>
-                <img src="{{ event.venue_image|default:'/static/venue.jpg' }}" style="width:100%; height:140px; object-fit:cover; margin: 15px 0; border-radius: 2px; border: 1px solid var(--border);">
-                <p style="font-weight: 800; font-size: 14px; margin: 0; color: var(--accent);">{{ event.venue_name }}</p>
-                <p style="font-size: 12px; opacity: 0.5; margin: 5px 0 0;">{{ event.city }}, {{ event.country }}</p>
-            </div> -->
         </div>
     </aside>
 </div>
+
+<!-- Modal Backdrop -->
+<div id="eventPopup" class="modal fade" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-sm">
+
+      <!-- Header -->
+    <div class="modal-header border-bottom py-3 px-4">
+        <h5 class="modal-title fw-semibold fs-6 text-secondary text-nowrap">Continue to tickets</h5>
+        <i class="fa fa-times" data-bs-dismiss="modal" style="cursor:pointer; font-size:18px; color:#999;"></i>
+    </div>
+
+      <!-- Body -->
+      <div class="modal-body px-4 py-4">
+        <div class="mb-3">
+            <label class="form-label small fw-medium text-secondary">Full name</label>
+            <input type="text" id="name" name="name" class="form-control" placeholder="Enter your name">
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-medium text-secondary">Email address</label>
+          <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email">
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-medium text-secondary">Phone number</label>
+          <input type="tel" id="phone" name="phone" class="form-control" placeholder="Enter your number">
+        </div>
+        <button type="button" id="submitLead" class="btn btn-dark w-100 mt-1">
+            Continue to booking →
+        </button>
+      </div>
+      
+    </div>
+  </div>
+</div>
 {% endblock bodyContent %}
+
+
+{% block extraJs %}
+<script>
+    let bookingUrl = "";
+    function setBookingUrl(url){
+        bookingUrl = url;
+    }
+</script>
+
+<script>
+    document.getElementById("submitLead").addEventListener("click", function(){
+
+        let name = document.getElementById("name").value.trim();
+        let email = document.getElementById("email").value.trim();
+        let phone = document.getElementById("phone").value.trim();
+
+        // Validation
+        if(!name || !email || !phone){
+            alert("Please fill all fields");
+            return;
+        }
+
+        // Disable button (prevent double click)
+        this.innerText = "Processing...";
+        this.disabled = true;
+
+        fetch("{% url 'save_lead' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: `name=${name}&email=${email}&phone=${phone}`
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            if(data.status === "success"){
+                // 🔥 REDIRECT
+                window.location.href = bookingUrl;
+            } else {
+                alert("Something went wrong");
+            }
+
+        })
+        .catch(err => {
+            console.log(err);
+            alert("Server error");
+        });
+    });
+</script>
+{% endblock extraJs %}
