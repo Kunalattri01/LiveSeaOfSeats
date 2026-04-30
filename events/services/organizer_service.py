@@ -12,11 +12,12 @@ def get_or_create_organizer(api_event):
     attraction = attractions[0]
 
     organizer_name = attraction.get("name", "Unknown Organizer")
-    tm_id = attraction.get("id")   # ✅ IMPORTANT
 
-    # ✅ 1. Check cache first (BIG SPEED BOOST)
-    if tm_id in ORGANIZER_CACHE:
-        return ORGANIZER_CACHE[tm_id]
+    # ✅ CACHE KEY (name-based since no tm_id)
+    cache_key = organizer_name.lower().strip()
+
+    if cache_key in ORGANIZER_CACHE:
+        return ORGANIZER_CACHE[cache_key]
 
     email = "external@example.com"
     phone = "0000000000"
@@ -40,11 +41,10 @@ def get_or_create_organizer(api_event):
     if "twitter" in external_links:
         twitter = external_links["twitter"][0].get("url", "")
 
-    # ✅ 2. Use update_or_create with tm_id (correct uniqueness)
-    organizer, _ = Organizer.objects.update_or_create(
-        tm_id=tm_id,
+    # ✅ SAFE DB CALL (aligned with your model)
+    organizer, _ = Organizer.objects.get_or_create(
+        name=organizer_name,
         defaults={
-            "name": organizer_name,
             "email": email,
             "phone": phone,
             "website": website,
@@ -54,11 +54,9 @@ def get_or_create_organizer(api_event):
         }
     )
 
-    # ✅ 3. Store in cache
-    ORGANIZER_CACHE[tm_id] = organizer
+    ORGANIZER_CACHE[cache_key] = organizer
 
     return organizer
-
 
 
 
