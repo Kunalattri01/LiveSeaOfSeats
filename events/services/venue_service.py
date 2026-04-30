@@ -23,7 +23,7 @@ def get_or_create_venue(api_event):
 
     city_key = f"{city_name}_{state_name}_{country_name}"
 
-    # ✅ 1. CITY CACHE
+    # ✅ CITY CACHE
     if city_key in CITY_CACHE:
         city = CITY_CACHE[city_key]
     else:
@@ -41,35 +41,26 @@ def get_or_create_venue(api_event):
     longitude = venue_data.get('location', {}).get("longitude")
     latitude = venue_data.get('location', {}).get("latitude")
 
-    tm_id = venue_data.get("id")   # ✅ IMPORTANT
+    venue_key = f"{venue_name}_{city.id}"
 
-    # ✅ 2. VENUE CACHE
-    if tm_id in VENUE_CACHE:
-        return VENUE_CACHE[tm_id]
+    # ✅ VENUE CACHE
+    if venue_key in VENUE_CACHE:
+        return VENUE_CACHE[venue_key]
 
-    venue, _ = Venue.objects.update_or_create(
-        tm_id=tm_id,   # ✅ UNIQUE KEY
+    # ✅ IMPORTANT: match DB constraint (name + city)
+    venue, _ = Venue.objects.get_or_create(
+        name=venue_name,
+        city=city,
         defaults={
-            "name": venue_name,
-            "city": city,
             "address": venue_address,
             "longitude": longitude,
             "latitude": latitude,
         }
     )
 
-    VENUE_CACHE[tm_id] = venue
+    VENUE_CACHE[venue_key] = venue
 
     return venue
-
-
-
-
-
-
-
-
-
 
 
 
