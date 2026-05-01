@@ -9,8 +9,8 @@ from .mdl_ticket_mode import *
 class Event(models.Model):
 
     id = models.AutoField(db_column='ID', primary_key=True)
-    title = models.CharField(max_length=255, db_column='TITLE')
-    slug = models.SlugField(db_column='SLUG')
+    title = models.CharField(max_length=255, db_column='TITLE', unique=True)
+    slug = models.SlugField(db_column='SLUG', max_length=255)
     description = models.TextField(db_column='DESCRIPTION')
     age_limit = models.IntegerField(null=True, blank=True, db_column='AGE_LIMIT')
     release_date = models.DateTimeField(null=True, blank=True, db_column='RELEASE_DATE')

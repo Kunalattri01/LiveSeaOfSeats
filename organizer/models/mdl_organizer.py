@@ -3,7 +3,7 @@ from django.db import models
 class Organizer(models.Model):
 
     id = models.AutoField(primary_key=True, db_column='ID')
-    name = models.CharField(max_length=200, db_column='NAME')
+    name = models.CharField(max_length=200, db_column='NAME', unique=True)
     email = models.EmailField(db_column='EMAIL')
     phone = models.CharField(max_length=20, db_column='PHONE')
     website = models.URLField(blank=True, db_column='WEBSITE')

@@ -1,5 +1,59 @@
 from organizer.models import Organizer
 
+ORG_CACHE = {}
+
+
+def get_or_create_organizer(api_event):
+
+    attractions = api_event.get("_embedded", {}).get("attractions", [])
+    if not attractions:
+        return None
+
+    name = attractions[0].get("name", "Unknown Organizer")
+    key = name.lower().strip()
+
+    if key in ORG_CACHE:
+        return ORG_CACHE[key]
+
+    obj, _ = Organizer.objects.get_or_create(name=name)
+    ORG_CACHE[key] = obj
+    return obj
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from organizer.models import Organizer
+
 def get_or_create_organizer(api_event):
 
     attractions = api_event.get("_embedded", {}).get("attractions", [])

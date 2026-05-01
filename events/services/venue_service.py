@@ -1,5 +1,56 @@
 from venues.models import Venue, City
 
+CITY_CACHE = {}
+VENUE_CACHE = {}
+
+
+def get_or_create_venue(api_event):
+
+    venue_list = api_event.get("_embedded", {}).get("venues", [])
+    if not venue_list:
+        return None
+
+    venue_data = venue_list[0]
+
+    city_name = venue_data.get("city", {}).get("name", "Unknown")
+    state = venue_data.get("state", {}).get("name", "")
+    country = venue_data.get("country", {}).get("name", "")
+
+    city_key = f"{city_name}_{state}_{country}"
+
+    if city_key in CITY_CACHE:
+        city = CITY_CACHE[city_key]
+    else:
+        city, _ = City.objects.get_or_create(
+            name=city_name,
+            state=state,
+            country=country,
+        )
+        CITY_CACHE[city_key] = city
+
+    venue_name = venue_data.get("name")
+    venue_key = f"{venue_name}_{city.id}"
+
+    if venue_key in VENUE_CACHE:
+        return VENUE_CACHE[venue_key]
+
+    venue, _ = Venue.objects.get_or_create(
+        name=venue_name,
+        city=city,
+    )
+
+    VENUE_CACHE[venue_key] = venue
+    return venue
+
+
+
+
+
+
+
+
+from venues.models import Venue, City
+
 
 def get_or_create_venue(api_event):
 

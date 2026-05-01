@@ -5,7 +5,7 @@ class Venue(models.Model):
 
     id = models.AutoField(db_column='ID', primary_key=True)
     # tm_id = models.CharField(max_length=100, unique=True, null=True, blank=True, db_column='TM_ID')
-    name = models.CharField(max_length=255, db_column='NAME', db_index=True)
+    name = models.CharField(max_length=255, db_column='NAME', db_index=True, unique=True)
     city = models.ForeignKey(City, on_delete=models.CASCADE, db_column='CITY_ID')
     address = models.TextField(db_column='ADDRESS')
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True, db_column='LATITUDE')

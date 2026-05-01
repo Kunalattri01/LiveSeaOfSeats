@@ -46,7 +46,7 @@ def get_events(event_type = None, city = None):
 
 
 def get_filter_language(): # language filters
-    return Language.objects.filter(is_active = True).order_by('seq_no')
+    return Language.objects.filter(is_active = True)
 
 
 def get_filter_categories(): # Categories filters

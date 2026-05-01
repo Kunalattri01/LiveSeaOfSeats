@@ -1,24 +1,28 @@
 import requests
 from django.conf import settings
 
-def fetch_all_events():
+
+def fetch_ticketmaster_events():
     url = "https://app.ticketmaster.com/discovery/v2/events.json"
 
     all_events = []
     page = 0
+    total_pages = 1
 
-    while True:
+    while page < total_pages:
+
         params = {
             "apikey": settings.TICKETMASTER_API_KEY,
-            "size": 50,   # max allowed
+            "size": 50,
             "page": page,
         }
 
-        res = requests.get(url, params=params)
+        res = requests.get(url, params=params, timeout=10)
         data = res.json()
 
-        events = data.get("_embedded", {}).get("events", [])
+        total_pages = data.get("page", {}).get("totalPages", 1)
 
+        events = data.get("_embedded", {}).get("events", [])
         if not events:
             break
 
@@ -26,7 +30,7 @@ def fetch_all_events():
 
         print(f"Fetched page {page} | events: {len(events)}")
         page += 1
-        
-    print("TOTAL API EVENTS:", len(all_events))
 
+    print("TOTAL API EVENTS:", len(all_events))
+    
     return all_events

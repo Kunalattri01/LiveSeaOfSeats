@@ -124,7 +124,7 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'tickets_db',
+#         'NAME': 'cc',
 #         'USER': 'postgres',
 #         'PASSWORD': 'admin123',
 #         'HOST': 'localhost',
