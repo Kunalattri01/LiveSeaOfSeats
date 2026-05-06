@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'access_control',
     'organizer',
     'ticketmaster',
+    'legal',
 ]
 
 MIDDLEWARE = [

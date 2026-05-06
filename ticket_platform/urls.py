@@ -30,6 +30,7 @@ urlpatterns = [
     path('blog/', include('blog.urls')),
     path('access_control/', include('access_control.urls')),
     path("search/", include("search.urls")),
+    path("legal/", include("legal.urls")),
     # path('ticketmaster/', include('ticketmaster.urls')), # remove comment in future
 ]
 
