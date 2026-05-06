@@ -19,8 +19,8 @@ def search_my_events(query, city=None, date=None):
             "id": e.id,
             "title": e.title,
             "type": "events",
-            'start_date' : e.start_date,
-            'venue': e.venue.name if e.venue else "",
+            # 'start_date' : e.start_date,
+            # 'venue': e.venue.name if e.venue else "",
             "url": reverse('TicketMasterEventDetailsPage', args=[e.slug]),
             # "subtitle": getattr(e, "date", "") or "",
         }

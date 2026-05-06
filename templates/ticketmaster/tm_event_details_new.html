@@ -140,7 +140,7 @@
 
                     <div style="padding-left: 25px;">
                         <strong style="font-size: 16px; display: block; margin-bottom: 4px;">
-                            {{ item.venue__city__name }},  {{ item.venue__city__state }}  •  {{ item.venue__name }}
+                            {{ item.venue__city__name }},  {{ item.venue__city__state_name }}  •  {{ item.venue__name }}
                         </strong>
                         <p style="margin: 0; opacity: 0.6; font-size: 13px;">
                             {{ item.match_title }} <br>
@@ -171,16 +171,15 @@
         </section>
     </main>
 
-    <aside>
+    <!-- <aside>
         <div style="position: sticky; top: 20px;">
             <div style="background: var(--glass); border: 1px solid var(--border); padding: 25px; border-radius: 4px; backdrop-filter: blur(10px);">
                 <h4 style="font-size: 11px; font-weight: 900; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">Official Booking</h4>
                 <p style="font-size: 13px; opacity: 0.7; margin-bottom: 20px; line-height: 1.5;">Secure your verified tickets directly through our platform for guaranteed entry.</p>
-                <!-- href="{{ event.booking_url }}" -->
                 <a class="sidebar-btn openPopupBtn" data-bs-toggle="modal" data-bs-target="#eventPopup">Find Best Seats</a>
             </div>
         </div>
-    </aside>
+    </aside> -->
 </div>
 
 <!-- Modal Backdrop -->
@@ -190,7 +189,7 @@
 
       <!-- Header -->
     <div class="modal-header border-bottom py-3 px-4">
-        <h5 class="modal-title fw-semibold fs-6 text-secondary text-nowrap">Continue to tickets</h5>
+        <h5 class="modal-title fw-semibold fs-6 text-secondary text-nowrap">Continue to Tickets</h5>
         <i class="fa fa-times" data-bs-dismiss="modal" style="cursor:pointer; font-size:18px; color:#999;"></i>
     </div>
 
@@ -221,52 +220,63 @@
 
 {% block extraJs %}
 <script>
-    let bookingUrl = "";
-    function setBookingUrl(url){
-        bookingUrl = url;
-    }
-</script>
+let bookingUrl = "";
 
-<script>
-    document.getElementById("submitLead").addEventListener("click", function(){
+function setBookingUrl(url){
+    bookingUrl = url;
+}
+
+function getCSRFToken() {
+    return document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken'))
+        ?.split('=')[1];
+}
+
+document.addEventListener("click", function(e) {
+
+    if (e.target && e.target.id === "submitLead") {
 
         let name = document.getElementById("name").value.trim();
         let email = document.getElementById("email").value.trim();
         let phone = document.getElementById("phone").value.trim();
 
-        // Validation
         if(!name || !email || !phone){
             alert("Please fill all fields");
             return;
         }
 
-        // Disable button (prevent double click)
-        this.innerText = "Processing...";
-        this.disabled = true;
+        e.target.innerText = "Processing...";
+        e.target.disabled = true;
 
-        fetch("{% url 'save_lead' %}", {
+        console.log("CALLING API...");
+
+        fetch("/save_lead/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
-                "X-CSRFToken": "{{ csrf_token }}"
+                "X-CSRFToken": getCSRFToken()
             },
-            body: `name=${name}&email=${email}&phone=${phone}`
+            body: `name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&phone=${encodeURIComponent(phone)}`
         })
-        .then(res => res.json())
+        .then(res => {
+            console.log("STATUS:", res.status);
+            return res.json();
+        })
         .then(data => {
+            console.log("RESPONSE:", data);
 
             if(data.status === "success"){
-                // 🔥 REDIRECT
                 window.location.href = bookingUrl;
             } else {
                 alert("Something went wrong");
             }
-
         })
         .catch(err => {
-            console.log(err);
+            console.log("ERROR:", err);
             alert("Server error");
         });
-    });
+    }
+});
 </script>
 {% endblock extraJs %}

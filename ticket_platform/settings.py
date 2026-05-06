@@ -108,7 +108,19 @@ REST_FRAMEWORK = {
 }
 
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+
 WSGI_APPLICATION = 'ticket_platform.wsgi.application'
+
 
 
 # Database
@@ -124,7 +136,7 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'cc',
+#         'NAME': 'bb',
 #         'USER': 'postgres',
 #         'PASSWORD': 'admin123',
 #         'HOST': 'localhost',
@@ -140,6 +152,8 @@ EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = 'kunalattri6224@gmail.com'
 EMAIL_HOST_PASSWORD = 'pxrm hjry mdlu zywy'
+
+
 
 
 

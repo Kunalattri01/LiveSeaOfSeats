@@ -4,7 +4,7 @@
 <style>
 .country-dropdown {
     position: relative;
-    width: 200px;
+    width: 220px;
 }
 
 .selected {
@@ -38,7 +38,7 @@
     background: #0c1b3a;
     border: 1px solid #3a4a7a;
     border-radius: 8px;
-    max-height: 200px;
+    max-height: 250px;
     overflow-y: auto;
     z-index: 999;
 }
@@ -53,6 +53,7 @@
     align-items: center;
     gap: 8px;
     cursor: pointer;
+    color: #fff;
 }
 
 .option:hover {
@@ -67,213 +68,218 @@
 <header class="header-section">
 
     <div class="container">
+
         <div class="header-wrapper">
 
+            <!-- LOGO -->
             <div class="logo">
                 <a href="{% url 'TicketMasterEventsPage' %}">
-                    <img src="{% static 'assets/images/logo/logo-mine-77.png' %}" alt="logo">
+                    <img src="{% static 'assets/images/logo/check-logo-1111.png' %}" alt="logo">
                 </a>
             </div>
 
+            <!-- SEARCH -->
             {% include 'components/search_bar.html' %}
 
+            <!-- TOOLS -->
             <div class="header-tools">
 
-                <!-- ✅ CUSTOM DROPDOWN -->
+                <!-- COUNTRY DROPDOWN -->
                 <div class="country-dropdown">
 
-                    <!-- ✅ SELECTED (FIXED HERE) -->
+                    <!-- SELECTED -->
                     <div class="selected" onclick="toggleDropdown()">
-                        <img id="selected-flag"
-                             src="https://flagcdn.com/24x18/{% if request.session.city %}{{ request.session.city|country_code }}{% else %}un{% endif %}.png">
+                        <img id="selected-flag" src="https://flagcdn.com/24x18/{% if request.session.country_code %}{{ request.session.country_code|lower }}{% else %}us{% endif %}.png">
 
                         <span id="selected-text">
-                            {% if request.session.city %}
-                                {{ request.session.city|country_code|upper }}
+                            {% if request.session.country_code %}
+                                {{ request.session.country_code }}
                             {% else %}
-                                All Countries
+                                ALL
                             {% endif %}
                         </span>
                     </div>
 
-                    <!-- Dropdown -->
+                    <!-- DROPDOWN -->
                     <div class="dropdown-list" id="dropdownList">
 
-                        <div class="option" onclick="selectCountry('', 'un')">
-                            <img src="https://flagcdn.com/24x18/un.png">
+                        <!-- ALL COUNTRIES -->
+                        <div class="option" onclick="clearCountry()">
+                            <img src="https://flagcdn.com/24x18/us.png">
                             All Countries
                         </div>
 
+                        <!-- COUNTRIES -->
                         {% for row in all_countries %}
-                        <div class="option"
-                             onclick="selectCountry('{{ row.country }}', '{{ row.country|country_code }}')">
-
-                            <img src="https://flagcdn.com/24x18/{{ row.country|country_code }}.png">
-                            {{ row.country }}
-                        </div>
+                            <div class="option" onclick="selectCountry('{{ row.country_name|escapejs }}', '{{ row.country_code|lower }}')">
+                                <img src="https://flagcdn.com/24x18/{{ row.country_code|lower }}.png">
+                                {{ row.country_name }} ({{ row.country_code }})
+                            </div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- MENU -->
-    <div class="container">
-        <div class="header-wrapper">
-            <ul class="menu">
-                <li>
-                    <a href="{% url 'TicketMasterEventsPage' %}" class="{% if '/event_details/' in request.path or request.path == '/' %}active{% endif %}"> events </a>
-                </li>
-                <li>
-                    <a href="{% url 'MovieGridPage' %}" class="{% if request.resolver_match.url_name == 'MovieGridPage' %}active{% endif %}">Movies</a>
-                </li>
-                <li>
-                    <a href="{% url 'SportsPage' %}"> IPL </a>
-                </li>
-                <li>
-                    <a href="{% url 'SportsPage' %}"> Sports </a>
-                </li>
-                <li>
-                    <a href="{% url 'HomePage' %}">ACTIVITIES</a>
-                </li>
-                <li>
-                    <a href="{% url 'BlogPage' %}"> AVIATION </a>
-                </li>
-                <li>
-                    <a href="{% url 'HomePage' %}"> DINING </a>
-                </li>
-                <li>
-                    <a href="{% url 'BlogPage' %}"> Blog </a>
-                </li>
-                <li>
-                    <a href="{% url 'ContactPage' %}"> Contact </a>
-                </li>
-            </ul>
-        </div>
-    </div>
 </header>
 
 <script>
-
-function autoDetectLocation() {
-
-    if (localStorage.getItem("city_set")) return;
-
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(success, error);
-    }
-
-    function success(position) {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-
-        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
-            .then(res => res.json())
-            .then(data => {
-
-                const city =
-                    data.address.city ||
-                    data.address.town ||
-                    data.address.village;
-
-                const country = data.address.country_code?.toUpperCase();
-
-                if (city) {
-                    setCityAuto(city, country, lat, lng);
-                }
-            });
-    }
-
-    function error() {
-        console.log("Location denied");
-    }
-}
-
-function setCityAuto(city, country, lat, lng) {
-
-    fetch("{% url 'SetCity' %}", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": "{{ csrf_token }}"
-        },
-        body: JSON.stringify({
-            city: city,
-            country: country,
-            lat: lat,
-            lng: lng
-        })
-    }).then(() => {
-        localStorage.setItem("city_set", "true");
-        location.reload();
-    });
-}
-
-function setCity(value) {
-
-    if (!value) {
-        fetch("{% url 'SetCity' %}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": "{{ csrf_token }}"
-            },
-            body: JSON.stringify({
-                city: null,
-                country: null,
-                lat: null,
-                lng: null
-            })
-        }).then(() => {
-            localStorage.removeItem("city_set");
-            location.reload();
-        });
-        return;
-    }
-
-    fetch("{% url 'SetCity' %}", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": "{{ csrf_token }}"
-        },
-        body: JSON.stringify({
-            city: value,
-            country: value,
-            lat: null,
-            lng: null
-        })
-    }).then(() => {
-        localStorage.setItem("city_set", "manual");
-        location.reload();
-    });
-}
 
 function toggleDropdown() {
     document.getElementById("dropdownList").classList.toggle("show");
 }
 
-function selectCountry(value, code) {
 
-    // ✅ FIXED: show code in header
-    document.getElementById("selected-text").innerText =
-        code.toUpperCase() || "All Countries";
+// AUTO DETECT LOCATION
+function autoDetectLocation() {
 
-    document.getElementById("selected-flag").src =
-        `https://flagcdn.com/24x18/${code}.png`;
+    if (localStorage.getItem("city_set") || sessionStorage.getItem("location_loading")) {
+        return;
+    }
 
-    document.getElementById("dropdownList").classList.remove("show");
+    sessionStorage.setItem(
+        "location_loading",
+        "true"
+    );
 
-    setCity(value);
+    if (navigator.geolocation) {
+
+        navigator.geolocation.getCurrentPosition(
+            success,
+            error
+        );
+    }
+
+    function success(position) {
+
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+
+        fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
+        )
+        .then(res => res.json())
+        .then(data => {
+
+            const city = data.address.city || data.address.town || data.address.village || null;
+            const countryName = data.address.country || null;
+            const countryCode = data.address.country_code?.toUpperCase() || null;
+
+            fetch("{% url 'SetCity' %}", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+
+                body: JSON.stringify({
+
+                    city: city,
+                    country: countryName,
+                    country_code: countryCode,
+                    lat: lat,
+                    lng: lng
+
+                })
+
+            }).then(() => {
+                
+                localStorage.setItem("city_set", "true");
+                sessionStorage.removeItem("location_loading");
+                location.reload();
+
+            });
+        });
+    }
+
+    function error() {
+        sessionStorage.removeItem("location_loading");
+        console.log("Location permission denied");
+    }
 }
 
+
+// MANUAL COUNTRY SELECT
+function selectCountry(countryName, countryCode) {
+
+    document.getElementById("selected-text").innerText = countryCode.toUpperCase();
+    document.getElementById("selected-flag").src = `https://flagcdn.com/24x18/${countryCode}.png`;
+    document.getElementById("dropdownList").classList.remove("show");
+
+    fetch("{% url 'SetCity' %}", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+
+        body: JSON.stringify({
+            city: null,
+            country: countryName,
+            country_code: countryCode.toUpperCase(),
+            lat: null,
+            lng: null
+        })
+
+    }).then(() => {
+
+        localStorage.setItem(
+            "city_set",
+            "manual"
+        );
+        location.reload();
+    });
+
+}
+
+
+// CLEAR COUNTRY
+function clearCountry() {
+
+    document.getElementById("selected-text").innerText = "ALL";
+    document.getElementById("selected-flag").src = "https://flagcdn.com/24x18/us.png";
+    document.getElementById("dropdownList").classList.remove("show");
+
+    fetch("{% url 'SetCity' %}", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+
+        body: JSON.stringify({
+            city: null,
+            country: null,
+            country_code: null,
+            lat: null,
+            lng: null
+        })
+
+    }).then(() => {
+        localStorage.removeItem("city_set");
+        location.reload();
+    });
+}
+
+
+// CLOSE DROPDOWN OUTSIDE CLICK
 document.addEventListener("click", function(e) {
     if (!e.target.closest(".country-dropdown")) {
         document.getElementById("dropdownList").classList.remove("show");
     }
 });
 
-document.addEventListener("DOMContentLoaded", autoDetectLocation);
+
+// AUTO LOAD LOCATION
+document.addEventListener(
+    "DOMContentLoaded",
+    autoDetectLocation
+);
 
 </script>

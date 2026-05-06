@@ -13,7 +13,7 @@ def fetch_ticketmaster_events():
 
         params = {
             "apikey": settings.TICKETMASTER_API_KEY,
-            "size": 50,
+            "size": 200,
             "page": page,
         }
 

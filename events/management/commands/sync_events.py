@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from events.services.sync_service import sync_events
+from events.services.sync.sync_service import sync_events
 
 class Command(BaseCommand):
     help = """

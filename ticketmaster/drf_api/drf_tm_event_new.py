@@ -20,7 +20,6 @@ class TicketMasterAPINewView(APIView):
         language_ids = [int(i) for i in request.GET.getlist('language') if i.isdigit()]
         search = request.GET.get('search')
 
-
         # ------------ [ CACHE ]-------------------
         query_string = request.GET.urlencode()
         cache_key = f"events_{query_string}"
@@ -32,7 +31,7 @@ class TicketMasterAPINewView(APIView):
         country = request.session.get("country")
 
         # --------------[ BASE QUERY ] -----------------
-        queryset = Event.objects.select_related('venue__city')\
+        queryset = Event.objects\
             .prefetch_related(
                 Prefetch(
                     'event_media',
@@ -45,7 +44,10 @@ class TicketMasterAPINewView(APIView):
             ).filter(is_active=True)
 
         if country:
-            queryset = queryset.filter(venue__city__country__iexact=country)
+            # queryset = queryset.filter(venue__city__country__iexact=country)
+            queryset = queryset.filter(
+                            showtime__venue__city__country__iexact=country
+                        ).distinct()
 
         # APPLY FILTERS
         if category_ids:
@@ -100,9 +102,9 @@ class TicketMasterAPINewView(APIView):
                 "id": event.slug,   # keep slug for routing
                 "name": event.title,
                 "image": banner,
-                "city": event.venue.city.name if event.venue else None,
-                "date": event.start_date.date() if event.start_date else None,
-                "time": event.start_date.time() if event.start_date else None,
+                # "city": event.venue.city.name if event.venue else None,
+                # "date": event.start_date.date() if event.start_date else None,
+                # "time": event.start_date.time() if event.start_date else None,
             })
 
         response_data = {
