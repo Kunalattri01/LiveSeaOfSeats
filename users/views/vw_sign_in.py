@@ -10,4 +10,4 @@ class SignInView(View):
             'FooterSection' : True
         }
 
-        return render(request, 'accounts/sign-in.html', context)
+        return render(request, 'website/accounts/sign-in.html', context)

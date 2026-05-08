@@ -17,4 +17,4 @@ class TicketOptionsView(View):
             'temp_booking_id' : temp_booking_id,
         }
 
-        return render(request, 'events/ticket-options.html', context)
+        return render(request, 'website/events/ticket-options.html', context)

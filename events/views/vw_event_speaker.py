@@ -14,4 +14,4 @@ class EventSpealerView(View):
             'selected_speaker_data' : selected_speaker_data,
         }
 
-        return render(request, 'events/event-speaker.html', context)
+        return render(request, 'website/events/event-speaker.html', context)

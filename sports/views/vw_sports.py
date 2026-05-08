@@ -8,4 +8,4 @@ class SportsView(View):
             'TitleSearch' : True
         }
 
-        return render(request, 'sports/sports.html', context)
+        return render(request, 'website/sports/sports.html', context)

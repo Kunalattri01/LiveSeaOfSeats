@@ -18,7 +18,7 @@ class EventTicketView(View):
             'show_id' : show_id
         }
 
-        return render(request, 'events/event-ticket.html', context)
+        return render(request, 'website/events/event-ticket.html', context)
     
     
     

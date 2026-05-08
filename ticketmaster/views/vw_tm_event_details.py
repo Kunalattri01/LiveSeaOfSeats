@@ -72,7 +72,7 @@ class TicketMasterEventDetailsView(View):
                     "ticket_url": row.get("url"),
                 }
 
-        return render(request, "ticketmaster/tm_event_details.html", {
+        return render(request, "website/ticketmaster/tm_event_details.html", {
             "event": hero_event,
             "venue": venue_list,
             'TitleSearch' : True,
@@ -204,4 +204,4 @@ class TicketMasterEventDetailsView(View):
     #         'events_data' : events_data,
     #     }
 
-    #     return render(request, "ticketmaster/tm_event_details.html", context)
+    #     return render(request, "website/ticketmaster/tm_event_details.html", context)

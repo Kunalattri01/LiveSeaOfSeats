@@ -8,4 +8,4 @@ class BlogView(View):
            'TitleSearch' : True
         }
 
-        return render(request, 'blog/blog.html', context)
+        return render(request, 'website/blog/blog.html', context)

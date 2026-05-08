@@ -21,7 +21,7 @@ class MenubarEntryView(View):
             'dropdown_parent' : dropdown_parent,
         }
 
-        return render(request, 'access_control/menubar_entry.html', context)
+        return render(request, 'dashboard/access_control/menubar_entry.html', context)
     
 
     @method_decorator(permission_required("READ"))

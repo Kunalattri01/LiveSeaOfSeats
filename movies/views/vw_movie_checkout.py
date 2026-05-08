@@ -8,4 +8,4 @@ class MovieCheckoutView(View):
             'TitleSearch' : True
         }
 
-        return render(request, 'movies/movie-checkout.html', context)
+        return render(request, 'website/movies/movie-checkout.html', context)

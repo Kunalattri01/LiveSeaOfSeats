@@ -8,4 +8,4 @@ class MovieDetailsView(View):
             'TitleSearch' : True
         }
 
-        return render(request, 'movies/movie-details.html', context)
+        return render(request, 'website/movies/movie-details.html', context)

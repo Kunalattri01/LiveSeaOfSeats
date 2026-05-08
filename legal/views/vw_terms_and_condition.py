@@ -9,4 +9,4 @@ class TermsView(View):
             'ask_user_mail' : True,
         }
                 
-        return render(request, 'legal/terms.html', context)
+        return render(request, 'website/legal/terms.html', context)

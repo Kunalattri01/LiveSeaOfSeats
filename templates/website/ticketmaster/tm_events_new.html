@@ -1,0 +1,510 @@
+{% extends "website/base/website_base.html" %}
+{% load static %}
+
+{% block title %} SeaOfSeats | Premium Event Ticketing {% endblock title %}
+
+{% block banner-section %}
+<style>
+    :root {
+        --theme-vibrant: #31d7a9;
+        --theme-navy: #0a1e5e;
+        --glass-bg: rgba(255, 255, 255, 0.05);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --accent-gradient: linear-gradient(135deg, #31d7a9 0%, #22b38a 100%);
+    }
+
+    /* --- REDESIGNED CINEMATIC HERO --- */
+    .hero-container-full {
+        position: relative;
+        height: 65vh;
+        background-color: var(--theme-navy);
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .hero-slider-container, .hero-slider-container .owl-stage-outer, .hero-slider-container .owl-stage, .hero-slider-container .owl-item {
+        height: 100% !important;
+    }
+
+    .hero-item {
+        position: relative;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        padding: 0 8%;
+    }
+
+    .hero-visual-layer {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 65%;
+        height: 100%;
+        z-index: 1;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: right;
+        clip-path: polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%);
+    }
+
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to right, 
+            var(--theme-navy) 20%, 
+            rgba(10, 30, 94, 0.8) 45%, 
+            transparent 80%
+        );
+        z-index: 2;
+    }
+    
+    .hero-content-stack {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        max-width: 650px;
+    }
+
+    .hero-badge {
+        color: var(--theme-vibrant);
+        font-weight: 700;
+        letter-spacing: 3px;
+        font-size: 0.85rem;
+        margin-bottom: 12px;
+        background: rgba(49, 215, 169, 0.1);
+        padding: 4px 12px;
+        border-radius: 4px;
+    }
+
+    .hero-title {
+        color: #fff;
+        font-size: clamp(2rem, 5vw, 4rem);
+        font-weight: 900;
+        line-height: 1;
+        margin-bottom: 12px;
+        text-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .hero-loc {
+        color: rgba(255,255,255,0.8);
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+    }
+
+    .hero-btn {
+        background: var(--accent-gradient);
+        color: var(--theme-navy) !important;
+        padding: 16px 40px;
+        border-radius: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .hero-btn:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 15px 30px rgba(49, 215, 169, 0.3);
+    }
+
+    /* --- ORIGINAL COMPONENT CSS --- */
+    .hero-slider-container .owl-nav {
+        position: absolute; top: 50%; width: 100%; display: flex;
+        justify-content: space-between; transform: translateY(-50%); z-index: 20; pointer-events: none;
+    }
+
+    .filter-sidebar {
+        background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border);
+        border-radius: 20px; padding: 24px; backdrop-filter: blur(15px);
+    }
+    .filter-section-title {
+        color: var(--theme-vibrant); font-weight: 800; font-size: 0.7rem;
+        text-transform: uppercase; border-bottom: 1px solid rgba(49, 215, 169, 0.1); padding-bottom: 5px; margin-bottom: 15px; display: block;
+    }
+    .filter-pill {
+        display: inline-block; padding: 0px 14px; border-radius: 7px; background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--glass-border); color: #ccc; font-size: 0.75rem; cursor: pointer; transition: 0.3s;
+    }
+    .filter-pill.active { background: var(--theme-vibrant); color: var(--theme-navy); border-color: var(--theme-vibrant); font-weight: 700; }
+
+    /* REDESIGNED FEATURE CHECKBOXES */
+    .feature-checkbox-wrapper {
+        position: relative;
+        display: block;
+        margin-bottom: 10px;
+        cursor: pointer;
+    }
+
+    .feature-checkbox-wrapper input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+
+    .feature-custom-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 15px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.85rem;
+        transition: 0.3s all ease;
+    }
+
+    .feature-checkbox-wrapper:hover .feature-custom-label {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(49, 215, 169, 0.3);
+    }
+
+    .feature-checkbox-wrapper input:checked ~ .feature-custom-label {
+        background: rgba(49, 215, 169, 0.1);
+        border-color: var(--theme-vibrant);
+        color: #fff;
+    }
+
+    .feature-checkbox-wrapper .check-icon {
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--glass-border);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        transition: 0.3s;
+    }
+
+    .feature-checkbox-wrapper input:checked ~ .feature-custom-label .check-icon {
+        background: var(--theme-vibrant);
+        border-color: var(--theme-vibrant);
+        color: var(--theme-navy);
+    }
+
+    .event-card-compact {
+        background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 18px;
+        overflow: hidden; transition: 0.4s; height: 100%; display: flex; flex-direction: column;
+    }
+    .img-container { width: 100%; aspect-ratio: 16 / 10; overflow: hidden; }
+    .img-container img { width: 100%; height: 100%; object-fit: cover; }
+
+    @media (max-width: 991px) {
+        .hero-container-full, .hero-item { height: 50vh; }
+        .hero-visual-layer { width: 100%; opacity: 0.3; clip-path: none; }
+        .hero-content-stack { align-items: center; text-align: center; width: 100%; }
+        .filter-mobile-btn {
+            width: 100%; background: var(--theme-navy); color: white; border: 1px solid var(--glass-border);
+            padding: 12px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between;
+        }
+    }
+</style>
+
+<section class="hero-container-full">
+    <div class="hero-slider-container owl-carousel owl-theme h-100">
+        {% for event in hero_events %}
+            <div class="hero-item">
+                <div class="hero-visual-layer" style="background-image: url('{{ event.BannerImageURL }}');"></div>
+                <div class="hero-overlay"></div>
+                <div class="hero-content-stack">
+                    <span class="hero-badge">TRENDING NOW</span>
+                    <h1 class="hero-title">{{ event.EventTitle|upper }}</h1>
+                    <div class="hero-loc">
+                        <i class="bi bi-geo-alt-fill"></i> {{ event.EventCity }}
+                    </div>
+                    <a href="{% url 'TicketMasterEventDetailsPage' event.Eventslug %}" class="hero-btn">
+                    {% comment %} <a href="{% url 'TicketMasterEventDetailsPage' event.id %}" class="hero-btn"> {% endcomment %}
+                        Book Tickets Now <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock banner-section %}
+
+{% block bodyContent %}
+<section class="py-5" style="background: #060e29;">
+    <div class="container-fluid px-lg-5">
+        
+        <button class="filter-mobile-btn d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarCollapse">
+            <span><i class="bi bi-sliders"></i> Refine Events</span>
+            <i class="bi bi-chevron-down"></i>
+        </button>
+
+        <div class="row">
+            <aside class="col-lg-3 col-xl-2">
+                <div class="collapse d-lg-block" id="sidebarCollapse">
+                    <div class="filter-sidebar">
+                        <h5 class="text-white fw-bold mb-4 d-none d-lg-block">Filters</h5>
+                        
+                        <form id="filter-form">
+                            <div class="filter-group mb-3">
+                                <span class="filter-section-title">Language</span>
+                                <div class="flex flex-wrap">
+                                    {% for row in language_filters %}
+                                        <div class="filter-pill" data-language-id="{{ row.id }}">
+                                            {{ row }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="filter-group mb-3">
+                                <span class="filter-section-title">Categories</span>
+                                <div class="flex flex-wrap">
+                                    {% for cat in categories_filters %}
+                                        <div class="filter-pill" data-category-id="{{ cat.id }}">
+                                            {{ cat.name }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <button type="submit" id="clear-filters" 
+                                class="btn-book-sm w-100 border-0 mt-2 py-3" 
+                                style="background: var(--theme-vibrant); color: var(--theme-navy); font-weight: 800; border-radius: 12px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">
+                                Clear Filters
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="col-lg-9 col-xl-10">
+                <h4 class="text-white fw-bold mb-4">Live <span style="color: var(--theme-vibrant)">Events</span></h4>
+                <div class="row g-4" id="container-events">
+                    {% for event in events_data %}
+                    <div class="col-xxl-3 col-xl-3 col-md-6 p-1">
+                        <div class="event-card-compact" data-artist-id="{{ event.Eventslug }}">
+                            <div class="img-container">
+                                <a href="{% url 'TicketMasterEventDetailsPage' event.Eventslug %}">
+                                    <!-- <img src="{{ event.image }}" alt="{{ event.name }}"> -->
+                                    <img src="{{ event.BannerImageURL|default:'/static/images/no-image.png' }}">
+                                </a>
+                            </div>
+                            <div class="p-3">
+                                <h6 class="text-white text-truncate mb-1">{{ event.EventTitle }}</h6>
+                                <span class="small text-white-50"><i class="bi bi-geo-alt"></i> {{ event.EventCity }}</span>
+                                <a href="{% url 'TicketMasterEventDetailsPage' event.Eventslug %}" class="btn-book-sm w-100 mt-3 d-block text-center text-decoration-none py-2" style="background: var(--theme-vibrant); color: var(--theme-navy); font-weight: 700; border-radius: 8px;">Book Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div id="loading-spinner" class="text-center py-5" style="display: none;">
+                    <div class="spinner-border" style="color: var(--theme-vibrant)" role="status"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock bodyContent %}
+
+{% block extraJs %}
+<script>
+
+    let container;
+    let seenArtists = new Set();
+    let nextUrl = null;
+
+    // ✅ MULTI ARRAYS
+    let selectedCategories = [];
+    let selectedLanguages = [];
+
+    function getFilters() {
+        const params = new URLSearchParams()
+
+        // ✅ categories
+        selectedCategories.forEach(id => {
+            params.append("category_id", id)
+        })
+
+        // ✅ languages
+        selectedLanguages.forEach(id => {
+            params.append("language", id)
+        })
+
+        return params.toString()
+    }
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        container = document.getElementById("container-events");
+
+        let loading = false;
+
+        nextUrl = `/api/events/?page=1`;
+
+        document.querySelectorAll(".event-card-compact").forEach(card => {
+            seenArtists.add(String(card.getAttribute("data-artist-id")));
+        });
+
+        // Carousel
+        if (window.jQuery && window.jQuery.fn.owlCarousel) {
+            window.jQuery(".hero-slider-container").owlCarousel({
+                items: 1,
+                loop: true,
+                autoplay: true,
+                autoplayTimeout: 6000,
+                smartSpeed: 1000,
+                animateOut: 'fadeOut',
+                dots: false,
+                nav: false
+            });
+        }
+
+        const loadMore = () => {
+            if (loading || !nextUrl) return;
+
+            loading = true;
+            document.getElementById('loading-spinner').style.display = 'block';
+
+            fetch(nextUrl)
+                .then(res => res.json())
+                .then(data => {
+
+                    nextUrl = data.next || null;
+
+                    data.results.forEach(event => {
+
+                        if (seenArtists.has(String(event.id))) return;
+                        seenArtists.add(String(event.id));
+
+                        const cardHtml = `
+                            <div class="col-xxl-3 col-xl-3 col-md-6 p-1">
+                                <div class="event-card-compact" data-artist-id="${event.id}">
+                                    <div class="img-container">
+                                        <a href="/event_details/${event.id}/">
+                                            <img src="${event.image}">
+                                        </a>
+                                    </div>
+                                    <div class="p-3">
+                                        <h6 class="text-white text-truncate mb-1">${event.name}</h6>
+                                        <span class="small text-white-50">
+                                            <i class="bi bi-geo-alt"></i> ${event.city || ''}
+                                        </span>
+                                        <a href="/event_details/${event.id}/"
+                                           class="btn-book-sm w-100 mt-3 d-block text-center text-decoration-none py-2"
+                                           style="background: var(--theme-vibrant); color: var(--theme-navy); font-weight: 700; border-radius: 8px;">
+                                           Book Now
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>`;
+
+                        container.insertAdjacentHTML("beforeend", cardHtml);
+                    });
+
+                    loading = false;
+                    document.getElementById('loading-spinner').style.display = 'none';
+                })
+                .catch(() => {
+                    loading = false;
+                    document.getElementById('loading-spinner').style.display = 'none';
+                });
+        };
+
+        window.addEventListener("scroll", () => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 1000) {
+                loadMore();
+            }
+        });
+
+        window.loadMore = loadMore;
+    });
+
+
+    // ✅ CATEGORY MULTI SELECT
+    document.querySelectorAll("[data-category-id]").forEach(pill => {
+        pill.addEventListener("click", function () {
+
+            const id = this.dataset.categoryId
+
+            this.classList.toggle("active")
+
+            if (selectedCategories.includes(id)) {
+                selectedCategories = selectedCategories.filter(x => x !== id)
+            } else {
+                selectedCategories.push(id)
+            }
+
+            container.innerHTML = ""
+            seenArtists.clear()
+
+            nextUrl = `/api/events/?page=1&${getFilters()}`
+            window.loadMore()
+        })
+    })
+
+
+    // ✅ LANGUAGE MULTI SELECT
+    document.querySelectorAll("[data-language-id]").forEach(pill => {
+        pill.addEventListener("click", function () {
+
+            const id = this.dataset.languageId
+
+            this.classList.toggle("active")
+
+            if (selectedLanguages.includes(id)) {
+                selectedLanguages = selectedLanguages.filter(x => x !== id)
+            } else {
+                selectedLanguages.push(id)
+            }
+
+            container.innerHTML = ""
+            seenArtists.clear()
+
+            nextUrl = `/api/events/?page=1&${getFilters()}`
+            window.loadMore()
+        })
+    })
+
+
+    // form submit
+    document.getElementById("filter-form").addEventListener("submit", function(e) {
+        e.preventDefault()
+
+        container.innerHTML = ""
+        seenArtists.clear()
+
+        nextUrl = `/api/events/?page=1&${getFilters()}`
+        window.loadMore()
+    })
+
+
+    document.getElementById("clear-filters").addEventListener("click", function () {
+
+        // Clear selected arrays
+        selectedCategories = [];
+        selectedLanguages = [];
+
+        // Remove active UI state
+        document.querySelectorAll(".filter-pill").forEach(p => {
+            p.classList.remove("active");
+        });
+
+        // Reset event list
+        container.innerHTML = "";
+        seenArtists.clear();
+
+        // Reset API URL (no filters)
+        nextUrl = `/api/events/?page=1`;
+
+        // Reload data
+        window.loadMore();
+    });
+
+</script>
+{% endblock extraJs %}

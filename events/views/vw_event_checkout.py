@@ -17,4 +17,4 @@ class EventCheckoutView(View):
             'temp_booking_id' : temp_booking_id,
         }
 
-        return render(request, 'events/event-checkout.html', context)
+        return render(request, 'website/events/event-checkout.html', context)

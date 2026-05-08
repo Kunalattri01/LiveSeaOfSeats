@@ -11,7 +11,7 @@ from events.services.whatsapp_service import send_whatsapp_message
 def send_ticket_email(user_email, booking_data, pdf_path):
 
     html_content = render_to_string(
-        'mail_templates/event_ticket_mail.html',
+        'emails/event_ticket_mail.html',
         {'booking_data': booking_data}
     )
 
@@ -112,38 +112,3 @@ def process_ticket_email_async(request, booking):
 
     thread.daemon = True   # important
     thread.start()
-
-
-
-
-
-
-
-
-
-
-
-
-
-# from django.core.mail import EmailMessage
-# from django.template.loader import render_to_string
-# from django.conf import settings
-
-# def send_ticket_email(user_email, booking_data, pdf_path):
-
-#     html_content = render_to_string(
-#         'mail_templates/event_ticket_mail.html',
-#         {'booking_data': booking_data}
-#     )
-
-#     email = EmailMessage(
-#         subject="Your Ticket Booking 🎟",
-#         body=html_content,
-#         from_email=settings.EMAIL_HOST_USER,
-#         to=[user_email],
-#     )
-
-#     email.content_subtype = "html"
-
-#     email.attach_file(pdf_path)
-#     email.send()

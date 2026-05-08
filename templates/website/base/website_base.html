@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'website/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'website/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'website/css/animate.css' %}">
+    <link rel="stylesheet" href="{% static 'website/css/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'website/css/magnific-popup.css' %}">
+    <link rel="stylesheet" href="{% static 'website/css/odometer.css' %}">
+    <link rel="stylesheet" href="{% static 'website/css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'website/css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'website/css/nice-select.css' %}">
+    <link rel="stylesheet" href="{% static 'website/css/jquery.animatedheadline.css' %}">
+    <link rel="stylesheet" href="{% static 'website/css/main.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="{% static 'website/images/favicon1.png' %}" type="image/x-icon">
+
+    <script nowprocket data-noptimize="1" data-cfasync="false" data-wpfc-render="false" seraph-accel-crit="1" data-no-defer="1">
+        (function () {
+            var script = document.createElement("script");
+            script.async = 1;
+            script.src = 'https://emrldtp.cc/NTI0MjU2.js?t=524256';
+            document.head.appendChild(script);
+        })();
+    </script>
+
+    <title>{% block title %} SeaOfSeats  - Online Ticket Booking Website HTML Template {% endblock title %}</title>
+</head>
+
+<body>
+
+    <!-- Preloader begin -->
+    <div class="preloader">
+        <div class="preloader-inner">
+            <div class="preloader-icon">
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay begin -->
+    <div class="overlay"></div>
+    <a href="#0" class="scrollToTop">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    {% if not HeaderSection %}
+        {% include "website/components/header-section.html" %}
+    {% endif %}
+
+
+    {% block banner-section %}
+    {% endblock banner-section %}
+
+    
+    {% if not TitleSearch %}
+        {% include "website/components/title-search.html" %} <!--  have to make changes in it !important -->
+    {% endif %}
+
+
+    {% block bodyContent %}
+    {% endblock bodyContent %}
+    
+
+    {% if not FooterSection %}
+        {% include "website/components/footer.html" %}
+    {% endif %}
+
+    {% block extraJs %} {% endblock extraJs %}
+
+    <script src="{% static 'website/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'website/js/modernizr-3.6.0.min.js' %}"></script>
+    <script src="{% static 'website/js/plugins.js' %}"></script>
+    <script src="{% static 'website/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'website/js/heandline.js' %}"></script>
+    <script src="{% static 'website/js/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'website/js/magnific-popup.min.js' %}"></script>
+    <script src="{% static 'website/js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'website/js/wow.min.js' %}"></script>
+    <script src="{% static 'website/js/countdown.min.js' %}"></script>
+    <script src="{% static 'website/js/odometer.min.js' %}"></script>
+    <script src="{% static 'website/js/viewport.jquery.js' %}"></script>
+    <script src="{% static 'website/js/nice-select.js' %}"></script>
+    <script src="{% static 'website/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="{% static 'website/js/main.js' %}"></script>
+    <!-- <script src="{% static 'website/js/checkout.js' %}"></script> -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</body>
+</html>

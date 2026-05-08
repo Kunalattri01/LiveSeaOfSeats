@@ -23,4 +23,4 @@ class EventDetailsView(View):
             'total_days': total_days,
         }
 
-        return render(request, 'events/event-details.html', context)
+        return render(request, 'website/events/event-details.html', context)

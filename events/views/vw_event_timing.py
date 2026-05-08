@@ -44,4 +44,4 @@ class EventTimingView(View):
             'grouped_shows' : convert_to_dict(grouped_data),
         }
 
-        return render(request, 'events/event-timing.html', context)
+        return render(request, 'website/events/event-timing.html', context)

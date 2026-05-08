@@ -8,4 +8,4 @@ class ContactView(View):
             'TitleSearch': True
         }
         
-        return render(request, 'contact/contact.html', context)
+        return render(request, 'website/contact/contact.html', context)

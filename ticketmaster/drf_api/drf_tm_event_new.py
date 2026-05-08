@@ -44,9 +44,8 @@ class TicketMasterAPINewView(APIView):
             ).filter(is_active=True)
 
         if country:
-            # queryset = queryset.filter(venue__city__country__iexact=country)
             queryset = queryset.filter(
-                            showtime__venue__city__country__iexact=country
+                            showtime__venue__city__country_name__iexact=country
                         ).distinct()
 
         # APPLY FILTERS

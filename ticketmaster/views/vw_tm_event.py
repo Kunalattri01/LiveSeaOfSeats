@@ -143,7 +143,7 @@ class TicketMasterEventsView(View):
             unique_result.add(event["id"])
             events_data.append(event)
 
-        return render(request, 'ticketmaster/tm_events.html', {
+        return render(request, 'website/ticketmaster/tm_events.html', {
             'events_data': events_data,
             'hero_events': hero_events,
             'categories_filters' : get_filter_categories(), # categories filters
@@ -250,7 +250,7 @@ class TicketMasterEventsView(View):
 
 
 
-#         return render(request, 'ticketmaster/tm_events.html', {
+#         return render(request, 'website/ticketmaster/tm_events.html', {
 #             'events_data': events_data,
 #             'TitleSearch' : True,
 #             'ask_user_mail' : True,

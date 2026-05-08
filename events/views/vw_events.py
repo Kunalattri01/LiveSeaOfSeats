@@ -55,7 +55,7 @@ class EventView(View):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
 
             html = render_to_string(
-                "events/partials/event_cards.html",
+                "website/events/partials/event_cards.html",
                 {"events_data": events_data},
                 request=request
             )
@@ -76,4 +76,4 @@ class EventView(View):
             'TitleSearch' : True
         }
 
-        return render(request, 'events/events.html', context)
+        return render(request, 'website/events/events.html', context)

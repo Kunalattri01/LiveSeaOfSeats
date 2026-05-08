@@ -34,8 +34,7 @@ class TicketMasterEventDetailsView(View):
             
             cache.set(venue_cache_key, venue_list, 60)
             
-        print('venue_list : ', venue_list)
-        return render(request, 'ticketmaster/tm_event_details_new.html', {
+        return render(request, 'website/ticketmaster/tm_event_details_new.html', {
             "event": hero_event,
             "venue": venue_list,
             'TitleSearch' : True,

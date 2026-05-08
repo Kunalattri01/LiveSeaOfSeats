@@ -82,7 +82,7 @@ class TicketMasterEventsPageView(View):
 
 
 
-        return render(request, 'ticketmaster/tm_events_new.html', {
+        return render(request, 'website/ticketmaster/tm_events_new.html', {
             'TitleSearch': True,
             'ask_user_mail': True,
             'hero_events': hero_events,

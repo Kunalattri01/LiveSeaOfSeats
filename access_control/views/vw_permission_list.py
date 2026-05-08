@@ -20,7 +20,7 @@ class PermissionEntryView(View):
             "menus": menus
         }
 
-        return render(request, "access_control/permission_list.html", context)
+        return render(request, "dashboard/access_control/permission_list.html", context)
 
 
 

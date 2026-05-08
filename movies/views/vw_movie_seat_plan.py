@@ -8,4 +8,4 @@ class MovieSeatPlanView(View):
             'TitleSearch' : True
         }
 
-        return render(request, 'movies/movie-seat-plan.html', context)
+        return render(request, 'website/movies/movie-seat-plan.html', context)

@@ -1,0 +1,561 @@
+{% extends "website/base/website_base.html" %}
+{% load static %}
+
+{% block title %}
+SeaOfSeats - Terms & Conditions
+{% endblock title %}
+
+{% block banner-section %}
+
+<!-- Banner Section -->
+<section class="main-page-header speaker-banner bg_img"
+         data-background="{% static 'website/images/banner/banner-ticketmaster.png' %}">
+
+    <div class="banner-overlay"></div>
+
+    <div class="container position-relative">
+        <div class="speaker-banner-content">
+
+            <span class="legal-badge">
+                LEGAL INFORMATION
+            </span>
+
+            <h2 class="title mt-3">
+                Terms & Conditions
+            </h2>
+
+            <ul class="breadcrumb">
+                <li>
+                    <a href="{% url 'TicketMasterEventsPage' %}">
+                        Home
+                    </a>
+                </li>
+                <li>
+                    Terms & Conditions
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</section>
+
+{% endblock banner-section %}
+
+
+{% block bodyContent %}
+
+<style>
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* ── PALETTE (matches SeaOfSeats navy / teal theme) ── */
+    :root {
+        --bg-page:       #0066ff00;   /* deep navy – site background */
+        --bg-card:       #132338;   /* slightly lighter navy card  */
+        --bg-card-alt:   #0f1e30;   /* sidebar / alternate card    */
+        --border:        rgba(255,255,255,0.07);
+        --accent:        #00c896;   /* teal-green – matches CTA    */
+        --accent-soft:   rgba(0,200,150,0.10);
+        --accent-glow:   rgba(0,200,150,0.22);
+        --text-primary:  #ffffff;
+        --text-body:     rgba(255,255,255,0.80);
+        --text-muted:    rgba(255,255,255,0.50);
+        --radius-card:   20px;
+        --radius-badge:  50px;
+        --shadow-card:   0 8px 32px rgba(0,0,0,0.35);
+    }
+
+    /* ── PAGE BACKGROUND ── */
+    .terms-section {
+        background: var(--bg-page);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* subtle radial glow top-right like the site hero */
+    .terms-section::before {
+        content: "";
+        position: absolute;
+        top: -120px;
+        right: -160px;
+        width: 560px;
+        height: 560px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(0,200,150,0.08) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    /* ── BANNER ── */
+    .banner-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.50);
+    }
+
+    /* ── LEGAL BADGE ── */
+    .legal-badge {
+        display: inline-block;
+        background: var(--accent-soft);
+        color: var(--accent);
+        border: 1px solid var(--accent-glow);
+        padding: 9px 20px;
+        border-radius: var(--radius-badge);
+        font-size: 12px;
+        letter-spacing: 2.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    /* ── MAIN CARD ── */
+    .terms-wrapper {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-card);
+        padding: 55px;
+        box-shadow: var(--shadow-card);
+    }
+
+    /* ── TYPOGRAPHY ── */
+    .terms-wrapper h1,
+    .terms-wrapper h2,
+    .terms-wrapper h3,
+    .terms-wrapper h4 {
+        color: var(--text-primary);
+    }
+
+    .terms-wrapper p,
+    .terms-wrapper li {
+        color: var(--text-body);
+        line-height: 30px;
+        font-size: 15.5px;
+    }
+
+    /* ── LIST ── */
+    .terms-wrapper ul {
+        padding-left: 20px;
+    }
+
+    .terms-wrapper ul li {
+        /* margin-bottom: 12px; */
+        position: relative;
+    }
+
+    /* teal bullet markers */
+    .terms-wrapper ul li::marker {
+        color: var(--accent);
+    }
+
+    /* ── SECTION HEADING ── */
+    .terms-heading {
+        position: relative;
+        padding-left: 18px;
+        margin-bottom: 20px;
+        font-weight: 700;
+        font-size: 22px;
+        color: var(--text-primary);
+    }
+
+    .terms-heading::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 4px;
+        width: 4px;
+        height: 26px;
+        border-radius: 20px;
+        background: var(--accent);
+    }
+
+    /* ── DIVIDER ── */
+    .terms-divider {
+        width: 80px;
+        height: 3px;
+        background: var(--accent);
+        border-radius: 50px;
+        margin: 18px auto 28px;
+    }
+
+    /* ── META ── */
+    .terms-meta {
+        color: var(--text-muted);
+        font-size: 14.5px;
+    }
+
+    /* ── INTRO ── */
+    .terms-intro {
+        font-size: 16.5px;
+        line-height: 32px;
+        color: var(--text-body);
+    }
+
+    /* ── LINKS ── */
+    .terms-wrapper a {
+        color: var(--accent);
+        transition: color 0.25s;
+        text-decoration: none;
+    }
+
+    .terms-wrapper a:hover {
+        color: #ffffff;
+    }
+
+    /* ── CONTACT BOX ── */
+    .contact-box {
+        background: var(--accent-soft);
+        border: 1px solid var(--accent-glow);
+        padding: 32px;
+        border-radius: 16px;
+    }
+
+    /* ── TABLE OF CONTENTS ── */
+    .toc-box {
+        position: sticky;
+        top: 110px;
+        background: var(--bg-card-alt);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 28px 24px;
+        box-shadow: var(--shadow-card);
+    }
+
+    .toc-box h5 {
+        color: var(--text-primary);
+        margin-bottom: 20px;
+        font-size: 15px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    /* teal top-bar accent on TOC */
+    .toc-box::before {
+        content: "";
+        display: block;
+        width: 40px;
+        height: 3px;
+        background: var(--accent);
+        border-radius: 50px;
+        margin-bottom: 18px;
+    }
+
+    .toc-box a {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--text-muted);
+        margin-bottom: 12px;
+        transition: color 0.2s, padding-left 0.2s;
+        font-size: 13.5px;
+        text-decoration: none;
+    }
+
+    .toc-box a::before {
+        content: "";
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--accent);
+        opacity: 0.4;
+        flex-shrink: 0;
+        transition: opacity 0.2s;
+    }
+
+    .toc-box a:hover {
+        color: var(--accent);
+        padding-left: 4px;
+    }
+
+    .toc-box a:hover::before {
+        opacity: 1;
+    }
+
+    /* ── SECTION GAP ── */
+    .section-gap {
+        margin-bottom: 52px;
+    }
+
+    /* ── TABLET ── */
+    @media (max-width: 991px) {
+        .toc-box {
+            position: relative;
+            top: 0;
+            margin-bottom: 30px;
+        }
+
+        .terms-wrapper {
+            padding: 40px 30px;
+        }
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 767px) {
+        .terms-section {
+            padding-top: 60px;
+            padding-bottom: 60px;
+        }
+
+        .terms-wrapper {
+            padding: 26px 18px;
+            border-radius: 16px;
+        }
+
+        .terms-heading {
+            font-size: 19px;
+            line-height: 28px;
+        }
+
+        .terms-wrapper p,
+        .terms-wrapper li {
+            font-size: 14px;
+            line-height: 27px;
+        }
+
+        .terms-intro {
+            font-size: 14.5px;
+            line-height: 28px;
+        }
+
+        .toc-box {
+            padding: 20px 18px;
+            border-radius: 14px;
+        }
+
+        .toc-box a {
+            font-size: 13px;
+        }
+
+        .contact-box {
+            padding: 22px 18px;
+        }
+    }
+
+</style>
+
+<section class="terms-section padding-top padding-bottom">
+
+    <div class="container">
+
+        <div class="row">
+
+            <!-- TOC -->
+            <div class="col-lg-3 mb-4 mb-lg-0">
+
+                <div class="toc-box">
+
+                    <h5>Quick Navigation</h5>
+
+                    <a href="#definitions">1. Definitions</a>
+                    <a href="#acceptance">2. Acceptance</a>
+                    <a href="#services">3. Services</a>
+                    <a href="#payments">4. Payments</a>
+                    <a href="#refunds">5. Refunds</a>
+                    <a href="#rescheduling">6. Rescheduling</a>
+                    <a href="#responsibilities">7. Responsibilities</a>
+                    <a href="#privacy">8. Privacy</a>
+                    <a href="#liability">9. Liability</a>
+                    <a href="#thirdparty">10. Third-Party Services</a>
+                    <a href="#prohibited">11. Prohibited Use</a>
+                    <a href="#intellectual">12. Intellectual Property</a>
+                    <a href="#changes">13. Changes to Terms</a>
+                    <a href="#law">14. Governing Law</a>
+                    <a href="#contact">15. Contact</a>
+
+                </div>
+
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+
+                <div class="terms-wrapper">
+
+                    <!-- Header -->
+                    <div class="text-center mb-5">
+                        <h2>Terms & Conditions</h2>
+                        <div class="terms-divider"></div>
+                        <p class="terms-meta mb-2">Effective Date: 6th May 2026</p>
+                        <p class="terms-meta">
+                            Website:
+                            <a href="https://www.seaofseats.com">www.seaofseats.com</a>
+                        </p>
+                    </div>
+
+                    <!-- Intro -->
+                    <div class="section-gap">
+                        <p class="terms-intro">
+                            Welcome to <strong>Sea of Seats</strong>
+                            ("Platform", "we", "our", "us").
+                            By accessing or using our website,
+                            mobile application, or services,
+                            you agree to comply with and be bound by
+                            the following Terms and Conditions.
+                        </p>
+                    </div>
+
+                    <!-- 1 -->
+                    <div class="section-gap" id="definitions">
+                        <h4 class="terms-heading">1. Definitions</h4>
+                        <ul>
+                            <li><strong>Platform:</strong> Refers to the Sea of Seats website and application.</li>
+                            <li><strong>User:</strong> Refers to any individual or entity accessing or using the Platform.</li>
+                            <li><strong>Services:</strong> Refers to ticket booking services for flights, events, movies, and other experiences.</li>
+                            <li><strong>Third Parties:</strong> Refers to airlines, event organizers, ticket providers, payment gateways, and other service providers.</li>
+                        </ul>
+                    </div>
+
+                    <!-- 2 -->
+                    <div class="section-gap" id="acceptance">
+                        <h4 class="terms-heading">2. Acceptance of Terms</h4>
+                        <p>By using the Platform, you confirm that:</p>
+                        <ul>
+                            <li>You are at least 18 years old.</li>
+                            <li>You have the legal capacity to enter into a binding agreement.</li>
+                            <li>You agree to these Terms and Conditions in full.</li>
+                        </ul>
+                        <p>If you do not agree, you must not use the Platform.</p>
+                    </div>
+
+                    <!-- 3 -->
+                    <div class="section-gap" id="services">
+                        <h4 class="terms-heading">3. Services Provided</h4>
+                        <p>Sea of Seats acts as an intermediary platform that enables users to:</p>
+                        <ul>
+                            <li>Search and compare tickets</li>
+                            <li>Book flights, events, and experiences</li>
+                            <li>Access third-party services</li>
+                        </ul>
+                        <p>Sea of Seats does not own, operate, or control airlines, cinemas, or event venues.</p>
+                    </div>
+
+                    <!-- 4 -->
+                    <div class="section-gap" id="payments">
+                        <h4 class="terms-heading">4. Booking and Payments</h4>
+                        <ul>
+                            <li>All bookings are subject to availability and confirmation.</li>
+                            <li>Prices are subject to change until the booking is confirmed.</li>
+                            <li>Payments are processed through secure third-party payment gateways.</li>
+                            <li>Sea of Seats is not responsible for payment failures caused by banking or network issues.</li>
+                        </ul>
+                    </div>
+
+                    <!-- 5 -->
+                    <div class="section-gap" id="refunds">
+                        <h4 class="terms-heading">5. Cancellation and Refund Policy</h4>
+                        <ul>
+                            <li>Cancellation and refund policies are determined by the respective airline, event organizer, or service provider.</li>
+                            <li>Service or convenience fees charged by Sea of Seats may be non-refundable.</li>
+                            <li>Refund timelines depend on third-party providers.</li>
+                        </ul>
+                    </div>
+
+                    <!-- 6 -->
+                    <div class="section-gap" id="rescheduling">
+                        <h4 class="terms-heading">6. Modifications and Rescheduling</h4>
+                        <ul>
+                            <li>Any modification or rescheduling of bookings is subject to the policies of the relevant service provider.</li>
+                            <li>Additional charges may apply.</li>
+                            <li>Users are responsible for reviewing fare rules before booking.</li>
+                        </ul>
+                    </div>
+
+                    <!-- 7 -->
+                    <div class="section-gap" id="responsibilities">
+                        <h4 class="terms-heading">7. User Responsibilities</h4>
+                        <ul>
+                            <li>Provide accurate and complete information</li>
+                            <li>Use the Platform lawfully</li>
+                            <li>Avoid fraudulent or unauthorized bookings</li>
+                        </ul>
+                    </div>
+
+                    <!-- 8 -->
+                    <div class="section-gap" id="privacy">
+                        <h4 class="terms-heading">8. Privacy</h4>
+                        <p>
+                            Use of the Platform is also governed by the Privacy Policy.
+                            Personal data is collected and processed in accordance with applicable laws.
+                        </p>
+                    </div>
+
+                    <!-- 9 -->
+                    <div class="section-gap" id="liability">
+                        <h4 class="terms-heading">9. Limitation of Liability</h4>
+                        <ul>
+                            <li>Flight delays, cancellations, or schedule changes</li>
+                            <li>Event cancellations or modifications</li>
+                            <li>Acts or omissions of third-party providers</li>
+                            <li>Technical issues, downtime, or errors on the Platform</li>
+                        </ul>
+                    </div>
+
+                    <!-- 10 -->
+                    <div class="section-gap" id="thirdparty">
+                        <h4 class="terms-heading">10. Third-Party Services</h4>
+                        <p>
+                            The Platform integrates with third-party providers.
+                            Sea of Seats does not control and is not responsible
+                            for their services, policies, or performance.
+                        </p>
+                    </div>
+
+                    <!-- 11 -->
+                    <div class="section-gap" id="prohibited">
+                        <h4 class="terms-heading">11. Prohibited Use</h4>
+                        <ul>
+                            <li>Use automated tools such as bots or scrapers</li>
+                            <li>Attempt unauthorized access to the Platform</li>
+                            <li>Resell tickets without authorization</li>
+                        </ul>
+                    </div>
+
+                    <!-- 12 -->
+                    <div class="section-gap" id="intellectual">
+                        <h4 class="terms-heading">12. Intellectual Property</h4>
+                        <p>
+                            All content on the Platform, including text,
+                            graphics, logos, and software, is the property of Sea of Seats
+                            and is protected by applicable intellectual property laws.
+                        </p>
+                    </div>
+
+                    <!-- 13 -->
+                    <div class="section-gap" id="changes">
+                        <h4 class="terms-heading">13. Changes to Terms</h4>
+                        <p>
+                            Sea of Seats reserves the right to update or modify these Terms at any time.
+                            Continued use of the Platform constitutes acceptance of the updated Terms.
+                        </p>
+                    </div>
+
+                    <!-- 14 -->
+                    <div class="section-gap" id="law">
+                        <h4 class="terms-heading">14. Governing Law</h4>
+                        <p>
+                            These Terms and Conditions are governed by the laws of India.
+                            Any disputes shall be subject to the jurisdiction of the courts in Delhi, India.
+                        </p>
+                    </div>
+
+                    <!-- 15 -->
+                    <div class="contact-box" id="contact">
+                        <h4 class="terms-heading">15. Contact Information</h4>
+                        <p>For any questions regarding these Terms, please contact:</p>
+                        <p class="mt-3 mb-0">
+                            <strong>Email:</strong>
+                            <a href="mailto:info@seaofseats.com">info@seaofseats.com</a>
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock bodyContent %}

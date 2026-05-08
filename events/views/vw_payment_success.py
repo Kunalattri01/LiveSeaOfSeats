@@ -15,4 +15,4 @@ class PaymentSuccessView(View):
             'booking_id' : booking_id,
         }
 
-        return render(request, 'events/payment-success.html', context)
+        return render(request, 'website/events/payment-success.html', context)

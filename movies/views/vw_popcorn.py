@@ -8,4 +8,4 @@ class PopcornView(View):
             'TitleSearch' : True
         }
 
-        return render(request, 'movies/popcorn.html', context)
+        return render(request, 'website/movies/popcorn.html', context)
