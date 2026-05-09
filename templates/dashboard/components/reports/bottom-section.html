@@ -1,0 +1,179 @@
+<!-- =============================================
+   COMPONENT: Bottom Section
+   File: bottom-section.html
+   Usage: Contains three sub-sections:
+          1. Quick Actions — 2×2 shortcut grid
+          2. Recent Orders — list of last 4 orders
+          3. Performance Insights — 3 KPI circles
+   ============================================= -->
+
+<!-- Quick Actions + Recent Orders -->
+<div class="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
+
+  <!-- Quick Actions -->
+  <div class="card-event">
+    <h3 class="mb-6">Quick Actions</h3>
+    <div class="grid grid-cols-2 gap-4">
+
+      <a href="./events.html" class="border-border hover:border-text hover:bg-text/5 group flex cursor-pointer flex-col items-center gap-3 rounded-lg border-2 border-dashed p-4 transition-all">
+        <div class="group-hover:text-text flex h-12 w-12 items-center justify-center rounded-lg bg-blue-500 transition-colors group-hover:bg-blue-600">
+          <i class="ph ph-calendar-plus text-2xl text-white"></i>
+        </div>
+        <span class="text-text text-sm font-medium">Create Event</span>
+      </a>
+
+      <a href="./team-roles.html" class="border-border hover:border-text hover:bg-text/5 group flex cursor-pointer flex-col items-center gap-3 rounded-lg border-2 border-dashed p-4 transition-all">
+        <div class="group-hover:text-text flex h-12 w-12 items-center justify-center rounded-lg bg-green-500 transition-colors group-hover:bg-green-600">
+          <i class="ph ph-users text-2xl text-white"></i>
+        </div>
+        <span class="text-text text-sm font-medium">Add Team</span>
+      </a>
+
+      <a href="./analytics.html" class="border-border hover:border-text hover:bg-text/5 group flex cursor-pointer flex-col items-center gap-3 rounded-lg border-2 border-dashed p-4 transition-all">
+        <div class="group-hover:text-text flex h-12 w-12 items-center justify-center rounded-lg bg-purple-500 transition-colors group-hover:bg-purple-600">
+          <i class="ph ph-file-text text-2xl text-white"></i>
+        </div>
+        <span class="text-text text-sm font-medium">Generate Report</span>
+      </a>
+
+      <a href="./settings.html" class="border-border hover:border-text hover:bg-text/5 group flex cursor-pointer flex-col items-center gap-3 rounded-lg border-2 border-dashed p-4 transition-all">
+        <div class="bg-muted group-hover:bg-muted/80 group-hover:text-text flex h-12 w-12 items-center justify-center rounded-lg transition-colors">
+          <i class="ph ph-gear text-2xl text-white"></i>
+        </div>
+        <span class="text-text text-sm font-medium">Settings</span>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- Recent Orders -->
+  <div class="card-event">
+    <div class="mb-6 flex items-center justify-between">
+      <h3>Recent Orders</h3>
+      <a href="./ordars.html" class="btn-sm flex items-center gap-1">
+        View All
+        <i class="ph ph-arrow-right"></i>
+      </a>
+    </div>
+
+    <div class="space-y-4">
+
+      <!-- Order #12345 — Paid -->
+      <div class="bg-order-card flex items-center gap-4 rounded-lg p-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500">
+          <i class="ph ph-ticket text-2xl text-white"></i>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between">
+            <span class="text-text font-medium">Order #12345</span>
+            <span class="text-text text-sm font-semibold">$150.00</span>
+          </div>
+          <div class="mt-1 flex items-center justify-between">
+            <span class="text-muted text-sm">Sarah Johnson • 2 tickets</span>
+            <span class="rounded-full bg-green-100 px-2 py-1 text-xs text-green-600 dark:bg-green-900/20">Paid</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order #12344 — Pending -->
+      <div class="bg-order-card flex items-center gap-4 rounded-lg p-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500">
+          <i class="ph ph-ticket text-2xl text-white"></i>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between">
+            <span class="text-text font-medium">Order #12344</span>
+            <span class="text-text text-sm font-semibold">$89.00</span>
+          </div>
+          <div class="mt-1 flex items-center justify-between">
+            <span class="text-muted text-sm">Mike Chen • 1 ticket</span>
+            <span class="rounded-full bg-yellow-100 px-2 py-1 text-xs text-yellow-600 dark:bg-yellow-900/20">Pending</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order #12343 — Paid -->
+      <div class="bg-order-card flex items-center gap-4 rounded-lg p-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500">
+          <i class="ph ph-ticket text-2xl text-white"></i>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between">
+            <span class="text-text font-medium">Order #12343</span>
+            <span class="text-text text-sm font-semibold">$120.00</span>
+          </div>
+          <div class="mt-1 flex items-center justify-between">
+            <span class="text-muted text-sm">Emma Wilson • 2 tickets</span>
+            <span class="rounded-full bg-green-100 px-2 py-1 text-xs text-green-600 dark:bg-green-900/20">Paid</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order #12342 — Refunded -->
+      <div class="bg-order-card flex items-center gap-4 rounded-lg p-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-red-500">
+          <i class="ph ph-x-circle text-2xl text-white"></i>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between">
+            <span class="text-text font-medium">Order #12342</span>
+            <span class="text-text text-sm font-semibold">$75.00</span>
+          </div>
+          <div class="mt-1 flex items-center justify-between">
+            <span class="text-muted text-sm">David Brown • 3 tickets</span>
+            <span class="rounded-full bg-red-100 px-2 py-1 text-xs text-red-600 dark:bg-red-900/20">Refunded</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Performance Insights -->
+<div class="card-event mt-6">
+  <h3 class="mb-6">Performance Insights</h3>
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+
+    <!-- Average Order Value -->
+    <div class="text-center">
+      <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-500">
+        <i class="ph ph-currency-dollar text-4xl text-white"></i>
+      </div>
+      <span class="text-text mb-1 text-2xl font-bold">$65.50</span>
+      <p class="text-muted mb-2 text-sm">Average Order Value</p>
+      <p class="flex items-center justify-center gap-1 text-xs text-green-600">
+        <i class="ph ph-trend-up text-sm text-green-600"></i>
+        +5.2% from last month
+      </p>
+    </div>
+
+    <!-- Customer Retention -->
+    <div class="text-center">
+      <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-500">
+        <i class="ph ph-repeat text-4xl text-white"></i>
+      </div>
+      <span class="text-text mb-1 text-2xl font-bold">68%</span>
+      <p class="text-muted mb-2 text-sm">Customer Retention</p>
+      <p class="flex items-center justify-center gap-1 text-xs text-green-600">
+        <i class="ph ph-trend-up text-sm text-green-600"></i>
+        +2.1% from last month
+      </p>
+    </div>
+
+    <!-- Event Success Rate -->
+    <div class="text-center">
+      <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-purple-500">
+        <i class="ph ph-target text-4xl text-white"></i>
+      </div>
+      <span class="text-text mb-1 text-2xl font-bold">89%</span>
+      <p class="text-muted mb-2 text-sm">Event Success Rate</p>
+      <p class="flex items-center justify-center gap-1 text-xs text-red-600">
+        <i class="ph ph-trend-down text-sm text-red-600"></i>
+        -1.3% from last month
+      </p>
+    </div>
+
+  </div>
+</div>

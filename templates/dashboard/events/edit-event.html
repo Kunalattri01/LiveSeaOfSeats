@@ -1,0 +1,1418 @@
+{% extends 'dashboard/base/dashboard_base.html' %} 
+{% block title %} Edit Events- SeaOfSeats {% endblock title %} 
+
+{% block bodyContent %}
+<div class="mx-auto max-w-4xl space-y-6">
+
+    <!-- Page Header -->
+    {% if event_slug %}
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between py-2" >
+            <div>
+                <div class="mb-2 flex items-center gap-3">
+                    <h1 class="text-text text-xl font-bold md:text-2xl"> Cultural Fusion Fest 2025 </h1>
+                    <span class="badges-green text-xs font-medium md:text-sm" >Active</span >
+                </div>
+                <p class="text-small">Last modified 2 hours ago by John Doe</p>
+            </div>
+
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-3 gap-4 text-center sm:gap-6">
+                <div>
+                    <div class="text-text text-lg font-bold">789</div>
+                    <div class="text-muted text-xs">Tickets Sold</div>
+                </div>
+                <div>
+                    <div class="text-text text-lg font-bold">$35,505</div>
+                    <div class="text-muted text-xs">Revenue</div>
+                </div>
+                <div>
+                    <div class="text-text text-lg font-bold">65.8%</div>
+                    <div class="text-muted text-xs">Capacity</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="card-event">
+            <div class="mb-2 flex items-center justify-between">
+                <span class="text-text text-sm font-medium">Event Completion</span>
+                <span class="text-muted text-sm">85%</span>
+            </div>
+            <div class="capacity-bar">
+                <div class="capacity-fill capacity-high" data-capacity="85%"></div>
+            </div>
+            <p class="text-muted mt-2 text-xs"> Complete all sections to publish your event </p>
+        </div>
+    {% endif %}
+    
+
+
+    <!-- Form Tabs -->
+    <div class="bg-card border-border overflow-hidden rounded-lg border">
+
+        <!-- Tab Headers -->
+        <div class="border-border flex flex-wrap gap-2 overflow-x-auto border-b px-4 py-2">
+            <button class="tab-button text-text tab-btn active flex items-center gap-1">
+                <i class="ph ph-info"></i> Basic Info
+            </button>
+            <button class="tab-button text-text tab-btn flex items-center gap-1">
+                <i class="ph ph-file-text"></i> Details
+            </button>
+            <button class="tab-button text-text tab-btn flex items-center gap-1">
+                <i class="ph ph-ticket"></i> Tickets
+            </button>
+            <button class="tab-button text-text tab-btn flex items-center gap-1">
+                <i class="ph ph-image"></i> Media
+            </button>
+            <button class="tab-button text-text tab-btn flex items-center gap-1">
+                <i class="ph ph-gear"></i> Settings
+            </button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="p-2 md:p-6">
+
+            <!-- Basic Info Tab -->
+            <div class="tab-content ">
+                <form class="space-y-6">
+                    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+
+                        <!-- Event Name -->
+                        <div class="form-group lg:col-span-2">
+                            <label for="event_name" class="cursor-pointer">Event Name *</label>
+                            <input type="text" id="event_name" name="event_name" class="input-field" placeholder="Event Name/Title here" required />
+                            <p class="form-help text-muted text-xs md:text-sm"> Choose a clear, descriptive name for your event </p>
+                        </div>
+
+                        <!-- Category -->
+                        <!-- <div class="form-group">
+                            <label>Category *</label>
+                            <div class="select-dropdown w-full">
+                                <div class="select-dropdown-button">
+                                    <span>Music & Entertainment</span>
+                                    <i class="select-toggle-icon ph ph-caret-down"></i>
+                                </div>
+                                <div class="select-dropdown-menu">
+                                    {% for row in dropdown_categories %}
+                                        <div class="select-dropdown-item"> Select category </div>
+                                        <div class="select-dropdown-item"> Music & Entertainment </div>
+                                        <div class="select-dropdown-item"> Conference & Business </div>
+                                        <div class="select-dropdown-item"> Food & Drink </div>
+                                        <div class="select-dropdown-item"> Art & Culture </div>
+                                        <div class="select-dropdown-item"> Sports & Recreation </div>
+                                        <div class="select-dropdown-item"> Other </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div> -->
+
+                        <div class="form-group">
+                            <label for="category">Category *</label>
+                            <select name="category" id="category" class="drp-select2 p-5">
+                                <option value="">Select category</option>
+                                {% for row in dropdown_categories %}
+                                    <option value="{{ row.id }}">{{ row.name|upper }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Event Format-->
+                        <!-- <div class="form-group">
+                            <label>Event Format *</label>
+                            <div class="select-dropdown w-full">
+                                <div class="select-dropdown-button">
+                                    <span>In-Person</span>
+                                    <i class="select-toggle-icon ph ph-caret-down"></i>
+                                </div>
+                                <div class="select-dropdown-menu">
+                                    <div class="select-dropdown-item"> In-Person </div>
+                                    <div class="select-dropdown-item"> Virtual/Online </div>
+                                    <div class="select-dropdown-item"> Hybrid </div>
+                                </div>
+                            </div>
+                        </div> -->
+
+                        <!-- Start Date & Time -->
+                        <div class="form-group">
+                            <label>Start Date & Time *</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <input type="date" id="start_date" name="start_date" class="input-field" required />
+                                <input type="time" id="start_time" name="start_time" class="input-field" required />
+                            </div>
+                        </div>
+
+                        <!-- End Date & Time -->
+                        <div class="form-group">
+                            <label>End Date & Time *</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <input type="date" id="end_date" name="end_date" class="input-field" required />
+                                <input type="time" id="end_time" name="end_time" class="input-field" required />
+                            </div>
+                        </div>
+
+                        <!-- Timezone -->
+                        <div class="form-group">
+                            <label for="time_zone">Timezone</label>
+                            <select name="time_zone" id="time_zone" class="drp-select2">
+                                <option value="">Select category</option>
+                                <option value="Eastern Time (ET)">Eastern Time (ET)</option>
+                                <option value="Central Time (CT)">Central Time (CT)</option>
+                                <option value="Mountain Time (MT)">Mountain Time (MT)</option>
+                                <option value="Pacific Time (PT)">Pacific Time (PT)</option>
+                                <option value="UTC">UTC</option>
+                            </select>
+                        </div>
+
+                        <!-- Language -->
+                        <div class="form-group">
+                            <label for="language">Primary Language</label>
+                            <select name="language" id="language" class="drp-select2">
+                                <option value="">Select Language</option>
+                                {% for row in dropdown_language %}
+                                    <option value="{{ row.id }}">{{ row.name|upper }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Short Description -->
+                        <div class="form-group lg:col-span-2">
+                            <label>Short Description *</label>
+                            <textarea class="input-field" rows="3" maxlength="200" placeholder="Brief description of your event (max 200 characters)" required></textarea>
+                            <p class="text-muted text-xs md:text-sm"> This will appear in event listings and previews </p>
+                        </div>
+
+                        <!-- Tags -->
+                        <div class="form-group lg:col-span-2">
+                            <label for="event_tags">Tags</label>
+                            <select name="event_tags" id="event_tags" class="drp-select2" multiple>
+                                <option value="">Select EventTag</option>
+                                {% for row in dropdown_eventtags %}
+                                    <option value="{{ row.id }}">{{ row.name|upper }}</option>
+                                {% endfor %}
+                            </select>
+                            <p class="text-muted text-xs md:text-sm">
+                                Add relevant tags to help people find your event
+                            </p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        <!-- Details Tab -->
+        <div class="tab-content hidden">
+            <form class="space-y-6">
+                <!-- Venue Information -->
+                <div class="space-y-4">
+                    <h3 class="text-text flex items-center gap-2 text-lg font-semibold">
+                        <i class="ph ph-map-pin text-xl"></i> Venue Information
+                    </h3>
+
+                    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                        <div class="form-group lg:col-span-2">
+                            <label>Venue Name *</label>
+                            <input type="text" class="input-field" value="Metro Cultural Center" required />
+                        </div>
+
+                        <div class="form-group lg:col-span-2">
+                            <label>Address *</label>
+                            <input type="text" class="input-field" value="123 Cultural Avenue" placeholder="Street address" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label>City *</label>
+                            <input type="text" class="input-field" value="New York" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label>State/Province *</label>
+                            <input type="text" class="input-field" value="NY" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label>ZIP/Postal Code</label>
+                            <input type="text" class="input-field" value="10001"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Country *</label>
+                            <div class="select-dropdown w-full">
+                                <div class="select-dropdown-button">
+                                    <span>United States</span>
+                                    <i class="select-toggle-icon ph ph-caret-down"></i>
+                                </div>
+
+                                <div class="select-dropdown-menu">
+                                    <div class="select-dropdown-item"> United States </div>
+                                    <div class="select-dropdown-item"> Canada </div>
+                                    <div class="select-dropdown-item"> United Kingdom </div>
+                                    <div class="select-dropdown-item"> Australia </div>
+                                    <div class="select-dropdown-item"> Germany </div>
+                                    <div class="select-dropdown-item"> France </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group lg:col-span-2">
+                            <label>Venue Instructions</label>
+                            <textarea class="input-field" rows="3" placeholder="Parking information, entrance details, accessibility notes, etc." >
+                                Free parking available. Enter through main entrance on Cultural Avenue. Wheelchair accessible.
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-border" />
+
+                <!-- Event Description -->
+                <div class="space-y-4">
+                    <h3 class="text-text flex items-center gap-2 text-lg font-semibold">
+                        <i class="ph ph-file-text"></i> Event Description
+                    </h3>
+
+                    <div class="form-group">
+                        <label>Full Description *</label>
+                        <textarea class="input-field custom-scrollbar" rows="8" required placeholder="Detailed description of your event...">
+                            Join us for the Cultural Fusion Fest 2025, a vibrant celebration that brings together diverse cultures from around the world. Experience an unforgettable evening filled with:
+
+                            🎵 Live Music Performances from international artists
+                            🍽️ Authentic cuisine from 12 different countries
+                            🎨 Interactive art exhibitions and workshops
+                            💃 Traditional dance performances every hour
+
+                            This family-friendly event welcomes all ages and celebrates the beautiful diversity of our community. Come hungry, leave inspired!
+
+                            What to expect:
+                            - 6+ hours of continuous entertainment
+                            - Food trucks and vendors from around the globe
+                            - Kids' cultural activities and face painting
+                            - Live DJ sets between performances
+                            - Photo opportunities with traditional costumes
+
+                            Don't miss this unique opportunity to experience the world in one location!
+                        </textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                        <div class="form-group">
+                            <label>Age Restrictions</label>
+                            <div class="select-dropdown w-full">
+                            <div class="select-dropdown-button">
+                                <span>All Ages Welcome</span>
+                                <i class="select-toggle-icon ph ph-caret-down"></i>
+                            </div>
+                            <div class="select-dropdown-menu">
+                                <div class="select-dropdown-item"> All Ages Welcome </div>
+                                <div class="select-dropdown-item">18+ Only</div>
+                                <div class="select-dropdown-item">21+ Only</div>
+                                <div class="select-dropdown-item"> Family Event (Under 16 with adult) </div>
+                            </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Dress Code</label>
+                            <div class="select-dropdown w-full">
+                            <div class="select-dropdown-button">
+                                <span>Casual</span>
+                                <i class="select-toggle-icon ph ph-caret-down"></i>
+                            </div>
+                            <div class="select-dropdown-menu">
+                                <div class="select-dropdown-item">Casual</div>
+                                <div class="select-dropdown-item">Business Casual</div>
+                                <div class="select-dropdown-item">Formal</div>
+                                <div class="select-dropdown-item">Themed/Costume</div>
+                                <div class="select-dropdown-item">No Dress Code</div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-border" />
+
+                <!-- Additional Information -->
+                <div class="space-y-4">
+                    <h3 class="text-text flex items-center gap-2 text-lg font-semibold">
+                        <i class="ph ph-info"></i> Additional Information
+                    </h3>
+
+                    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                        <div class="form-group">
+                            <label>Contact Email</label>
+                            <input type="email" class="input-field" value="info@culturalfusionfest.com" placeholder="Event contact email" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Contact Phone</label>
+                            <input type="tel" class="input-field" value="+1 (555) 123-4567" placeholder="Event contact phone" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Website</label>
+                            <input type="url" class="input-field" value="https://culturalfusionfest.com" placeholder="Event website URL" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Social Media</label>
+                            <input type="url" class="input-field" value="https://instagram.com/culturalfusionfest" placeholder="Instagram, Facebook, Twitter, etc." />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" class="border-border rounded" checked />
+                            <span class="text-text text-sm font-medium" >This event allows photography and videography</span >
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" class="border-border rounded" checked />
+                            <span class="text-text text-sm font-medium" >Wheelchair accessible venue</span >
+                        </label>
+                    </div>
+                </div>
+            </form>
+        </div>
+    
+        <!-- Tickets Tab -->
+        <div class="tab-content hidden p-2 md:p-6">
+            <div class="space-y-6">
+            <div class="flex items-center justify-between">
+                <h3
+                class="text-text flex items-center gap-2 text-lg font-semibold"
+                >
+                <i class="ph ph-ticket text-xl"></i>
+                Ticket Types
+                </h3>
+                <button
+                type="button"
+                id="add-ticket-type"
+                class="btn-secondary"
+                >
+                <i class="ph ph-plus"></i>
+                Add Ticket Type
+                </button>
+            </div>
+
+            <!-- Ticket Type 1 -->
+            <div class="card-event">
+                <div class="mb-4 flex items-center justify-between">
+                <h4 class="text-text font-medium">General Admission</h4>
+                <button
+                    type="button"
+                    class="btn-secondary flex items-center gap-2"
+                >
+                    <i class="ph ph-trash text-sm"></i>
+                </button>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <div class="">
+                    <label class="text-text text-sm font-medium"
+                    >Price ($) *</label
+                    >
+                    <input
+                    type="number"
+                    class="input-field"
+                    value="45.00"
+                    step="0.01"
+                    min="0"
+                    required
+                    />
+                </div>
+
+                <div class="">
+                    <label class="text-text text-sm font-medium"
+                    >Quantity Available *</label
+                    >
+                    <input
+                    type="number"
+                    class="input-field"
+                    value="800"
+                    min="1"
+                    required
+                    />
+                </div>
+
+                <div class="">
+                    <label class="text-text text-sm font-medium"
+                    >Sold</label
+                    >
+                    <input
+                    type="number"
+                    class="input-field"
+                    value="523"
+                    readonly
+                    />
+                </div>
+
+                <div class="lg:col-span-2">
+                    <label class="text-text text-sm font-medium"
+                    >Description</label
+                    >
+                    <textarea
+                    class="input-field"
+                    rows="2"
+                    placeholder="Describe what's included with this ticket type"
+                    >
+General admission includes access to all performances, food vendors, and cultural exhibitions.</textarea
+                    >
+                </div>
+
+                <div class="">
+                    <label class="text-text text-sm font-medium"
+                    >Sale End Date</label
+                    >
+                    <input
+                    type="date"
+                    class="input-field"
+                    />
+                </div>
+                </div>
+
+                <div class="mt-4 space-y-3">
+                <label class="flex items-center gap-2">
+                    <input
+                    type="checkbox"
+                    class="border-border rounded"
+                    checked
+                    />
+                    <span class="text-text text-sm font-medium"
+                    >Visible to public</span
+                    >
+                </label>
+                <label class="flex items-center gap-2">
+                    <input
+                    type="checkbox"
+                    class="border-border rounded"
+                    />
+                    <span class="text-text text-sm font-medium"
+                    >Requires approval</span
+                    >
+                </label>
+                <label class="flex items-center gap-2">
+                    <input
+                    type="checkbox"
+                    class="border-border rounded"
+                    />
+                    <span class="text-text text-sm font-medium"
+                    >Transferable</span
+                    >
+                </label>
+                </div>
+            </div>
+
+            <!-- Ticket Type 2 -->
+            <div class="card-event">
+                <div class="mb-4 flex items-center justify-between">
+                <h4 class="text-text font-semibold">VIP Experience</h4>
+                <button
+                    type="button"
+                    class="btn-secondary flex items-center gap-2"
+                >
+                    <i class="ph ph-trash text-sm"></i>
+                </button>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <div class="">
+                    <label class="text-text text-sm font-medium"
+                    >Price ($) *</label
+                    >
+                    <input
+                    type="number"
+                    class="input-field"
+                    value="120.00"
+                    step="0.01"
+                    min="0"
+                    required
+                    />
+                </div>
+
+                <div class="">
+                    <label class="text-text text-sm font-medium"
+                    >Quantity Available *</label
+                    >
+                    <input
+                    type="number"
+                    class="input-field"
+                    value="200"
+                    min="1"
+                    required
+                    />
+                </div>
+
+                <div class="">
+                    <label class="text-text text-sm font-medium"
+                    >Sold</label
+                    >
+                    <input
+                    type="number"
+                    class="input-field"
+                    value="156"
+                    readonly
+                    />
+                </div>
+
+                <div class="lg:col-span-2">
+                    <label class="text-text text-sm font-medium"
+                    >Description</label
+                    >
+                    <textarea
+                    class="input-field"
+                    rows="2"
+                    placeholder="Describe what's included with this ticket type"
+                    >
+VIP includes priority seating, complimentary drinks, meet & greet with performers, and exclusive merchandise.</textarea
+                    >
+                </div>
+
+                <div class="">
+                    <label class="text-text text-sm font-medium"
+                    >Sale End Date</label
+                    >
+                    <input
+                    type="date"
+                    class="input-field"
+                    value="2024-12-28"
+                    />
+                </div>
+                </div>
+
+                <div class="mt-4 space-y-3">
+                <label class="flex items-center gap-2">
+                    <input
+                    type="checkbox"
+                    class="border-border rounded"
+                    checked
+                    />
+                    <span class="text-text text-sm font-medium"
+                    >Visible to public</span
+                    >
+                </label>
+                <label class="flex items-center gap-2">
+                    <input
+                    type="checkbox"
+                    class="border-border rounded"
+                    checked
+                    />
+                    <span class="text-text text-sm font-medium"
+                    >Requires approval</span
+                    >
+                </label>
+                <label class="flex items-center gap-2">
+                    <input
+                    type="checkbox"
+                    class="border-border rounded"
+                    checked
+                    />
+                    <span class="text-text text-sm font-medium"
+                    >Transferable</span
+                    >
+                </label>
+                </div>
+            </div>
+
+            <!-- Pricing Summary -->
+            <div class="card-event">
+                <h4 class="text-text mb-3 font-semibold">
+                Revenue Summary
+                </h4>
+                <div
+                class="grid grid-cols-1 gap-4 text-center sm:grid-cols-3"
+                >
+                <div>
+                    <div class="text-text text-xl font-bold md:text-2xl">
+                    $42,315
+                    </div>
+                    <div class="text-muted text-sm">Gross Revenue</div>
+                </div>
+                <div>
+                    <div class="text-text text-xl font-bold md:text-2xl">
+                    $5,078
+                    </div>
+                    <div class="text-muted text-sm">Platform Fees</div>
+                </div>
+                <div>
+                    <div
+                    class="text-xl font-bold text-green-600 md:text-2xl"
+                    >
+                    $37,237
+                    </div>
+                    <div class="text-muted text-sm">Net Revenue</div>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Media Tab -->
+        <div class="tab-content hidden p-2 md:p-6">
+            <div class="space-y-6">
+            <!-- Event Banner -->
+            <div class="space-y-4">
+                <h3
+                class="text-text flex items-center gap-2 text-lg font-semibold md:text-xl"
+                >
+                <i class="ph ph-image"></i>
+                Event Banner
+                </h3>
+
+                <div class="file-upload-area" id="upload-btn">
+                <input
+                    type="file"
+                    id="file-input"
+                    class="hidden"
+                    accept="image/*"
+                />
+                <div class="space-y-2">
+                    <i class="ph ph-upload text-muted text-xl"></i>
+                    <p class="text-text text-sm font-medium">
+                    Drop your banner image here
+                    </p>
+                    <p class="text-muted text-xs">
+                    Recommended size: 1920x1080px (PNG, JPG up to 10MB)
+                    </p>
+                    <button type="button" class="btn-secondary">
+                    Choose File
+                    </button>
+                </div>
+                </div>
+
+                <!-- Current Banner Preview -->
+                <div class="group relative">
+                <img
+                    src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800&h=400&fit=crop"
+                    alt="Current event banner"
+                    class="border-border h-48 w-full rounded-lg border object-cover"
+                />
+                <div
+                    class="absolute inset-0 flex items-center justify-center rounded-lg bg-black/50 opacity-0 transition-opacity group-hover:opacity-100"
+                >
+                    <button
+                    class="rounded-lg bg-white/20 p-2 text-white hover:bg-white/30"
+                    >
+                    <i class="ph ph-pencil text-xl"></i>
+                    </button>
+                </div>
+                </div>
+            </div>
+
+            <hr class="border-border" />
+
+            <!-- Event Gallery -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                <h3
+                    class="text-text flex items-center gap-2 text-lg font-semibold"
+                >
+                    <i class="ph ph-images"></i>
+                    Event Gallery
+                </h3>
+                <label
+                    class="btn-secondary flex w-fit cursor-pointer items-center gap-2"
+                >
+                    <i class="ph ph-plus"></i>
+
+                    <span>Add Images</span>
+
+                    <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    class="hidden"
+                    />
+                </label>
+                </div>
+
+                <div
+                class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4"
+                >
+                <div class="group relative">
+                    <img
+                    src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=300&h=200&fit=crop"
+                    alt="Gallery image"
+                    class="border-border h-24 w-full rounded-lg border object-cover"
+                    />
+                    <div
+                    class="absolute inset-0 flex items-center justify-center gap-2 rounded-lg bg-black/50 opacity-0 transition-opacity group-hover:opacity-100"
+                    >
+                    <button
+                        class="rounded bg-white/20 p-1 text-white hover:bg-white/30"
+                    >
+                        <i class="ph ph-eye"></i>
+                    </button>
+                    <button
+                        class="rounded bg-white/20 p-1 text-white hover:bg-white/30"
+                    >
+                        <i class="ph ph-trash"></i>
+                    </button>
+                    </div>
+                </div>
+                <div class="group relative">
+                    <img
+                    src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=200&fit=crop"
+                    alt="Gallery image"
+                    class="border-border h-24 w-full rounded-lg border object-cover"
+                    />
+                    <div
+                    class="absolute inset-0 flex items-center justify-center gap-2 rounded-lg bg-black/50 opacity-0 transition-opacity group-hover:opacity-100"
+                    >
+                    <button
+                        class="rounded bg-white/20 p-1 text-white hover:bg-white/30"
+                    >
+                        <i class="ph ph-eye"></i>
+                    </button>
+                    <button
+                        class="rounded bg-white/20 p-1 text-white hover:bg-white/30"
+                    >
+                        <i class="ph ph-trash"></i>
+                    </button>
+                    </div>
+                </div>
+                <div class="group relative">
+                    <img
+                    src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=300&h=200&fit=crop"
+                    alt="Gallery image"
+                    class="border-border h-24 w-full rounded-lg border object-cover"
+                    />
+                    <div
+                    class="absolute inset-0 flex items-center justify-center gap-2 rounded-lg bg-black/50 opacity-0 transition-opacity group-hover:opacity-100"
+                    >
+                    <button
+                        class="rounded bg-white/20 p-1 text-white hover:bg-white/30"
+                    >
+                        <i class="ph ph-eye"></i>
+                    </button>
+                    <button
+                        class="rounded bg-white/20 p-1 text-white hover:bg-white/30"
+                    >
+                        <i class="ph ph-trash"></i>
+                    </button>
+                    </div>
+                </div>
+                <!-- Add more placeholder -->
+                <label
+                    class="file-upload-area border-border flex h-24 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed transition-all hover:border-blue-500 hover:bg-slate-50"
+                >
+                    <span
+                    class="text-muted flex flex-col items-center justify-center gap-1"
+                    >
+                    <i class="ph ph-plus text-xl"></i>
+                    <span class="text-sm font-medium">Upload File</span>
+                    </span>
+
+                    <input
+                    type="file"
+                    class="hidden"
+                    id="fileInput"
+                    multiple
+                    />
+                </label>
+                </div>
+            </div>
+
+            <hr class="border-border" />
+
+            <!-- Video & Social -->
+            <div class="space-y-6">
+                <h3
+                class="text-text flex items-center gap-2 text-lg font-semibold"
+                >
+                <i class="ph ph-play"></i>
+                Video & Social Media
+                </h3>
+
+                <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <div class="form-group">
+                    <label class="text-text text-sm font-semibold"
+                    >Promotional Video URL</label
+                    >
+                    <input
+                    type="url"
+                    class="input-field"
+                    placeholder="YouTube, Vimeo, or direct video link"
+                    value="https://youtube.com/watch?v=example"
+                    />
+                    <p class="text-muted text-xs md:text-sm">
+                    Embed a promotional video from YouTube or Vimeo
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label class="text-text text-sm font-semibold"
+                    >Event Hashtag</label
+                    >
+                    <input
+                    type="text"
+                    class="input-field"
+                    placeholder="#eventhashtag"
+                    value="#CulturalFusion2025"
+                    />
+                    <p class="text-muted text-xs md:text-sm">
+                    Official hashtag for social media
+                    </p>
+                </div>
+                </div>
+
+                <!-- Social Media Links -->
+                <div class="space-y-4">
+                <h4 class="text-text font-semibold">Social Media</h4>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                    <div
+                        class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500"
+                    >
+                        <i class="ph ph-meta-logo text-xl text-white"></i>
+                    </div>
+                    <input
+                        type="url"
+                        class="input-field flex-1"
+                        placeholder="Facebook event page"
+                        value="https://facebook.com/events/123456"
+                    />
+                    </div>
+                    <div class="flex items-center gap-3">
+                    <div
+                        class="flex h-8 w-8 items-center justify-center rounded-lg bg-pink-500"
+                    >
+                        <i
+                        class="ph ph-instagram-logo text-xl text-white"
+                        ></i>
+                    </div>
+                    <input
+                        type="url"
+                        class="input-field flex-1"
+                        placeholder="Instagram profile"
+                        value="https://instagram.com/culturalfusionfest"
+                    />
+                    </div>
+                    <div class="flex items-center gap-3">
+                    <div
+                        class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-400"
+                    >
+                        <i
+                        class="ph ph-twitter-logo text-xl text-white"
+                        ></i>
+                    </div>
+                    <input
+                        type="url"
+                        class="input-field flex-1"
+                        placeholder="Twitter/X profile"
+                        value="https://twitter.com/culturalfest"
+                    />
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div class="tab-content hidden p-2 md:p-6">
+            <div class="space-y-8">
+            <!-- Event Status -->
+            <div class="space-y-4">
+                <h3
+                class="text-text flex items-center gap-2 text-lg font-semibold"
+                >
+                <i class="ph ph-gear text-xl"></i>
+                Event Status & Visibility
+                </h3>
+
+                <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <div class="form-group">
+                    <label class="text-text text-sm font-medium"
+                    >Event Status</label
+                    >
+                    <div class="select-dropdown w-full">
+                    <div class="select-dropdown-button">
+                        <span>Active</span>
+                        <i
+                        class="select-toggle-icon ph ph-caret-down"
+                        ></i>
+                    </div>
+                    <div class="select-dropdown-menu">
+                        <div class="select-dropdown-item">Draft</div>
+                        <div class="select-dropdown-item">Active</div>
+                        <div class="select-dropdown-item">Paused</div>
+                        <div class="select-dropdown-item">Cancelled</div>
+                        <div class="select-dropdown-item">Ended</div>
+                    </div>
+                    </div>
+                    <p class="text-muted text-xs md:text-sm">
+                    Control the current status of your event
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label class="text-text text-sm font-medium"
+                    >Visibility</label
+                    >
+                    <div class="select-dropdown w-full">
+                    <div class="select-dropdown-button">
+                        <span>Public</span>
+                        <i
+                        class="select-toggle-icon ph ph-caret-down"
+                        ></i>
+                    </div>
+                    <div class="select-dropdown-menu">
+                        <div class="select-dropdown-item">Public</div>
+                        <div class="select-dropdown-item">Private</div>
+                        <div class="select-dropdown-item">
+                        Unlisted (Link only)
+                        </div>
+                    </div>
+                    </div>
+                    <p class="text-muted text-xs md:text-sm">
+                    Who can discover and view your event
+                    </p>
+                </div>
+                </div>
+
+                <div class="space-y-3">
+                <div class="flex items-center gap-3">
+                    <input
+                    type="checkbox"
+                    class="border-border rounded"
+                    checked
+                    />
+                    <div>
+                    <span class="text-text text-sm font-medium"
+                        >Allow search engine indexing</span
+                    >
+                    <p class="text-muted text-xs">
+                        Let Google and other search engines find your
+                        event
+                    </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <input
+                    type="checkbox"
+                    class="border-border rounded"
+                    checked
+                    />
+                    <div>
+                    <span class="text-text text-sm font-medium"
+                        >Show remaining tickets</span
+                    >
+                    <p class="text-muted text-xs">
+                        Display how many tickets are left
+                    </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <input
+                    type="checkbox"
+                    class="border-border rounded"
+                    />
+                    <div>
+                    <span class="text-text text-sm font-medium"
+                        >Enable waitlist when sold out</span
+                    >
+                    <p class="text-muted text-xs">
+                        Allow people to join a waitlist
+                    </p>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <hr class="border-border" />
+
+            <!-- Registration Settings -->
+            <div class="space-y-4">
+                <h3
+                class="text-text flex items-center gap-2 text-lg font-semibold"
+                >
+                <i class="ph ph-user-plus text-xl"></i>
+                Registration Settings
+                </h3>
+
+                <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <div class="form-group">
+                    <label class="text-text text-sm font-medium"
+                    >Registration Opens</label
+                    >
+                    <input
+                    type="date"
+                    class="input-field"
+                    value="2024-10-01T09:00"
+                    />
+                    <p class="text-muted text-xs">
+                    When ticket sales begin
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label class="text-text text-sm font-medium"
+                    >Registration Closes</label
+                    >
+                    <input
+                    type="date"
+                    class="input-field"
+                    />
+                    <p class="text-muted text-xs">
+                    When ticket sales end
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label class="text-text text-sm font-medium"
+                    >Max tickets per person</label
+                    >
+                    <input
+                    type="number"
+                    class="input-field"
+                    value="8"
+                    min="1"
+                    max="50"
+                    />
+                    <p class="text-muted text-xs">
+                    Limit how many tickets one person can buy
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label class="text-text text-sm font-medium"
+                    >Refund Policy</label
+                    >
+                    <div class="select-dropdown w-full">
+                    <div class="select-dropdown-button">
+                        <span>Full refund 24h before event</span>
+                        <i
+                        class="select-toggle-icon ph ph-caret-down"
+                        ></i>
+                    </div>
+                    <div class="select-dropdown-menu">
+                        <div class="select-dropdown-item">No Refunds</div>
+                        <div class="select-dropdown-item">
+                        Full refund 24h before event
+                        </div>
+                        <div class="select-dropdown-item">
+                        Full refund 48h before event
+                        </div>
+                        <div class="select-dropdown-item">
+                        Full refund 1 week before event
+                        </div>
+                        <div class="select-dropdown-item">
+                        Partial refunds allowed
+                        </div>
+                        <div class="select-dropdown-item">
+                        Custom policy
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+
+                <div class="space-y-3">
+                <div class="flex items-center gap-3">
+                    <input
+                    type="checkbox"
+                    class="border-border rounded"
+                    checked
+                    />
+                    <div>
+                    <span class="text-text text-sm font-medium"
+                        >Require attendee information</span
+                    >
+                    <p class="text-muted text-xs">
+                        Collect name and email for each ticket
+                    </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <input
+                    type="checkbox"
+                    class="border-border rounded"
+                    />
+                    <div>
+                    <span class="text-text text-sm font-medium"
+                        >Allow ticket transfers</span
+                    >
+                    <p class="text-muted text-xs">
+                        Let buyers transfer tickets to others
+                    </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <input
+                    type="checkbox"
+                    class="border-border rounded"
+                    checked
+                    />
+                    <div>
+                    <span class="text-text text-sm font-medium"
+                        >Send confirmation emails</span
+                    >
+                    <p class="text-muted text-xs">
+                        Automatically email tickets to buyers
+                    </p>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <hr class="border-border" />
+
+            <!-- Check-in Settings -->
+            <div class="space-y-4">
+                <h3
+                class="text-text flex items-center gap-2 text-lg font-semibold"
+                >
+                <i class="ph ph-qr-code text-xl"></i>
+                Check-in Settings
+                </h3>
+
+                <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <div class="form-group">
+                    <label class="text-text text-sm font-medium"
+                    >Check-in method</label
+                    >
+                    <div class="select-dropdown w-full">
+                    <div class="select-dropdown-button">
+                        <span>QR Code Scanning</span>
+                        <i
+                        class="select-toggle-icon ph ph-caret-down"
+                        ></i>
+                    </div>
+                    <div class="select-dropdown-menu">
+                        <div class="select-dropdown-item">
+                        QR Code Scanning
+                        </div>
+                        <div class="select-dropdown-item">
+                        Manual Check-in
+                        </div>
+                        <div class="select-dropdown-item">
+                        Both Methods
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="text-text text-sm font-medium"
+                    >Check-in window</label
+                    >
+                    <div class="select-dropdown w-full">
+                    <div class="select-dropdown-button">
+                        <span>1 hour before event</span>
+                        <i
+                        class="select-toggle-icon ph ph-caret-down"
+                        ></i>
+                    </div>
+                    <div class="select-dropdown-menu">
+                        <div class="select-dropdown-item">
+                        30 minutes before event
+                        </div>
+                        <div class="select-dropdown-item">
+                        1 hour before event
+                        </div>
+                        <div class="select-dropdown-item">
+                        2 hours before event
+                        </div>
+                        <div class="select-dropdown-item">
+                        Custom window
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+
+                <div class="space-y-3">
+                <div class="flex items-center gap-3">
+                    <input
+                    type="checkbox"
+                    class="border-border rounded"
+                    checked
+                    />
+                    <div>
+                    <span class="text-text text-sm font-medium"
+                        >Allow re-entry</span
+                    >
+                    <p class="text-muted text-xs">
+                        Let attendees leave and come back
+                    </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <input
+                    type="checkbox"
+                    class="border-border rounded"
+                    checked
+                    />
+                    <div>
+                    <span class="text-text text-sm font-medium"
+                        >Send check-in notifications</span
+                    >
+                    <p class="text-muted text-xs">
+                        Notify organizers of check-ins
+                    </p>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <hr class="border-border" />
+
+            <!-- Advanced Settings -->
+            <div class="space-y-4">
+                <h3
+                class="text-text flex items-center gap-2 text-lg font-semibold"
+                >
+                <i class="ph ph-gear-fine text-xl"></i>
+                Advanced Settings
+                </h3>
+
+                <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <div class="form-group">
+                    <label class="text-text text-sm font-medium"
+                    >Event Color Theme</label
+                    >
+                    <div class="mt-2 flex gap-2">
+                    <div
+                        class="color-option size-8 cursor-pointer rounded-full bg-[#10b981] transition-all"
+                        data-color="#10b981"
+                    ></div>
+                    <div
+                        class="color-option size-8 cursor-pointer rounded-full bg-[#f59e0b] transition-all"
+                        data-color="#f59e0b"
+                    ></div>
+                    <div
+                        class="color-option size-8 cursor-pointer rounded-full bg-[#ef4444] transition-all"
+                        data-color="#ef4444"
+                    ></div>
+                    <div
+                        class="color-option size-8 cursor-pointer rounded-full bg-[#8b5cf6] transition-all"
+                        data-color="#8b5cf6"
+                    ></div>
+                    <div
+                        class="color-option size-8 cursor-pointer rounded-full bg-[#06b6d4] transition-all"
+                        data-color="#06b6d4"
+                    ></div>
+                    </div>
+                    <p class="text-muted text-xs">
+                    Choose a color theme for your event page
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label class="text-text text-sm font-medium"
+                    >Custom Event URL</label
+                    >
+                    <div class="flex items-center py-4">
+                    <span
+                        class="text-muted bg-border border-border mt-2 rounded-l-lg border border-r-0 px-3 py-2 text-sm"
+                        >venueX.com/e/</span
+                    >
+                    <input
+                        type="text"
+                        class="border-border text-muted bg-bg focus:border-blue focus:ring-blue mt-2 cursor-pointer rounded-l-none rounded-r-lg border px-3 py-3 text-sm focus:ring-1 focus:outline-none"
+                        value="cultural-fusion-fest-2025"
+                        placeholder="your-event-url"
+                    />
+                    </div>
+                    <p class="text-muted text-xs md:text-sm">
+                    Create a memorable URL for your event
+                    </p>
+                </div>
+                </div>
+
+                <div class="form-group">
+                <label class="text-text text-sm font-medium"
+                    >Custom CSS</label
+                >
+                <textarea
+                    class="input-field font-mono"
+                    rows="6"
+                    placeholder="/* Add your custom CSS here */
+.event-page {
+/* Custom styles */
+}"
+                ></textarea>
+                <p class="text-muted text-xs md:text-sm">
+                    Advanced: Add custom CSS to style your event page
+                </p>
+                </div>
+
+                <div class="space-y-3">
+                <div class="flex items-center gap-3">
+                    <input
+                    type="checkbox"
+                    class="border-border rounded"
+                    />
+                    <div class="w-full">
+                    <span class="text-text text-sm font-medium"
+                        >Enable analytics tracking</span
+                    >
+                    <p class="text-muted text-xs md:text-sm">
+                        Track page views and conversions
+                    </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <input
+                    type="checkbox"
+                    class="border-border rounded"
+                    checked
+                    />
+                    <div>
+                    <span class="text-text text-sm font-medium"
+                        >Allow event embedding</span
+                    >
+                    <p class="text-muted text-xs md:text-sm">
+                        Let others embed your event on their websites
+                    </p>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+
+    <!-- Save Actions -->
+    <div class="border-border flex flex-col items-center justify-between gap-4 mt-6 rounded-lg border p-2 sm:flex-row md:p-6 mx-auto max-w-4xl space-y-6">
+        <div class="text-center sm:text-left">
+            <p class="text-muted text-sm">
+                <i class="ph ph-save mr-1 inline text-xl"></i>
+                Auto-saved 2 minutes ago
+            </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+            <button type="button" id="save-draft" class="btn-secondary"> Save as Draft </button>
+            <button type="button" id="save-and-continue" class="btn-secondary"> Save & Continue Editing </button>
+            <button type="button" id="publish-changes" data-modal="#publish-modal" class="btn-primary">Publish Changes</button>
+        </div>
+    </div>
+
+
+    <!-- Confirmation Modals -->
+    <div id="publish-modal" class="modal fixed inset-0 z-600 hidden items-center justify-center bg-black/50 p-4">
+        <div class="card-event max-w-md">
+            <div class="mb-4 flex items-center gap-3">
+                <div class="bg-border text-text flex h-10 w-10 items-center justify-center rounded-full">
+                    <i class="ph ph-rocket-launch text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold">Publish Event Changes?</h3>
+            </div>
+
+            <p class="text-muted mb-6">
+                Your changes will be immediately visible to the public and
+                existing ticket holders will be notified of important updates.
+            </p>
+
+        <div class="flex justify-end gap-3">
+            <button class="btn-secondary close">Cancel</button>
+            <button class="btn-primary">Publish Changes</button>
+        </div>
+    </div>
+</div>
+{% endblock bodyContent %}

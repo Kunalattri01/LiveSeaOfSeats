@@ -1,0 +1,115 @@
+<!-- =============================================
+   COMPONENT: Charts Section
+   File: charts-section.html
+   Usage: 3-column grid section containing:
+          - Sales Analytics line/bar chart (2/3 width)
+          - Conversion Rate donut/pie chart
+          - Top Performing Events ranked list
+   Dependencies: Chart.js (sales-chart-2, conversionPie)
+   ============================================= -->
+
+<div class="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-3">
+
+  <!-- Sales Analytics Chart (spans 2 columns) -->
+  <div class="bg-card border-border rounded-lg border p-6 xl:col-span-2">
+    <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h3>Sales Analytics</h3>
+        <p class="text-small">Revenue and ticket sales over time</p>
+      </div>
+      <div class="mt-4 flex items-center gap-3 sm:mt-0">
+        <!-- Period Selector Dropdown -->
+        <div class="select-dropdown">
+          <button class="select-dropdown-button">
+            <span>Last 30 Days</span>
+            <i class="select-toggle-icon ph ph-caret-down"></i>
+          </button>
+          <div class="select-dropdown-menu">
+            <div class="select-dropdown-item">Last 7 Days</div>
+            <div class="select-dropdown-item">Last 30 Days</div>
+            <div class="select-dropdown-item">Last 90 Days</div>
+          </div>
+        </div>
+        <!-- Refresh Button -->
+        <button class="btn-secondary flex items-center" title="Refresh Chart">
+          <i class="ph ph-arrow-clockwise"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Chart Legend -->
+    <div class="mb-6 flex items-center gap-6">
+      <div class="flex items-center gap-2">
+        <div class="h-3 w-3 rounded-full bg-blue-500"></div>
+        <span class="text-text text-sm">Revenue</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="h-3 w-3 rounded-full bg-green-500"></div>
+        <span class="text-text text-sm">Tickets Sold</span>
+      </div>
+    </div>
+
+    <!-- Chart Canvas -->
+    <div class="chart-container" style="height: 300px">
+      <canvas id="sales-chart-2" class="h-full w-full"></canvas>
+    </div>
+  </div>
+
+  <!-- Right Column: Conversion + Top Events -->
+  <div class="space-y-6">
+
+    <!-- Conversion Rate Card -->
+    <div class="card-event bg-bg">
+      <div class="mb-4 flex items-center justify-between">
+        <h3>Conversion Rate</h3>
+        <span class="text-text text-2xl font-bold">73.5%</span>
+      </div>
+      <!-- Pie / Donut Chart Canvas -->
+      <div class="mb-4 flex items-center justify-center">
+        <canvas id="conversionPie" width="140" height="140"></canvas>
+      </div>
+      <p class="text-muted text-center text-sm">
+        <span class="text-green-600">+2.3%</span> from last month
+      </p>
+    </div>
+
+    <!-- Top Performing Events -->
+    <div class="bg-card border-border rounded-lg border p-6">
+      <h3 class="text-text mb-4 text-lg font-semibold">Top Events</h3>
+      <div class="space-y-4">
+
+        <!-- Rank 1 -->
+        <div class="flex items-center gap-3">
+          <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-400 text-sm font-bold text-white">1</div>
+          <div class="flex-1">
+            <p class="text-text text-sm font-medium">Cultural Fusion Fest 2025</p>
+            <p class="text-muted text-xs">789 / 1200 sold</p>
+          </div>
+          <p class="text-text text-sm font-semibold">$35K</p>
+        </div>
+
+        <!-- Rank 2 -->
+        <div class="flex items-center gap-3">
+          <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-green-400 text-sm font-bold text-white">2</div>
+          <div class="flex-1">
+            <p class="text-text text-sm font-medium">Tech Innovation Summit</p>
+            <p class="text-muted text-xs">892 / 1000 sold</p>
+          </div>
+          <p class="text-text text-sm font-semibold">$44K</p>
+        </div>
+
+        <!-- Rank 3 -->
+        <div class="flex items-center gap-3">
+          <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-400 text-sm font-bold text-white">3</span>
+          <div class="flex-1">
+            <p class="text-text text-sm font-medium">Visionary Vibes 2025</p>
+            <p class="text-muted text-xs">456 / 800 sold</p>
+          </div>
+          <p class="text-text text-sm font-semibold">$18K</p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

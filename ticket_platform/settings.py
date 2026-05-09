@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'organizer',
     'ticketmaster',
     'legal',
+    'dashboard',
 ]
 
 MIDDLEWARE = [
@@ -161,7 +162,7 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'bb',
+#         'NAME': 'tickets_db',
 #         'USER': 'postgres',
 #         'PASSWORD': 'admin123',
 #         'HOST': 'localhost',

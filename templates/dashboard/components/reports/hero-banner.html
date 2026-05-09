@@ -1,0 +1,65 @@
+<!-- =============================================
+   COMPONENT: Hero Banner / Quick Stats Banner
+   File: hero-banner.html
+   Usage: Full-width welcome banner showing the
+          logged-in user's greeting, today's sales
+          summary, a decorative SVG illustration,
+          and a small activity chart canvas.
+   Dependencies: Chart.js (for activityChart canvas)
+   ============================================= -->
+{% load static %}
+<div class="grid grid-cols-1 space-y-6 md:grid-cols-6 md:gap-6 md:space-y-0">
+
+  <!-- Welcome / Greeting Card -->
+  <div class="border-border relative col-span-4 flex flex-col gap-6 rounded-lg border bg-[#f2f6fa] p-6 lg:flex-row lg:items-start lg:justify-between dark:bg-[#040b1a]">
+
+    <!-- Text Content -->
+    <div class="z-10">
+      <div class="flex flex-col sm:flex-row items-center gap-2">
+        <img
+          src="{% static 'dashboard/images/profile/emma.jpg' %}"
+          alt="emma"
+          class="size-12 rounded-full object-cover"
+        />
+        <div class="flex flex-col">
+          <span class="text-text text-xl font-bold md:text-3xl">
+            Good morning, Emma!
+          </span>
+          <p class="text-small mt-1">
+            You have 5 active events and 12 upcoming this month.
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Sales Stats -->
+      <div class="mt-4 sm:ml-12 flex gap-6">
+        <div class="flex flex-col">
+          <span class="text-text text-xl font-semibold md:text-2xl">$2,340</span>
+          <span class="text-small">Today's Sales</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-text text-xl font-semibold md:text-2xl">$2,340</span>
+          <span class="text-small">Today's Sales</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Decorative Hero Image -->
+    <div class="mx-auto mt-4 w-full max-w-55 sm:max-w-65 lg:absolute lg:right-0 lg:bottom-0 lg:mt-0 lg:w-75 lg:max-w-none">
+      <img
+        src="{% static 'dashboard/images/hero.svg' %}"
+        alt=""
+        class="h-auto w-full object-contain"
+      />
+    </div>
+  </div>
+
+  <!-- Activity Chart Card -->
+  <div class="border-border col-span-2 rounded-lg border bg-[#f2f6fa] p-3 md:p-6 dark:bg-[#040b1a]">
+    <h3>Your Activity</h3>
+    <div class="max-max-h-100 mt-4 h-37.5 w-full">
+      <canvas id="activityChart" class="h-full w-full"></canvas>
+    </div>
+  </div>
+
+</div>

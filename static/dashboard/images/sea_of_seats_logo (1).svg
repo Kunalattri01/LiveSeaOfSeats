@@ -1,0 +1,6 @@
+<svg width="47" height="40" viewBox="0 0 47 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="47" height="40" rx="4" fill="black"/>
+  <path d="M 10 12 C 15 8.5, 24 8, 31 11.5 C 35 13.5, 38 13, 40 12 C 38.5 13.5, 36 14.5, 33 14 C 27 13, 19 9.5, 13 12.5 C 11.5 13.2, 10.2 13.8, 10 14 Z" fill="white"/>
+  <path d="M 7 27 C 9.5 24.5, 14 23.5, 20 25 C 25 26.3, 29 28, 33 28.5 C 36 28.8, 38 28, 39 27 C 37.5 28.5, 35 30, 31 30 C 26 30.2, 21 27.8, 15 26.5 C 11.5 25.7, 8 27.8, 7 29 Z" fill="white"/>
+  <text x="23.5" y="23.5" text-anchor="middle" dominant-baseline="middle" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="6.2" fill="white" letter-spacing="0.2">SEA OF SEATS</text>
+</svg>

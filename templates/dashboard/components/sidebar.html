@@ -1,0 +1,131 @@
+{% load static %}
+<aside id="sidebar" class="border-border bg-bg fixed top-0 left-0 z-599 hidden h-screen w-56 flex-col border-r backdrop-blur-2xl md:w-64 xl:flex">
+    <!-- Sidebar Header -->
+    <div class="border-border sticky top-0 left-0 border-b p-6">
+        <i id="sidebar-close" class="ph ph-x text-text absolute top-6 right-6 block cursor-pointer text-xl xl:hidden"></i>
+        <a href="{% url 'ReportFirstPage' %}" class="flex items-center gap-3">
+            <!-- <img src="{% static 'dashboard/images/logo.svg' %}" alt="logo" class="size-12 shrink-0" /> -->
+            <!-- <img src="{% static 'website/images/logo/logo_sos.jpeg' %}" alt="logo" class="size-12 shrink-0" /> -->
+            <img src="{% static 'dashboard/images/sea_of_seats_logo.svg' %}" alt="logo" class="size-12 shrink-0" />
+            <div id="sidebar-title" class="transition-opacity duration-300">
+                <h1 class="text-text text-lg font-bold md:text-xl">Sea Of Seats</h1>
+                <p class="text-text text-xs">Management Dashboard</p>
+            </div>
+        </a>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="custom-scrollbar overflow-y-auto p-2 md:p-4">
+        <!-- Primary Navigation -->
+        <div class="space-y-2">
+            <div class="mb-6">
+                <h5 class="text-muted mb-2 px-3 text-xs font-semibold tracking-wider uppercase">Primary</h5>
+                <ul class="tabs space-y-1">
+                    {% for menu in allowed_menus %}
+                        {% if menu.section == 'PRIMARY' %}
+                            <li class="parent-item">
+                                <button class="nav-btn flex w-full items-center gap-2 rounded px-4 py-2 text-left hover:bg-gray-100" aria-expanded="false"> 
+                                    {{ menu.icon|safe }}
+                                    <span class="nav-text"> {{ menu.menu_name }} </span>
+                                    <i class="ph ph-caret-down ml-auto transition-transform duration-300"></i>
+                                </button>
+
+                                <!-- Child Menus -->
+                                <ul class="sub-nav z-2000 mt-1 ml-6 max-h-0 space-y-1 overflow-hidden transition-all duration-300">
+                                    {% for child in menu.children.all %}
+                                        {% if child.menu_code in menu_codes and child.is_active %}
+                                            <li>
+                                                <a href="{{ child.url }}" class="nav-item flex items-center gap-2 rounded px-4 py-2 hover:bg-gray-100">
+                                                    {{ child.icon|safe }}
+                                                    <span>{{ child.menu_name }}</span>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Secondary Navigation -->
+        <div id="nav-section-secondary" class="mb-6">
+            <h5 class="text-muted mb-2 px-3 text-xs font-semibold tracking-wider uppercase"> Secondary </h5>
+            <ul class="tabs space-y-1">
+                {% for menu in allowed_menus %}
+                    {% if menu.section == 'SECONDARY' %}
+                        {% if menu.children.count %}
+                            <!-- MENU WITH CHILDREN -->
+                            <li class="parent-item">
+                                <button class="nav-btn flex w-full items-center gap-2 rounded px-4 py-2 text-left hover:bg-gray-100" aria-expanded="false">
+                                    {{ menu.icon|safe }}
+                                    <span class="nav-text"> {{ menu.menu_name }} </span>
+                                    <i class="ph ph-caret-down ml-auto transition-transform duration-300"></i>
+                                </button>
+
+                                <!-- Child Menus -->
+                                <ul class="sub-nav z-2000 mt-1 ml-6 max-h-0 space-y-1 overflow-hidden transition-all duration-300">
+                                    {% for child in menu.children.all %}
+                                        {% if child.menu_code in menu_codes and child.is_active %}
+                                            <li>
+                                                <a href="{{ child.url }}" class="nav-item flex items-center gap-2 rounded px-4 py-2 hover:bg-gray-100">
+                                                    {{ child.icon|safe }}
+                                                    <span> {{ child.menu_name }} </span>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% else %}
+                            <!-- SINGLE MENU -->
+                            <li class="group">
+                                <a href="{{ menu.url }}" class="nav-item flex items-center gap-2 rounded px-4 py-2 hover:bg-gray-100">
+                                    {{ menu.icon|safe }}
+                                    <span class="nav-text">
+                                        {{ menu.menu_name }}
+                                    </span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- <div id="nav-section-secondary" class="mb-6">
+            <h5 class="text-muted mb-2 px-3 text-xs font-semibold tracking-wider uppercase">Secondary</h5>
+            <ul class="tabs space-y-1">
+                <li class="group"><a href="./reviews.html" class="nav-item"><i class="ph ph-sparkle text-2xl"></i><span class="nav-text">Reviews</span></a></li>
+                <li class="group"><a href="./marketing.html" class="nav-item"><i class="ph ph-megaphone text-2xl"></i><span class="nav-text">Marketing</span></a></li>
+                <li class="group"><a href="./integration.html" class="nav-item"><i class="ph ph-puzzle-piece text-2xl"></i><span class="nav-text">Integrations</span></a></li>
+                <li class="group"><a href="./team-roles.html" class="nav-item"><i class="ph ph-users text-2xl"></i><span class="nav-text">Team & Roles</span></a></li>
+                <li class="group"><a href="./settings.html" class="nav-item"><i class="ph ph-gear text-2xl"></i><span class="nav-text">Settings</span></a></li>
+                <li class="group"><a href="./help-center.html" class="nav-item"><i class="ph ph-question text-2xl"></i><span class="nav-text">Help Center</span></a></li>
+                <li class="group"><a href="./support.html" class="nav-item"><i class="ph ph-headset text-2xl"></i><span class="nav-text">Support</span></a></li>
+            </ul>
+        </div> -->
+    </nav>
+
+    <!-- Sidebar Footer — Help Card -->
+    <div class="sidebar-footer border-border fixed bottom-0 left-0 w-56 border-r p-2 md:w-64 md:p-4 hidden md:block">
+        <div class="relative rounded-xl bg-blue-500 px-2 pt-8 pb-4 text-center text-white md:px-4">
+            <div class="ring-bg absolute -top-5 left-1/2 flex h-10 w-10 -translate-x-1/2 items-center justify-center rounded-full bg-blue-500 ring-4">
+                <i class="ph ph-headset text-xl"></i>
+            </div>
+            <span class="mt-2 text-lg font-semibold text-white">Help & Center</span>
+            <p class="my-1 text-xs leading-relaxed text-white opacity-90">
+                Having difficulty in Ticketing.<br />
+                Please contact us for further inquiries
+            </p>
+            <a href="./support.html" class="mt-4 w-full cursor-pointer rounded-lg bg-white p-2 text-xs font-semibold text-blue-500 transition hover:bg-blue-50">
+                Go to help center
+            </a>
+        </div>
+    </div>
+</aside>
+
+<!-- Mobile Overlay (pair with sidebar) -->
+<div id="overlay" class="fixed inset-0 z-300 hidden bg-black/50"></div>

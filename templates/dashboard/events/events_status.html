@@ -1,0 +1,918 @@
+{% extends 'dashboard/base/dashboard_base.html' %} {% block title %} Events -
+SeaOfSeats {% endblock title %} {% block bodyContent %}
+<!-- titles -->
+<div class="flex flex-wrap items-center justify-between gap-2">
+    <div>
+        <h3>Events</h3>
+        <p class="text-small">Create, manage, and track your events</p>
+    </div>
+    <div>
+        <div class="flex items-center gap-2">
+            <button class="btn-secondary flex items-center gap-2">
+                <i class="ph ph-cloud-arrow-up"></i>
+                <span>Import</span>
+            </button>
+            <button
+                data-modal="#event-modal"
+                class="edit btn-primary flex items-center gap-2"
+            >
+                <i class="ph ph-plus"></i>
+                <span>Add Event</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- cards -->
+<div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-4">
+    <div class="card">
+        <span class="flex flex-col gap-1">
+            <span class="card-title">Total Events</span>
+            <span class="card-heading">13</span>
+            <span class="card-subtitle text-blue-500">
+                <span class="flex items-center">
+                    <i class="ph ph-trend-up"></i>
+                </span>
+                <span> 3 this month </span>
+            </span>
+        </span>
+        <span
+            class="bg-blue flex size-12 items-center justify-center rounded-full text-blue-500 md:size-16"
+        >
+            <i class="ph ph-calendar text-2xl"></i>
+        </span>
+    </div>
+
+    <div class="card">
+        <span class="flex flex-col gap-1">
+            <span class="card-title">Active Events</span>
+            <span class="card-heading">4</span>
+            <span class="card-subtitle text-green-500">
+                <span class="flex items-center">
+                    <i class="ph ph-wave-sine"></i>
+                </span>
+                <span>Running now</span>
+            </span>
+        </span>
+        <span
+            class="bg-green flex size-12 items-center justify-center rounded-full text-green-500 md:size-16"
+        >
+            <i class="ph ph-play-circle text-2xl"></i>
+        </span>
+    </div>
+
+    <div class="card">
+        <span class="flex flex-col gap-1">
+            <span class="card-title">Draft Events</span>
+            <span class="card-heading">4</span>
+            <span class="card-subtitle text-yellow-500">
+                <span class="flex items-center">
+                    <i class="ph ph-note-pencil"></i>
+                </span>
+                <span>Needs attention</span>
+            </span>
+        </span>
+        <span
+            class="bg-yellow flex size-12 items-center justify-center rounded-full text-yellow-500 md:size-16"
+        >
+            <i class="ph ph-note-pencil text-2xl"></i>
+        </span>
+    </div>
+
+    <div class="card">
+        <span class="flex flex-col gap-1">
+            <span class="card-title">Total Capacity</span>
+            <span class="card-heading">892</span>
+            <span class="card-subtitle text-violet-500">
+                <span class="flex items-center">
+                    <i class="ph ph-users-three"></i>
+                </span>
+                <span>43% filled</span>
+            </span>
+        </span>
+        <span
+            class="bg-violet flex size-12 items-center justify-center rounded-full text-violet-500 md:size-16"
+        >
+            <i class="ph ph-users-three text-2xl"></i>
+        </span>
+    </div>
+</div>
+
+<!-- filter options -->
+<div class="mt-6 flex flex-wrap items-center gap-3">
+    <!-- View Toggle -->
+    <div class="border-border flex items-center gap-1 rounded-lg border p-1">
+        <button
+            id="view-grid"
+            class="view-btn active text-text flex cursor-pointer items-center gap-2 rounded-md px-3 py-1 text-sm transition-colors md:text-base"
+        >
+            <i class="ph ph-squares-four text-xl"></i>
+            <span class="hidden sm:inline">Grid</span>
+        </button>
+        <button
+            id="view-list"
+            class="view-btn text-text flex cursor-pointer items-center gap-2 rounded-md px-3 py-1 text-sm transition-colors md:text-base"
+        >
+            <i class="ph ph-list-bullets text-xl"></i>
+            <span class="hidden sm:inline">List</span>
+        </button>
+    </div>
+
+    <!-- Status Filter -->
+    <div class="select-dropdown">
+        <button class="select-dropdown-button">
+            <span>All Status</span>
+            <i class="select-toggle-icon ph ph-caret-down"></i>
+        </button>
+        <div class="select-dropdown-menu">
+            <div class="select-dropdown-item">All Status</div>
+            <div class="select-dropdown-item">Active</div>
+            <div class="select-dropdown-item">Draft</div>
+            <div class="select-dropdown-item">Scheduled</div>
+            <div class="select-dropdown-item">Ended</div>
+            <div class="select-dropdown-item">Cancelled</div>
+        </div>
+    </div>
+
+    <!-- Date Filter -->
+    <div class="select-dropdown">
+        <button class="select-dropdown-button">
+            <span>All Time</span>
+            <i class="select-toggle-icon ph ph-caret-down"></i>
+        </button>
+        <div class="select-dropdown-menu">
+            <div class="select-dropdown-item">All Time</div>
+            <div class="select-dropdown-item">Upcoming</div>
+            <div class="select-dropdown-item">This Week</div>
+            <div class="select-dropdown-item">This Month</div>
+            <div class="select-dropdown-item">Past Events</div>
+        </div>
+    </div>
+
+    <!-- Sort -->
+    <div class="select-dropdown">
+        <button class="select-dropdown-button">
+            <span>Newest First</span>
+            <i class="select-toggle-icon ph ph-caret-down"></i>
+        </button>
+        <div class="select-dropdown-menu">
+            <div class="select-dropdown-item">Newest First</div>
+            <div class="select-dropdown-item">Oldest First</div>
+            <div class="select-dropdown-item">Name A-Z</div>
+            <div class="select-dropdown-item">Name Z-A</div>
+            <div class="select-dropdown-item">Largest Capacity</div>
+            <div class="select-dropdown-item">Most Sold</div>
+        </div>
+    </div>
+</div>
+
+<!-- cards view-->
+<div
+    id="grid-card"
+    class="my-3 grid grid-cols-1 gap-2 sm:my-4 sm:grid-cols-2 sm:gap-3 lg:my-6 lg:grid-cols-3 2xl:grid-cols-4"
+>
+    <div class="card-event w-full">
+        <div class="mb-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="items-center justify-center text-lg font-bold">
+                    <img
+                        src="./assets/images/events/jazz-night.png"
+                        alt="jazz-night"
+                        class="size-12 rounded-lg bg-center object-cover"
+                    />
+                </div>
+                <div>
+                    <h3 class="">Startup Pitch Night</h3>
+                    <p class="text-small">Entrepreneurship Center</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span
+                    class="badges-green rounded-full px-2 py-1 text-xs font-medium"
+                >
+                    active
+                </span>
+            </div>
+        </div>
+
+        <div class="mb-4 space-y-2">
+            <div class="text-muted flex items-center gap-2 text-sm">
+                <i class="ph ph-calendar"></i>
+                <span>Dec 14, 2025 at 7:00 PM</span>
+            </div>
+            <div class="text-muted flex items-center gap-2 text-sm">
+                <i class="ph ph-map-pin-line"></i>
+                <span>333 Skyline Avenue, High Rise District</span>
+            </div>
+            <div class="text-muted flex items-center gap-2 text-sm">
+                <i class="ph ph-users-three"></i>
+                <span>12 / 120 tickets sold</span>
+            </div>
+        </div>
+
+        <div class="mb-4 space-y-2">
+            <div class="flex justify-between text-sm">
+                <span class="text-muted">Sales Progress</span>
+                <span class="text-text-secondary font-medium">30%</span>
+            </div>
+            <div class="capacity-bar">
+                <div
+                    class="capacity-fill capacity-low"
+                    data-capacity="83%"
+                ></div>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between">
+            <div class="text-sm">
+                <span class="text-muted">Revenue:</span>
+                <span class="text-text-secondary ml-1 font-semibold">5</span>
+            </div>
+            <div class="flex items-center gap-1">
+                <a
+                    href="./edit-event.html"
+                    class="hover:bg-primary text-text cursor-pointer rounded-lg p-2 transition-colors"
+                >
+                    <i class="ph ph-pencil-simple-line"></i>
+                </a>
+                <button
+                    class="hover:bg-primary text-text cursor-pointer rounded-lg p-2 transition-colors"
+                >
+                    <i class="ph ph-copy"></i>
+                </button>
+                <button
+                    class="hover:bg-primary text-text cursor-pointer rounded-lg p-2 transition-colors"
+                >
+                    <i class="ph ph-archive"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-event w-full">
+        <div class="mb-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="text-primary-foreground">
+                    <img
+                        src="./assets/images/events/ennovation.png"
+                        alt="ennovation"
+                        class="size-12 rounded-lg bg-center object-cover"
+                    />
+                </div>
+                <div>
+                    <h3 class="">Tech Innovation Summit</h3>
+                    <p class="text-small">Convention Center</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span
+                    class="badges-green rounded-full px-2 py-1 text-xs font-medium"
+                >
+                    active
+                </span>
+            </div>
+        </div>
+
+        <div class="mb-4 space-y-2">
+            <div class="text-muted flex items-center gap-2 text-sm">
+                <i class="ph ph-calendar"></i>
+                <span>Dec 14, 2025 at 7:00 PM</span>
+            </div>
+            <div class="text-muted flex items-center gap-2 text-sm">
+                <i class="ph ph-map-pin-line"></i>
+                <span>333 Skyline Avenue, High Rise District</span>
+            </div>
+            <div class="text-muted flex items-center gap-2 text-sm">
+                <i class="ph ph-users-three"></i>
+                <span>12 / 120 tickets sold</span>
+            </div>
+        </div>
+
+        <div class="mb-4 space-y-2">
+            <div class="flex justify-between text-sm">
+                <span class="text-muted">Sales Progress</span>
+                <span class="text-text-secondary font-medium">30%</span>
+            </div>
+            <div class="capacity-bar">
+                <div
+                    class="capacity-fill capacity-low"
+                    data-capacity="30%"
+                ></div>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between">
+            <div class="text-sm">
+                <span class="text-muted">Revenue:</span>
+                <span class="text-text-secondary ml-1 font-semibold">5</span>
+            </div>
+            <div class="flex items-center gap-1">
+                <a
+                    href="./edit-event.html"
+                    class="hover:bg-primary text-text cursor-pointer rounded-lg p-2 transition-colors"
+                >
+                    <i class="ph ph-pencil-simple-line"></i>
+                </a>
+                <button
+                    class="hover:bg-primary text-text cursor-pointer rounded-lg p-2 transition-colors"
+                >
+                    <i class="ph ph-copy"></i>
+                </button>
+                <button
+                    class="hover:bg-primary text-text cursor-pointer rounded-lg p-2 transition-colors"
+                >
+                    <i class="ph ph-archive"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-event w-full">
+        <div class="mb-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="text-primary-foreground">
+                    <img
+                        src="./assets/images/events/food.png"
+                        alt="Food"
+                        class="size-12 rounded-lg bg-center object-cover"
+                    />
+                </div>
+                <div>
+                    <h3 class="">Food Carnival 2025</h3>
+                    <p class="text-small">City Park Pavilion</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span
+                    class="badges-yellow rounded-full px-2 py-1 text-xs font-medium"
+                >
+                    Daft
+                </span>
+            </div>
+        </div>
+
+        <div class="mb-4 space-y-2">
+            <div class="text-muted flex items-center gap-2 text-sm">
+                <i class="ph ph-calendar"></i>
+                <span>Feb 24, 2025 at 7:00 PM</span>
+            </div>
+            <div class="text-muted flex items-center gap-2 text-sm">
+                <i class="ph ph-map-pin-line"></i>
+                <span>333 Skyline Avenue, High Rise District</span>
+            </div>
+            <div class="text-muted flex items-center gap-2 text-sm">
+                <i class="ph ph-users-three"></i>
+                <span>0 / 120 tickets sold</span>
+            </div>
+        </div>
+
+        <div class="mb-4 space-y-2">
+            <div class="flex justify-between text-sm">
+                <span class="text-muted">Sales Progress</span>
+                <span class="text-text-secondary font-medium">0%</span>
+            </div>
+            <div class="capacity-bar">
+                <div
+                    class="capacity-fill capacity-low"
+                    data-capacity="0%"
+                ></div>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between">
+            <div class="text-sm">
+                <span class="text-muted">Revenue:</span>
+                <span class="text-text-secondary ml-1 font-semibold">0</span>
+            </div>
+            <div class="flex items-center gap-1">
+                <a
+                    href="./edit-event.html"
+                    class="hover:bg-primary text-text cursor-pointer rounded-lg p-2 transition-colors"
+                >
+                    <i class="ph ph-pencil-simple-line"></i>
+                </a>
+                <button
+                    class="hover:bg-primary text-text cursor-pointer rounded-lg p-2 transition-colors"
+                >
+                    <i class="ph ph-copy"></i>
+                </button>
+                <button
+                    class="hover:bg-primary text-text cursor-pointer rounded-lg p-2 transition-colors"
+                >
+                    <i class="ph ph-archive"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-event w-full">
+        <div class="mb-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="text-primary-foreground">
+                    <img
+                        src="./assets/images/events/new-year.png"
+                        alt="New Year"
+                        class="size-12 rounded-lg bg-center object-cover"
+                    />
+                </div>
+                <div>
+                    <h3 class="">Creative Convergence 2025</h3>
+                    <p class="text-small">Arts District Gallery</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span
+                    class="badges-gray rounded-full px-2 py-1 text-xs font-medium"
+                >
+                    Ended
+                </span>
+            </div>
+        </div>
+
+        <div class="mb-4 space-y-2">
+            <div class="text-muted flex items-center gap-2 text-sm">
+                <i class="ph ph-calendar"></i>
+                <span>Mar 14, 2025 at 7:00 PM</span>
+            </div>
+            <div class="text-muted flex items-center gap-2 text-sm">
+                <i class="ph ph-map-pin-line"></i>
+                <span>333 Skyline Avenue, High Rise District</span>
+            </div>
+            <div class="text-muted flex items-center gap-2 text-sm">
+                <i class="ph ph-users-three"></i>
+                <span>80 / 120 tickets sold</span>
+            </div>
+        </div>
+
+        <div class="mb-4 space-y-2">
+            <div class="flex justify-between text-sm">
+                <span class="text-muted">Sales Progress</span>
+                <span class="text-text-secondary font-medium">75%</span>
+            </div>
+            <div class="capacity-bar">
+                <div
+                    class="capacity-fill capacity-high"
+                    data-capacity="75%"
+                ></div>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between">
+            <div class="text-sm">
+                <span class="text-muted">Revenue:</span>
+                <span class="text-text-secondary ml-1 font-semibold">$48</span>
+            </div>
+            <div class="flex items-center gap-1">
+                <a
+                    href="./edit-event.html"
+                    class="hover:bg-primary text-text cursor-pointer rounded-lg p-2 transition-colors"
+                >
+                    <i class="ph ph-pencil-simple-line"></i>
+                </a>
+                <button
+                    class="hover:bg-primary text-text cursor-pointer rounded-lg p-2 transition-colors"
+                >
+                    <i class="ph ph-copy"></i>
+                </button>
+                <button
+                    class="hover:bg-primary text-text cursor-pointer rounded-lg p-2 transition-colors"
+                >
+                    <i class="ph ph-archive"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- table view -->
+<div
+    id="list-table"
+    class="card-event custom-scrollbar border-border mt-3 hidden w-full overflow-x-auto rounded-lg border sm:mt-4 lg:mt-6"
+>
+    <div class="custom-scrollbar overflow-x-auto">
+        <table class="">
+            <thead class="">
+                <tr class="text-text text-left">
+                    <th>Event</th>
+                    <th>Date & Time</th>
+                    <th>Status</th>
+                    <th>Tickets Sold</th>
+                    <th>Revenue</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <!-- Row 1 -->
+                <tr>
+                    <td>
+                        <div class="flex items-center gap-3">
+                            <div>
+                                <img
+                                    src="./assets/images/events/jazz-night.png"
+                                    alt="Emma"
+                                    class="size-12 rounded-lg bg-center object-cover"
+                                />
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-text font-medium"
+                                    >Emma Watson</span
+                                >
+                                <span class="text-text-secondary text-sm">
+                                    Rooftop Lounge
+                                </span>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td class="flex flex-col">
+                        <span class="text-text-secondary text-sm">
+                            Dec 14, 2025
+                        </span>
+                        <span class="text-muted text-sm">7:00 PM</span>
+                    </td>
+
+                    <td>
+                        <span
+                            class="badges-yellow rounded-full px-2 py-1 text-xs font-medium"
+                            >Draft</span
+                        >
+                    </td>
+
+                    <td>
+                        <div class="space-y-1">
+                            <div class="flex flex-col">
+                                <span class="text-text-secondary text-sm">
+                                    $30 / $120
+                                </span>
+                                <div
+                                    class="bg-muted h-2 w-20 overflow-hidden rounded-full"
+                                >
+                                    <div
+                                        class="capacity-medium h-full"
+                                        style="width: 30%"
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td class="flex flex-col">
+                        <span class="text-text-secondary text-sm font-medium">
+                            0
+                        </span>
+                        <span class="text-text-secondary text-xs"
+                            >$ 0 / 120</span
+                        >
+                    </td>
+
+                    <td>
+                        <div>
+                            <a
+                                href="./edit-event.html"
+                                class="hover:bg-primary text-text cursor-pointer rounded-lg p-2 transition-colors"
+                            >
+                                <i class="ph ph-pencil-simple-line"></i>
+                            </a>
+                            <button
+                                class="hover:bg-primary text-text cursor-pointer rounded-lg p-2 transition-colors"
+                            >
+                                <i class="ph ph-copy"></i>
+                            </button>
+                            <button
+                                class="hover:bg-primary text-text cursor-pointer rounded-lg p-2 transition-colors"
+                            >
+                                <i class="ph ph-archive"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- Row 2 -->
+                <tr class="hover:bg-primary">
+                    <td>
+                        <div class="flex items-center gap-3">
+                            <div>
+                                <img
+                                    src="./assets/images/events/community-sports.png"
+                                    alt="community-sports"
+                                    class="size-12 rounded-lg bg-center object-cover"
+                                />
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-text font-medium"
+                                    >Community Sports</span
+                                >
+                                <span class="text-text-secondary text-sm">
+                                    Rooftop Lounge
+                                </span>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td class="flex flex-col">
+                        <span class="text-text-secondary text-sm">
+                            Dec 14, 2025
+                        </span>
+                        <span class="text-muted text-sm">7:00 PM</span>
+                    </td>
+
+                    <td>
+                        <span
+                            class="badges-yellow rounded-full px-2 py-1 text-xs font-medium"
+                            >Draft</span
+                        >
+                    </td>
+
+                    <td>
+                        <div class="space-y-1">
+                            <span class="text-text text-sm">$30 / $120</span>
+                            <div
+                                class="bg-muted h-2 w-20 overflow-hidden rounded-full"
+                            >
+                                <div
+                                    class="capacity-medium h-full"
+                                    style="width: 30%"
+                                ></div>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td class="flex flex-col">
+                        <span class="text-text-secondary text-sm font-medium">
+                            23
+                        </span>
+                        <span class="text-text-secondary text-xs"
+                            >$ 23 / 120</span
+                        >
+                    </td>
+
+                    <td>
+                        <div>
+                            <a
+                                href="./edit-event.html"
+                                class="hover:bg-primary text-text cursor-pointer rounded-lg p-2 transition-colors"
+                            >
+                                <i class="ph ph-pencil-simple-line"></i>
+                            </a>
+                            <button
+                                class="hover:bg-primary text-text cursor-pointer rounded-lg p-2 transition-colors"
+                            >
+                                <i class="ph ph-copy"></i>
+                            </button>
+                            <button
+                                class="hover:bg-primary text-text cursor-pointer rounded-lg p-2 transition-colors"
+                            >
+                                <i class="ph ph-archive"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Create/Edit Event Modal -->
+<div
+    id="event-modal"
+    class="modal modal-overlay fixed inset-0 z-600 hidden items-center justify-center bg-black/50 p-4"
+>
+    <div
+        class="card-event bg-bg border-border max-h-[90vh] w-full max-w-2xl overflow-hidden rounded-lg border"
+    >
+        <div class="border-border border-b p-3 md:p-6">
+            <div class="flex items-center justify-between">
+                <h2 class="text-text text-lg font-semibold" id="modal-title">
+                    Create New Event
+                </h2>
+                <button
+                    id="close-modal"
+                    class="close btn-secondary flex items-center gap-2"
+                >
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="custom-scrollbar max-h-[calc(90vh-140px)] overflow-y-auto">
+            <form id="event-form" class="space-y-6 p-3 md:p-6">
+                <!-- Basic Information -->
+                <div class="space-y-4">
+                    <h3 class="text-text">Basic Information</h3>
+
+                    <div>
+                        <label>Event Name *</label>
+                        <input
+                            type="text"
+                            name="name"
+                            required
+                            class="border-border bg-background text-text focus:ring-ring w-full rounded-lg border px-3 py-2 focus:ring-2 focus:outline-none"
+                            placeholder="Enter event name"
+                        />
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div>
+                            <label>Category</label>
+                            <div class="select-dropdown w-full">
+                                <div class="select-dropdown-button w-full">
+                                    <span>Conference</span>
+                                    <i
+                                        class="select-toggle-icon ph ph-caret-down"
+                                    ></i>
+                                </div>
+                                <input
+                                    type="hidden"
+                                    name="category"
+                                    value="conference"
+                                />
+                                <div class="select-dropdown-menu">
+                                    <div class="select-dropdown-item">
+                                        Conference
+                                    </div>
+                                    <div class="select-dropdown-item">
+                                        Music & Entertainment
+                                    </div>
+                                    <div class="select-dropdown-item">
+                                        Food & Drink
+                                    </div>
+                                    <div class="select-dropdown-item">
+                                        Art & Culture
+                                    </div>
+                                    <div class="select-dropdown-item">
+                                        Sports & Recreation
+                                    </div>
+                                    <div class="select-dropdown-item">
+                                        Workshop
+                                    </div>
+                                    <div class="select-dropdown-item">
+                                        Networking
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label>Status</label>
+                            <div class="select-dropdown w-full">
+                                <div class="select-dropdown-button w-full">
+                                    <span>Draft</span>
+                                    <i
+                                        class="select-toggle-icon ph ph-caret-down"
+                                    ></i>
+                                </div>
+                                <input
+                                    type="hidden"
+                                    name="status"
+                                    value="draft"
+                                />
+                                <div class="select-dropdown-menu">
+                                    <div class="select-dropdown-item">
+                                        Draft
+                                    </div>
+                                    <div class="select-dropdown-item">
+                                        Scheduled
+                                    </div>
+                                    <div class="select-dropdown-item">
+                                        Active
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label>Description</label>
+                        <textarea
+                            name="description"
+                            rows="3"
+                            class="border-border bg-bg text-text focus:ring-ring w-full resize-none rounded-lg border px-3 py-2 focus:ring-2 focus:outline-none"
+                            placeholder="Event description (optional)"
+                        ></textarea>
+                    </div>
+                </div>
+
+                <!-- Date & Time -->
+                <div class="space-y-4">
+                    <h3 class="text-md text-text font-semibold">Date & Time</h3>
+
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div>
+                            <label>Start Date *</label>
+                            <input
+                                type="date"
+                                name="startDate"
+                                required
+                                class="border-border bg-bg text-text focus:ring-ring w-full rounded-lg border px-3 py-2 focus:ring-2 focus:outline-none"
+                            />
+                        </div>
+                        <div>
+                            <label>Start Time *</label>
+                            <input
+                                type="time"
+                                name="startTime"
+                                required
+                                class="border-border bg-background text-text focus:ring-ring w-full rounded-lg border px-3 py-2 focus:ring-2 focus:outline-none"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div>
+                            <label>End Date *</label>
+                            <input
+                                type="date"
+                                name="endDate"
+                                required
+                                class="border-border bg-bg text-text focus:ring-ring w-full rounded-lg border px-3 py-2 focus:ring-2 focus:outline-none"
+                            />
+                        </div>
+                        <div>
+                            <label>End Time *</label>
+                            <input
+                                type="time"
+                                name="endTime"
+                                required
+                                class="border-border bg-background text-text focus:ring-ring w-full rounded-lg border px-3 py-2 focus:ring-2 focus:outline-none"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Location -->
+                <div class="space-y-4">
+                    <h3 class="text-md text-text font-semibold">Location</h3>
+
+                    <div>
+                        <label>Venue Name *</label>
+                        <input
+                            type="text"
+                            name="venue"
+                            required
+                            class="border-border bg-bg text-text focus:ring-ring w-full rounded-lg border px-3 py-2 focus:ring-2 focus:outline-none"
+                            placeholder="Venue or location name"
+                        />
+                    </div>
+
+                    <div>
+                        <label>Address</label>
+                        <input
+                            type="text"
+                            name="address"
+                            class="border-border bg-bg text-text focus:ring-ring w-full rounded-lg border px-3 py-2 focus:ring-2 focus:outline-none"
+                            placeholder="Full address (optional)"
+                        />
+                    </div>
+                </div>
+
+                <!-- Capacity & Pricing -->
+                <div class="space-y-4">
+                    <h3 class="text-md text-text font-semibold">
+                        Capacity & Pricing
+                    </h3>
+
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div>
+                            <label>Total Capacity *</label>
+                            <input
+                                type="number"
+                                name="capacity"
+                                required
+                                min="1"
+                                class="border-border bg-bg text-text focus:ring-ring w-full rounded-lg border px-3 py-2 focus:ring-2 focus:outline-none"
+                                placeholder="1000"
+                            />
+                        </div>
+                        <div>
+                            <label>Ticket Price ($)</label>
+                            <input
+                                type="number"
+                                name="price"
+                                step="0.01"
+                                min="0"
+                                class="border-border bg-bg text-text focus:ring-ring w-full rounded-lg border px-3 py-2 focus:ring-2 focus:outline-none"
+                                placeholder="0.00"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-border flex justify-end gap-3 border-t pt-4">
+                    <button
+                        type="button"
+                        id="cancel-event"
+                        class="close btn-secondary"
+                    >
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <span>Create Event</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock bodyContent %}

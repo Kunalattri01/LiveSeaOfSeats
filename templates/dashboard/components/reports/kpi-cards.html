@@ -1,0 +1,93 @@
+<!-- =============================================
+   COMPONENT: KPI Cards (Main Metrics)
+   File: kpi-cards.html
+   Usage: A 4-column grid of key performance
+          indicator cards: Total Revenue, Tickets
+          Sold, Active Events, Total Customers.
+          Each card shows an icon, value, trend
+          indicator, label, and sub-label.
+   ============================================= -->
+
+<div class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+
+  <!-- Card 1: Total Revenue -->
+  <div class="card-event">
+    <div class="mb-4 flex items-center justify-between">
+      <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-600">
+        <i class="ph ph-currency-dollar text-2xl text-white"></i>
+      </div>
+      <div class="text-right">
+        <div class="text-text text-2xl font-bold">$89,245</div>
+        <div class="flex items-center gap-1 text-sm text-green-600">
+          <i class="ph ph-trend-up text-sm text-green-600"></i>
+          +12.5%
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3 class="text-muted text-sm font-medium">Total Revenue</h3>
+      <p class="text-muted mt-1 text-xs">vs last 30 days</p>
+    </div>
+  </div>
+
+  <!-- Card 2: Tickets Sold -->
+  <div class="card-event">
+    <div class="mb-4 flex items-center justify-between">
+      <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-green-600">
+        <i class="ph ph-ticket text-2xl text-white"></i>
+      </div>
+      <div class="text-right">
+        <div class="text-text text-2xl font-bold">2,847</div>
+        <div class="flex items-center gap-1 text-sm text-green-600">
+          <i class="ph ph-trend-up text-sm text-green-600"></i>
+          +8.2%
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3 class="text-muted text-sm font-medium">Tickets Sold</h3>
+      <p class="text-muted mt-1 text-xs">234 sold today</p>
+    </div>
+  </div>
+
+  <!-- Card 3: Active Events -->
+  <div class="card-event">
+    <div class="mb-4 flex items-center justify-between">
+      <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-purple-600">
+        <i class="ph ph-calendar-dots text-2xl text-white"></i>
+      </div>
+      <div class="text-right">
+        <div class="text-text text-2xl font-bold">23</div>
+        <div class="flex items-center gap-1 text-sm text-blue-600">
+          <i class="ph ph-calendar text-sm text-blue-600"></i>
+          5 this week
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3 class="text-muted text-sm font-medium">Active Events</h3>
+      <p class="text-muted mt-1 text-xs">12 upcoming</p>
+    </div>
+  </div>
+
+  <!-- Card 4: Total Customers -->
+  <div class="card-event">
+    <div class="mb-4 flex items-center justify-between">
+      <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-orange-600">
+        <i class="ph ph-users text-2xl text-white"></i>
+      </div>
+      <div class="text-right">
+        <div class="text-text text-2xl font-bold">8,734</div>
+        <div class="flex items-center gap-1 text-sm text-green-600">
+          <i class="ph ph-trend-up text-sm text-green-600"></i>
+          +15.3%
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3 class="font-medium text-muted text-sm">Total Customers</h3>
+      <p class="text-muted mt-1 text-xs">456 new this month</p>
+    </div>
+  </div>
+
+</div>

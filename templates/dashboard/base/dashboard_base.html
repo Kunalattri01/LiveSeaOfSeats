@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <!-- SEO and Verification -->
+    <meta name="description" content="VenueX - Event Ticketing & Management SaaS Dashboard HTML Template" />
+    <meta name="keywords" content="event management, ticketing, dashboard, analytics" />
+    <meta name="author" content="VenueX" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- cdn -->
+    <link rel="shortcut icon" href="{% static 'dashboard/images/fav.svg' %}" type="image/x-icon" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="{% static 'dashboard/css/index.css' %}" rel="stylesheet">
+
+    <!-- title -->
+    <title>{% block title %}Dashboard - SeaOfSeats{% endblock title %}</title>
+
+    <script>
+        (function () {
+            const t = localStorage.getItem("theme");
+            if (t === "dark" || (!t && matchMedia("(prefers-color-scheme: dark)").matches)) {
+                document.documentElement.classList.add("dark");
+            }   
+        })();
+    </script>
+</head>
+
+<body class="custom-scrollbar"> <!-- data-page="Dashboard-1" -->
+    <div>
+        {% include 'dashboard/components/sidebar.html' %}
+    </div>
+    <main id="main-content"  class="custom-scrollbar mx-4 mt-24 mb-4 transition-all duration-300 ease-in-out sm:mt-28 md:px-4 xl:ml-64">
+        {% include 'dashboard/components/header.html' %}
+
+        {% if hero_banner %}
+            {% include 'dashboard/components/reports/hero-banner.html' %}
+        {% endif %}
+
+        {% if kpi_cards %}
+            {% include 'dashboard/components/reports/kpi-cards.html' %}
+        {% endif %}
+
+        {% if charts_section %}
+            {% include 'dashboard/components/reports/charts-section.html' %}
+        {% endif %}
+
+        {% if activity_events %}
+            {% include 'dashboard/components/reports/activity-events.html' %}
+        {% endif %}
+
+        {% if bottom_section %}
+            {% include 'dashboard/components/reports/bottom-section.html' %}
+        {% endif %}
+
+        <!-- block bodyContent  -->
+        {% block bodyContent %}
+        {% endblock bodyContent %}
+    </main>
+
+</body>
+
+    <script defer src="{% static 'dashboard/js/index.js' %}"></script>
+    <script src="{% static 'website/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script src="{% static 'website/js/viewport.jquery.js' %}"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            $('.drp-select2').select2({
+                width: '100%',
+                placeholder: 'Select Options here....',
+            });
+
+        });
+    </script>
+
+</html>

@@ -1,0 +1,116 @@
+{% load static %}
+<header class="flex-1">
+    <nav id="header" class="border-border text-text fixed top-0 right-0 z-200 flex items-center justify-between border-b bg-bg px-2 py-4 sm:px-3 sm:py-4 max-xl:w-full xl:w-[calc(100%-256px)]">
+
+    <!-- Left: Collapse button + Page title -->
+    <div class="flex items-center gap-2">
+        <div>
+            <!-- Desktop sidebar collapse -->
+            <button id="sidebar-collapse" class="ml-auto hidden rounded-lg p-2 bg-border/30 hover:bg-border xl:flex items-center cursor-pointer duration-300 ease-in-out">
+                <i id="collapse-icon" class="ph ph-caret-left text-xl transition-transform duration-300"></i>
+            </button>
+        </div>
+        <div class="flex items-center gap-2">
+            <!-- Mobile hamburger -->
+            <i id="logo" class="ph ph-list text-text block cursor-pointer p-2 text-xl xl:hidden"></i>
+            <h3 class="text-md font-bold sm:text-xl md:text-2xl">{{ page_title }}</h3>
+        </div>
+    </div>
+
+    <!-- Right: Search + Notifications + Theme + User -->
+    <div class="flex items-center justify-center gap-2">
+
+    <!-- Search Bar -->
+    <div class="relative hidden md:block">
+    <input type="text" placeholder="Search..." class="border-border bg-input focus:ring-primary rounded-md border py-2 pr-4 pl-10 transition-colors duration-200 focus:ring-2 focus:outline-none" />
+    <i class="ph ph-magnifying-glass text-2xl text-muted absolute top-1/2 left-3 -translate-y-1/2 transform"></i>
+    </div>
+
+    <!-- Notification Bell + Dropdown -->
+    <div class="relative" id="notification-wrapper">
+    <button id="notification-btn" class="relative cursor-pointer rounded-xl p-1 transition-colors md:p-2.5 flex items-center">
+    <i class="ph ph-bell-ringing text-xl sm:text-2xl"></i>
+    <span class="absolute top-1.5 right-1 h-2 w-2 rounded-full bg-red-500 md:right-1.5"></span>
+    </button>
+
+    <!-- Dropdown panel -->
+    <div id="notification-dropdown" class="bg-bg border-border absolute top-18 -right-28 z-10 hidden w-64 rounded-lg border p-2 md:-right-32">
+    <div id="notification-list" class="custom-scrollbar max-h-96 overflow-y-auto">
+
+    <a href="#" class="border-border hover:bg-bg flex items-start gap-3 border-b p-2 transition">
+    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 text-red-500">
+    <i class="ph ph-bell-ringing text-xl"></i>
+    </div>
+    <div class="flex-1">
+    <p class="text-text text-xs font-semibold sm:text-sm">BTC <span class="font-normal">has hit your target buying price of</span> <span class="font-bold">$55,000</span>. Act now!</p>
+    <p class="mt-1 text-[10px] text-gray-500 sm:text-xs">2m ago</p>
+    </div>
+    </a>
+
+    <a href="#" class="border-border hover:bg-bg flex items-start gap-3 border-b p-2 transition">
+    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 text-green-500">
+    <i class="ph ph-bell-ringing text-xl"></i>
+    </div>
+    <div class="flex-1">
+    <p class="text-text text-xs sm:text-sm">Your <span class="font-semibold">portfolio</span> value has increased by <span class="font-semibold">5%</span> in the past 24 hours. Good job!</p>
+    <p class="mt-1 text-[10px] text-gray-500 sm:text-xs">10m ago</p>
+    </div>
+    </a>
+
+    <a href="#" class="border-border hover:bg-bg flex items-start gap-3 border-b p-2 transition">
+    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-blue-500">
+    <i class="ph ph-bell-ringing text-xl"></i>
+    </div>
+    <div class="flex-1">
+    <p class="text-text text-xs sm:text-sm">Your order to buy <span class="font-semibold">0.5 BTC</span> has been executed at a price of <span class="font-bold">$55,000</span></p>
+    <p class="mt-1 text-[10px] text-gray-500 sm:text-xs">42m ago</p>
+    </div>
+    </a>
+
+    <a href="#" class="border-border hover:bg-bg flex items-start gap-3 p-2 transition">
+    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 text-green-500">
+    <i class="ph ph-bell-ringing text-xl sm:text-xl"></i>
+    </div>
+    <div class="flex-1">
+    <p class="text-text text-xs font-semibold sm:text-sm">ETH <span class="font-normal">has hit your target buying price of</span> <span class="font-bold">$15,000</span>. Act now!</p>
+    <p class="mt-1 text-[10px] text-gray-500 sm:text-xs">2m ago</p>
+    </div>
+    </a>
+
+    <a href="#" class="border-border hover:bg-bg flex items-start gap-3 p-2 transition">
+    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 text-green-500">
+    <i class="ph ph-bell-ringing text-xl sm:text-xl"></i>
+    </div>
+    <div class="flex-1">
+    <p class="text-text text-xs font-semibold sm:text-sm">ETH <span class="font-normal">has hit your target buying price of</span> <span class="font-bold">$15,000</span>. Act now!</p>
+    <p class="mt-1 text-[10px] text-gray-500 sm:text-xs">2m ago</p>
+    </div>
+    </a>
+
+    </div>
+    </div>
+    </div>
+
+    <!-- Dark / Light Theme Toggle -->
+    <button id="theme-toggle" class="theme-toggle-btn hover:cursor-pointer flex items-center rounded-md p-1 transition-colors sm:p-4" aria-label="Toggle theme">
+    <i class="ph ph-sun-dim text-text hidden text-xl sm:text-2xl dark:inline-block"></i>
+    <i class="ph ph-moon-stars text-text inline-block text-xl sm:text-2xl dark:hidden"></i>
+    </button>
+
+    <!-- User Avatar + Dropdown -->
+    <div class="relative">
+    <button id="user-menu-trigger-aside" class="px-2 py-1 sm:px-3 sm:py-2 rounded-2xl flex items-center gap-2 cursor-pointer transition-transform duration-200">
+    <img src="{% static 'dashboard/images/profile/emma.jpg' %}" alt="emma" class="size-8 object-cover rounded-full" />
+    <i id="user-menu-icon-aside" class="ph ph-caret-down text-text text-xl transition-transform duration-200"></i>
+    </button>
+
+    <div id="user-menu-dropdown-aside" class="absolute right-0 top-14 px-3 py-4 bg-border rounded-lg w-40 space-y-4 z-50 hidden">
+    <a href="./settings.html" class="flex items-center gap-2 text-text"><i class="ph ph-user"></i><p>Profile</p></a>
+    <a href="./settings.html" class="flex items-center gap-2 text-text"><i class="ph ph-gear"></i><p>Settings</p></a>
+    <a href="./login.html" class="flex items-center gap-2 text-red-500 hover:text-red-600"><i class="ph ph-sign-out"></i><p>Logout</p></a>
+    </div>
+    </div>
+
+    </div>
+    </nav>
+</header>
