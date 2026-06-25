@@ -1,125 +1,489 @@
 {% load static %}
 {% load custom_filters %}
-
 <style>
 .country-dropdown {
     position: relative;
-    width: 220px;
 }
 
 .selected {
     display: flex;
     align-items: center;
-    gap: 8px;
-    background: transparent;
-    border: 1px solid #3a4a7a;
-    padding: 6px 10px;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 5px 12px 5px 8px;
     border-radius: 20px;
     cursor: pointer;
     color: #fff;
+    font-size: 13px;
+    white-space: nowrap;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.selected:hover {
+    border-color: rgba(255, 255, 255, 0.28);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .selected img {
-    width: 20px;
+    width: 18px;
+    border-radius: 2px;
+    flex-shrink: 0;
 }
 
-.selected::after {
-    content: "▼";
-    margin-left: auto;
+.selected i.bi-chevron-down {
+    margin-left: 2px;
     font-size: 10px;
-    opacity: 0.7;
+    opacity: 0.6;
+    transition: transform 0.2s ease;
 }
+
+.country-dropdown:has(.dropdown-list.show) .selected i.bi-chevron-down {
+    transform: rotate(180deg);
+}
+
+.selected::after { content: ""; }
 
 .dropdown-list {
     display: none;
     position: absolute;
-    top: 45px;
-    width: 100%;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 220px;
     background: #0c1b3a;
-    border: 1px solid #3a4a7a;
-    border-radius: 8px;
-    max-height: 250px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    max-height: 280px;
     overflow-y: auto;
-    z-index: 999;
+    z-index: 9999;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .dropdown-list.show {
     display: block;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
 }
 
 .option {
-    padding: 8px;
+    padding: 10px 12px;
     display: flex;
     align-items: center;
     gap: 8px;
     cursor: pointer;
-    color: #fff;
+    color: #dde2f0;
+    font-size: 13px;
+    transition: background 0.15s ease;
 }
 
-.option:hover {
-    background: #1f3a6d;
+.option:hover { background: rgba(255, 255, 255, 0.06); }
+.option:first-child { border-radius: 12px 12px 0 0; }
+.option:last-child  { border-radius: 0 0 12px 12px; }
+.option img { width: 18px; border-radius: 2px; }
+
+/* ============================================================
+   HEADER SHELL
+   ============================================================ */
+.header-section {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #0a1e5e;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.option img {
-    width: 20px;
+.header-section.scrolled {
+    background-color: #08184b;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.32);
+}
+
+.header-inner {
+    width: 100%;
+    max-width: 1680px;
+    margin: 0 auto;
+    padding: 0 32px;
+    box-sizing: border-box;
+}
+
+/* ============================================================
+   GRID — Desktop 1200px+
+   [Logo]  [Search]  [Country]  [Buttons]   — single row
+   ============================================================ */
+.header-wrapper {
+    display: grid;
+    align-items: center;
+    gap: 16px;
+    padding: 11px 0;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-rows: auto;
+}
+
+.header-wrapper .logo {
+    grid-column: 1; grid-row: 1;
+    display: flex; align-items: center;
+}
+.header-wrapper .logo img {
+    width: 160px; height: auto; display: block;
+}
+.header-wrapper .header-search {
+    grid-column: 2; grid-row: 1; min-width: 0;
+}
+.header-wrapper .header-tools {
+    grid-column: 3; grid-row: 1;
+}
+.header-actions {
+    display: flex; align-items: center;
+    gap: 10px; justify-content: flex-end;
+}
+.header-wrapper .header-actions.desktop-actions {
+    grid-column: 4; grid-row: 1;
+}
+
+/* ============================================================
+   PREMIUM BUTTONS — unchanged
+   ============================================================ */
+.btn-list-show {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 18px;
+    height: 36px;
+    border-radius: 20px;
+    border: 1.5px solid rgba(255, 255, 255, 0.32);
+    background: transparent;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.18s ease, color 0.2s ease;
+}
+.btn-list-show i { font-size: 15px; flex-shrink: 0; }
+.btn-list-show:hover, .btn-list-show:focus-visible {
+    border-color: #f84464;
+    background: rgba(248, 68, 100, 0.1);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+.btn-list-show:active { transform: translateY(0); }
+
+.btn-login {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 22px;
+    height: 36px;
+    border-radius: 20px;
+    border: none;
+    background: #f84464;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s ease, transform 0.18s ease;
+}
+.btn-login::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.04) 50%, transparent 100%);
+    pointer-events: none;
+}
+.btn-login i, .btn-login span { position: relative; z-index: 1; }
+.btn-login i { font-size: 15px; flex-shrink: 0; }
+.btn-login:hover, .btn-login:focus-visible {
+    background: #ff5577; color: #ffffff; transform: translateY(-1px);
+}
+.btn-login:active { transform: translateY(0); }
+
+/* ============================================================
+   HAMBURGER — hidden on desktop, shown on mobile
+   ============================================================ */
+.hamburger-btn {
+    display: none;
+    align-items: center; justify-content: center;
+    width: 36px; height: 36px; padding: 0;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    cursor: pointer; color: #ffffff; font-size: 20px;
+    transition: background 0.2s ease;
+    flex-shrink: 0;
+}
+.hamburger-btn:hover { background: rgba(255, 255, 255, 0.1); }
+.hamburger-btn .icon-close { display: none; }
+.hamburger-btn.active .icon-open  { display: none; }
+.hamburger-btn.active .icon-close { display: inline-block; }
+
+/* ============================================================
+   MOBILE MENU — hidden by default
+   ============================================================ */
+.mobile-menu { display: none; }
+
+/* ============================================================
+   RESPONSIVE — LARGE TABLET  1024px–1199px
+   [Logo]  [Country]  [Buttons]
+             [Search — full width]
+   Two rows, actions stay visible (no hamburger yet)
+   ============================================================ */
+@media (max-width: 1199px) and (min-width: 769px) {
+
+    .header-inner { padding: 0 24px; }
+
+    .header-wrapper {
+        grid-template-columns: auto 1fr auto auto;
+        grid-template-rows: auto auto;
+        gap: 10px 14px;
+        padding: 12px 0;
+    }
+
+    /* Row 1 */
+    .header-wrapper .logo          { grid-column: 1; grid-row: 1; }
+    .header-wrapper .logo img      { width: 148px; }
+    .header-wrapper .header-tools  { grid-column: 3; grid-row: 1; }
+    .header-wrapper .header-actions.desktop-actions {
+        grid-column: 4; grid-row: 1;
+        gap: 8px;
+    }
+
+    /* Row 2 — search spans everything */
+    .header-wrapper .header-search { grid-column: 1 / -1; grid-row: 2; }
+
+    /* Slightly smaller buttons so they fit comfortably */
+    .btn-list-show, .btn-login {
+        height: 34px;
+        font-size: 12.5px;
+        padding: 0 15px;
+    }
+}
+
+/* ============================================================
+   RESPONSIVE — SMALL TABLET  600px–768px
+   [Logo]  [Country]  [Hamburger]
+             [Search — full width]
+   Hamburger replaces buttons; slide-down menu holds them
+   ============================================================ */
+@media (max-width: 768px) and (min-width: 481px) {
+
+    .header-inner { padding: 0 18px; }
+
+    .header-wrapper {
+        grid-template-columns: auto 1fr auto auto;
+        grid-template-rows: auto auto auto;
+        row-gap: 10px;
+        column-gap: 10px;
+        padding: 10px 0;
+    }
+
+    /* Row 1 */
+    .header-wrapper .logo          { grid-column: 1; grid-row: 1; }
+    .header-wrapper .logo img      { width: 138px; }
+    .header-wrapper .header-tools  { grid-column: 3; grid-row: 1; }
+
+    /* Row 2 — full-width search */
+    .header-wrapper .header-search { grid-column: 1 / -1; grid-row: 2; }
+
+    /* Hide desktop action buttons */
+    .header-wrapper .header-actions.desktop-actions { display: none; }
+
+    /* Hamburger */
+    .hamburger-btn {
+        display: flex;
+        grid-column: 4; grid-row: 1;
+        justify-self: end;
+    }
+
+    /* Slide-down mobile menu — Row 3 */
+    .mobile-menu {
+        display: block;
+        grid-column: 1 / -1; grid-row: 3;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 0.3s ease, opacity 0.25s ease;
+    }
+    .mobile-menu.show { max-height: 160px; opacity: 1; }
+
+    .mobile-menu .mobile-actions {
+        display: flex;
+        flex-direction: row;           /* side-by-side on tablet */
+        gap: 10px;
+        padding: 10px 0 4px;
+    }
+    .mobile-menu .mobile-actions .btn-list-show,
+    .mobile-menu .mobile-actions .btn-login {
+        flex: 1;
+        justify-content: center;
+        height: 38px;
+        font-size: 13px;
+    }
+
+    /* Country: flag + code + chevron (keep label visible) */
+    .header-wrapper .country-dropdown .selected { padding: 5px 10px 5px 8px; }
+    .header-wrapper #selected-text { display: inline; }
+
+    /* Keep flyout from bleeding off screen */
+    .header-wrapper .country-dropdown .dropdown-list {
+        right: 0; left: auto; width: 210px;
+    }
+}
+
+/* ============================================================
+   RESPONSIVE — MOBILE  ≤480px
+   [Logo]  [Flag]  [Hamburger]
+      [Search — full width]
+   Flag only (no code text); buttons stacked full-width
+   ============================================================ */
+@media (max-width: 480px) {
+
+    .header-inner { padding: 0 14px; }
+
+    .header-wrapper {
+        grid-template-columns: auto 1fr auto auto;
+        grid-template-rows: auto auto auto;
+        row-gap: 8px;
+        column-gap: 8px;
+        padding: 9px 0;
+    }
+
+    /* Row 1 */
+    .header-wrapper .logo          { grid-column: 1; grid-row: 1; }
+    .header-wrapper .logo img      { width: 118px; }
+    .header-wrapper .header-tools  { grid-column: 3; grid-row: 1; }
+
+    /* Row 2 */
+    .header-wrapper .header-search { grid-column: 1 / -1; grid-row: 2; }
+
+    /* Hide desktop actions */
+    .header-wrapper .header-actions.desktop-actions { display: none; }
+
+    /* Hamburger */
+    .hamburger-btn {
+        display: flex;
+        grid-column: 4; grid-row: 1;
+        justify-self: end;
+        width: 34px; height: 34px; font-size: 18px;
+    }
+
+    /* Flag only — hide country code text */
+    .header-wrapper .country-dropdown .selected { padding: 5px 8px; gap: 4px; }
+    .header-wrapper #selected-text { display: none; }
+    .header-wrapper .selected img, #selected-flag { width: 16px; }
+
+    /* Flyout */
+    .header-wrapper .country-dropdown .dropdown-list {
+        right: 0; left: auto; width: max-content; min-width: 190px;
+    }
+
+    /* Mobile slide-down — stacked buttons */
+    .mobile-menu {
+        display: block;
+        grid-column: 1 / -1; grid-row: 3;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 0.3s ease, opacity 0.25s ease;
+    }
+    .mobile-menu.show { max-height: 180px; opacity: 1; }
+
+    .mobile-menu .mobile-actions {
+        display: flex;
+        flex-direction: column;        /* stacked on small mobile */
+        gap: 8px;
+        padding: 10px 0 4px;
+    }
+    .mobile-menu .mobile-actions .btn-list-show,
+    .mobile-menu .mobile-actions .btn-login {
+        width: 100%;
+        justify-content: center;
+        height: 40px;
+        border-radius: 12px;
+        font-size: 13.5px;
+    }
 }
 </style>
 
-<header class="header-section">
-
-    <div class="container">
-
+<header class="header-section" id="siteHeader">
+    <div class="header-inner">
         <div class="header-wrapper">
-
-            <!-- LOGO -->
+            <!-- ── LOGO ── -->
             <div class="logo">
                 <a href="{% url 'TicketMasterEventsPage' %}">
-                    <!-- <img src="{% static 'website/images/logo/logo-mine.png' %}" alt="logo"> -->
-                    <!-- <img src="{% static 'website/images/logo/sos_logo_1.png' %}" alt="logo"> -->
-                    <!-- <img src="{% static 'website/images/logo/sos-1.png' %}" alt="logo"> -->
-                    <img src="{% static 'website/images/logo/ChatGPT Image May 9, 2026, 05_54_18 PM (1) - Copy.png' %}" alt="logo">
+                    <img src="{% static 'website/images/logo/logo_mine_3.png' %}" alt="Sea Of Seats">
                 </a>
             </div>
 
-            <!-- SEARCH -->
+            <!-- ── SEARCH ── -->
             {% include 'website/components/search_bar.html' %}
 
-            <!-- TOOLS -->
+            <!-- ── COUNTRY DROPDOWN ── -->
             <div class="header-tools">
-
-                <!-- COUNTRY DROPDOWN -->
                 <div class="country-dropdown">
-
-                    <!-- SELECTED -->
                     <div class="selected" onclick="toggleDropdown()">
-                        <!-- <img id="selected-flag" src="https://flagcdn.com/24x18/{% if request.session.country_code %}{{ request.session.country_code|lower }}{% else %}us{% endif %}.png"> -->
-                         <img id="selected-flag" src="{% if request.session.country_code %}https://flagcdn.com/24x18/{{ request.session.country_code|lower }}.png{% else %}https://cdn-icons-png.flaticon.com/512/44/44386.png{% endif %}">
+                        <img id="selected-flag"
+                             src="{% if request.session.country_code %}https://flagcdn.com/24x18/{{ request.session.country_code|lower }}.png{% else %}https://cdn-icons-png.flaticon.com/512/44/44386.png{% endif %}"
+                             alt="Selected country flag">
                         <span id="selected-text">
-                            {% if request.session.country_code %}
-                                {{ request.session.country_code }}
-                            {% else %}
-                                ALL
-                            {% endif %}
+                            {% if request.session.country_code %}{{ request.session.country_code }}{% else %}ALL{% endif %}
                         </span>
+                        <i class="fas fa-chevron-down"></i>
                     </div>
 
-                    <!-- DROPDOWN -->
                     <div class="dropdown-list" id="dropdownList">
-
-                        <!-- ALL COUNTRIES -->
                         <div class="option" onclick="clearCountry()">
-                            <img src="https://cdn-icons-png.flaticon.com/512/44/44386.png">
+                            <img src="https://cdn-icons-png.flaticon.com/512/44/44386.png" alt="All countries">
                             All Countries
                         </div>
-
-                        <!-- COUNTRIES -->
                         {% for row in all_countries %}
-                            <div class="option" onclick="selectCountry('{{ row.country_name|escapejs }}', '{{ row.country_code|lower }}')">
-                                <img src="https://flagcdn.com/24x18/{{ row.country_code|lower }}.png">
+                            <div class="option"
+                                 onclick="selectCountry('{{ row.country_name|escapejs }}', '{{ row.country_code|lower }}')">
+                                <img src="https://flagcdn.com/24x18/{{ row.country_code|lower }}.png"
+                                     alt="{{ row.country_name }}">
                                 {{ row.country_name }} ({{ row.country_code }})
                             </div>
                         {% endfor %}
                     </div>
+                </div>
+            </div>
+
+            <!-- ── DESKTOP / TABLET ACTIONS ── -->
+            <div class="header-actions desktop-actions">
+                <a href="#" class="btn-list-show">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Corporate Login</span>
+                </a>
+                <a href="#" class="btn-login">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Login</span>
+                </a>
+            </div>
+
+            <!-- ── HAMBURGER (mobile only) ── -->
+            <button type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu">
+                <i class="fas fa-bars icon-open"></i>
+                <i class="fas fa-times icon-close"></i>
+            </button>
+
+            <!-- ── MOBILE SLIDE-DOWN MENU ── -->
+            <div class="mobile-menu" id="mobileMenu">
+                <div class="mobile-actions">
+                    <a href="#" class="btn-list-show">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Corporate Login</span>
+                    </a>
+                    <a href="#" class="btn-login">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Login</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -127,74 +491,43 @@
 </header>
 
 <script>
-
 function toggleDropdown() {
     document.getElementById("dropdownList").classList.toggle("show");
 }
 
-
-// AUTO DETECT LOCATION
 function autoDetectLocation() {
-
     if (localStorage.getItem("city_set") || sessionStorage.getItem("location_loading")) {
         return;
     }
-
-    sessionStorage.setItem(
-        "location_loading",
-        "true"
-    );
-
+    sessionStorage.setItem("location_loading", "true");
     if (navigator.geolocation) {
-
-        navigator.geolocation.getCurrentPosition(
-            success,
-            error
-        );
+        navigator.geolocation.getCurrentPosition(success, error);
     }
 
     function success(position) {
-
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
 
-        fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
-        )
-        .then(res => res.json())
-        .then(data => {
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
+            .then(res => res.json())
+            .then(data => {
+                const city        = data.address.city || data.address.town || data.address.village || null;
+                const countryName = data.address.country || null;
+                const countryCode = data.address.country_code?.toUpperCase() || null;
 
-            const city = data.address.city || data.address.town || data.address.village || null;
-            const countryName = data.address.country || null;
-            const countryCode = data.address.country_code?.toUpperCase() || null;
-
-            fetch("{% url 'SetCity' %}", {
-
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": "{{ csrf_token }}"
-                },
-
-                body: JSON.stringify({
-
-                    city: city,
-                    country: countryName,
-                    country_code: countryCode,
-                    lat: lat,
-                    lng: lng
-
-                })
-
-            }).then(() => {
-                
-                localStorage.setItem("city_set", "true");
-                sessionStorage.removeItem("location_loading");
-                location.reload();
-
+                fetch("{% url 'SetCity' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    body: JSON.stringify({ city, country: countryName, country_code: countryCode, lat, lng })
+                }).then(() => {
+                    localStorage.setItem("city_set", "true");
+                    sessionStorage.removeItem("location_loading");
+                    location.reload();
+                });
             });
-        });
     }
 
     function error() {
@@ -203,23 +536,17 @@ function autoDetectLocation() {
     }
 }
 
-
-// MANUAL COUNTRY SELECT
 function selectCountry(countryName, countryCode) {
-
     document.getElementById("selected-text").innerText = countryCode.toUpperCase();
     document.getElementById("selected-flag").src = `https://flagcdn.com/24x18/${countryCode}.png`;
     document.getElementById("dropdownList").classList.remove("show");
 
     fetch("{% url 'SetCity' %}", {
-
         method: "POST",
-
         headers: {
             "Content-Type": "application/json",
             "X-CSRFToken": "{{ csrf_token }}"
         },
-
         body: JSON.stringify({
             city: null,
             country: countryName,
@@ -227,62 +554,75 @@ function selectCountry(countryName, countryCode) {
             lat: null,
             lng: null
         })
-
     }).then(() => {
-
-        localStorage.setItem(
-            "city_set",
-            "manual"
-        );
+        localStorage.setItem("city_set", "manual");
         location.reload();
     });
-
 }
 
-
-// CLEAR COUNTRY
 function clearCountry() {
-
     document.getElementById("selected-text").innerText = "ALL";
     document.getElementById("selected-flag").src = "https://cdn-icons-png.flaticon.com/512/44/44386.png";
     document.getElementById("dropdownList").classList.remove("show");
 
     fetch("{% url 'SetCity' %}", {
-
         method: "POST",
-
         headers: {
             "Content-Type": "application/json",
             "X-CSRFToken": "{{ csrf_token }}"
         },
-
-        body: JSON.stringify({
-            city: null,
-            country: null,
-            country_code: null,
-            lat: null,
-            lng: null
-        })
-
+        body: JSON.stringify({ city: null, country: null, country_code: null, lat: null, lng: null })
     }).then(() => {
         localStorage.removeItem("city_set");
         location.reload();
     });
 }
 
-
-// CLOSE DROPDOWN OUTSIDE CLICK
-document.addEventListener("click", function(e) {
+document.addEventListener("click", function (e) {
     if (!e.target.closest(".country-dropdown")) {
         document.getElementById("dropdownList").classList.remove("show");
     }
 });
 
+document.addEventListener("DOMContentLoaded", autoDetectLocation);
 
-// AUTO LOAD LOCATION
-document.addEventListener(
-    "DOMContentLoaded",
-    autoDetectLocation
-);
+document.addEventListener("DOMContentLoaded", function () {
 
+    const hamburgerBtn = document.getElementById("hamburgerBtn");
+    const mobileMenu   = document.getElementById("mobileMenu");
+    const siteHeader   = document.getElementById("siteHeader");
+
+    function closeMobileMenu() {
+        hamburgerBtn.classList.remove("active");
+        hamburgerBtn.setAttribute("aria-expanded", "false");
+        mobileMenu.classList.remove("show");
+    }
+
+    if (hamburgerBtn && mobileMenu) {
+
+        hamburgerBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            const isOpen = mobileMenu.classList.toggle("show");
+            hamburgerBtn.classList.toggle("active", isOpen);
+            hamburgerBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        });
+
+        document.addEventListener("click", function (e) {
+            if (!e.target.closest(".mobile-menu") && !e.target.closest("#hamburgerBtn")) {
+                closeMobileMenu();
+            }
+        });
+
+        window.addEventListener("resize", function () {
+            if (window.innerWidth > 768) closeMobileMenu();
+        });
+    }
+
+    if (siteHeader) {
+        window.addEventListener("scroll", function () {
+            siteHeader.classList.toggle("scrolled", window.scrollY > 8);
+        }, { passive: true });
+    }
+
+});
 </script>
