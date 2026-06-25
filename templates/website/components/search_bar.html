@@ -1,74 +1,316 @@
 {% load static %}
 <style>
-    .header-search { position: relative; width: 100%; }
+    /* ============================================================
+       SEARCH BAR — root wrapper
+       ============================================================ */
+    .header-search {
+        position: relative;
+        width: 100%;
+    }
 
+    .search-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 15px;
+        color: rgba(255, 255, 255, 0.45);
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    /* ============================================================
+       INPUT
+       ============================================================ */
+    #searchInput {
+        width: 100%;
+        box-sizing: border-box;
+        height: 38px;
+        padding: 0 16px 0 40px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.07);
+        color: #ffffff;
+        font-size: 13.5px;
+        outline: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    #searchInput::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+    #searchInput:hover {
+        border-color: rgba(255, 255, 255, 0.22);
+        background: rgba(255, 255, 255, 0.09);
+    }
+
+    #searchInput:focus {
+        border-color: #f84464;
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 0 0 3px rgba(248, 68, 100, 0.18);
+    }
+
+    /* ============================================================
+       SUGGESTIONS PANEL
+       ============================================================ */
     #suggestionsBox {
         position: absolute;
-        top: 105%;
+        top: calc(100% + 8px);
         left: 0;
         width: 100%;
         background: #0a1e5e;
-        border-radius: 8px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
         z-index: 9999;
         overflow: hidden;
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
     }
 
+    #suggestionsBox.hidden {
+        display: block !important;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-6px);
+        pointer-events: none;
+    }
+
+    /* ============================================================
+       FILTER PILLS
+       ============================================================ */
     .pill-container {
         display: flex;
         overflow-x: auto;
-        padding: 15px;
-        gap: 10px;
-        border-bottom: 1px solid #1c2f6e;
+        padding: 12px 14px;
+        gap: 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
         scrollbar-width: none;
+        /* Prevent pills from wrapping — always a single scrollable row */
+        flex-wrap: nowrap;
     }
 
     .pill-container::-webkit-scrollbar { display: none; }
-    
+
     .search-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
         white-space: nowrap;
-        padding: 6px 16px;
-        border: 1px solid #ddd;
+        flex-shrink: 0;          /* never shrink/wrap on small screens */
+        padding: 5px 14px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
         border-radius: 20px;
-        font-size: 13px;
-        color: #d1d1d1;
-        background: #0a1e5e;
+        font-size: 12.5px;
+        color: #c0c8e0;
+        background: rgba(255, 255, 255, 0.03);
         cursor: pointer;
-        transition: 0.2s;
+        transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+    }
+
+    .search-pill i { font-size: 12px; }
+
+    .search-pill:hover {
+        border-color: #f84464;
+        color: #fff;
+        transform: translateY(-1px);
     }
 
     .search-pill.active {
         border-color: #f84464;
-        background-color: rgb(253, 112, 112);
-        color: white;
+        background: #f84464;
+        color: #fff;
         font-weight: 600;
     }
 
+    /* ============================================================
+       SECTION LABEL
+       ============================================================ */
     .section-label {
-        font-size: 11px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 10.5px;
         font-weight: 700;
-        color: #d1d1d1;
-        padding: 15px 15px 5px;
+        color: rgba(255, 255, 255, 0.45);
+        padding: 12px 16px 4px;
         text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .section-label i {
+        color: #f84464;
+        font-size: 13px;
+    }
+
+    /* ============================================================
+       SUGGESTION CARDS
+       ============================================================ */
+    #resultsList {
+        padding: 4px 0 8px;
+        max-height: 58vh;
+        overflow-y: auto;
     }
 
     .suggest-item {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        padding: 12px 18px;
+        gap: 10px;
+        padding: 10px 12px;
+        margin: 2px 8px;
+        border-radius: 10px;
         cursor: pointer;
-        color: #d1d1d1;
-        font-size: 14px;
+        color: #e7e9f5;
+        text-decoration: none;
+        background: transparent;
+        transition: background 0.18s ease, transform 0.18s ease;
     }
 
-    .suggest-item:hover { background-color: #122a75; }
+    .suggest-item:hover {
+        background: rgba(255, 255, 255, 0.06);
+        transform: translateY(-1px);
+    }
 
-    .item-icon { font-size: 18px; }
+    .suggest-icon-badge {
+        flex-shrink: 0;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+    }
+
+    .suggest-item-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+        flex: 1;
+    }
+
+    .suggest-item-title {
+        font-weight: 600;
+        font-size: 13.5px;
+        color: #ffffff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .suggest-item-meta {
+        font-size: 11.5px;
+        color: #8a96b8;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .suggest-item-meta i { margin-right: 3px; }
+
+    .suggest-item-arrow {
+        flex-shrink: 0;
+        color: #4a5880;
+        font-size: 12px;
+        opacity: 0;
+        transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+
+    .suggest-item:hover .suggest-item-arrow {
+        opacity: 1;
+        transform: translateX(2px);
+    }
+
+    /* ============================================================
+       RESPONSIVE — large tablet 769px–1199px
+       Suggestions box can be wider; pills and cards stay the same
+       ============================================================ */
+    @media (max-width: 1199px) and (min-width: 769px) {
+        #resultsList { max-height: 52vh; }
+        #suggestionsBox { border-radius: 13px; }
+    }
+
+    /* ============================================================
+       RESPONSIVE — small tablet 481px–768px
+       Slightly tighter padding, input grows to full row width
+       (the grid already handles that; these are panel internals)
+       ============================================================ */
+    @media (max-width: 768px) and (min-width: 481px) {
+        .pill-container { padding: 10px 12px; gap: 7px; }
+        .search-pill { padding: 5px 12px; font-size: 12px; }
+        .section-label { padding: 10px 13px 4px; font-size: 10px; }
+        .suggest-item { padding: 9px 10px; margin: 2px 6px; }
+        .suggest-item-title { font-size: 13px; }
+        .suggest-item-meta { font-size: 11px; gap: 8px; }
+        #resultsList { max-height: 50vh; }
+        #suggestionsBox { border-radius: 12px; }
+    }
+
+    /* ============================================================
+       RESPONSIVE — mobile ≤480px
+       Max panel height reduced so keyboard doesn't cover results;
+       badge shrinks; meta wraps gracefully
+       ============================================================ */
+    @media (max-width: 480px) {
+        #searchInput {
+            height: 38px;
+            font-size: 13px;
+            padding: 0 14px 0 38px;
+        }
+        .search-icon { left: 12px; font-size: 14px; }
+
+        .pill-container { padding: 9px 10px; gap: 6px; }
+        .search-pill { padding: 4px 11px; font-size: 11.5px; }
+
+        .section-label { padding: 9px 12px 3px; font-size: 9.5px; }
+
+        .suggest-item { padding: 9px 10px; margin: 2px 6px; gap: 8px; }
+        .suggest-item-title { font-size: 13px; }
+        .suggest-item-meta {
+            font-size: 11px;
+            gap: 6px;
+            /* allow meta to wrap onto two lines on very small screens */
+            white-space: normal;
+            flex-wrap: wrap;
+        }
+
+        .suggest-icon-badge { width: 30px; height: 30px; font-size: 13px; }
+
+        /* Limit panel height so the keyboard doesn't bury results */
+        #resultsList { max-height: 42vh; }
+
+        /* Arrow hidden on touch (no hover state) — saves horizontal space */
+        .suggest-item-arrow { display: none; }
+
+        #suggestionsBox {
+            border-radius: 12px;
+            /* Align to the left edge of the input with a small inset */
+            left: 0;
+            right: 0;
+            width: 100%;
+        }
+    }
+
+    /* ============================================================
+       RESPONSIVE — very small 360px and below
+       ============================================================ */
+    @media (max-width: 360px) {
+        #searchInput { font-size: 12.5px; }
+        .search-pill { padding: 4px 9px; font-size: 11px; }
+        .suggest-item-title { font-size: 12.5px; }
+        #resultsList { max-height: 38vh; }
+    }
 </style>
 
 <form class="header-search">
-    <!-- Search filter -->
+    <i class="fas fa-search search-icon"></i>
     <input type="search" id="searchInput" placeholder="Search for Movies, Events, Plays & more" autocomplete="off">
 
     <div id="suggestionsBox" class="hidden">
@@ -78,27 +320,37 @@
 
             <label>
                 <input type="checkbox" value="events" class="filter-checkbox hidden" checked>
-                <span class="search-pill active">Events</span>
+                <span class="search-pill active">
+                    <i class="fas fa-ticket-alt"></i><span>Events</span>
+                </span>
             </label>
 
             <label>
                 <input type="checkbox" value="movies" class="filter-checkbox hidden">
-                <span class="search-pill">Movies</span>
+                <span class="search-pill">
+                    <i class="fas fa-film"></i><span>Movies</span>
+                </span>
             </label>
 
             <label>
                 <input type="checkbox" value="sports" class="filter-checkbox hidden">
-                <span class="search-pill">Sports</span>
+                <span class="search-pill">
+                    <i class="fas fa-trophy"></i><span>Sports</span>
+                </span>
             </label>
 
             <label>
                 <input type="checkbox" value="plays" class="filter-checkbox hidden">
-                <span class="search-pill">Plays</span>
+                <span class="search-pill">
+                    <i class="fas fa-theater-masks"></i><span>Plays</span>
+                </span>
             </label>
 
         </div>
 
-        <div class="section-label">Trending Searches</div>
+        <div class="section-label">
+            <i class="fas fa-fire"></i><span>Trending Searches</span>
+        </div>
         <div id="resultsList"></div>
 
     </div>
@@ -107,75 +359,78 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
-        const input = document.getElementById("searchInput");
-        const box = document.getElementById("suggestionsBox");
-        const list = document.getElementById("resultsList");
-        const checkboxes = document.querySelectorAll(".filter-checkbox");
+        const input       = document.getElementById("searchInput");
+        const box         = document.getElementById("suggestionsBox");
+        const list        = document.getElementById("resultsList");
+        const checkboxes  = document.querySelectorAll(".filter-checkbox");
 
         let debounceTimer;
+
+        const CATEGORY_STYLES = {
+            events : { icon: "fa-ticket-alt", color: "#f84464" },
+            movies : { icon: "fa-film", color: "#7c5cff" },
+            sports : { icon: "fa-trophy", color: "#22c55e" },
+            plays  : { icon: "fa-theater-masks", color: "#f59e0b" }
+        };
+
+        const DEFAULT_STYLE = {
+            icon: "fa-theater-masks",
+            color: "#f59e0b"
+        };
 
         // SHOW ITEMS
         function showItems(items) {
             list.innerHTML = "";
-
             let html = "";
-            console.log('items : ',items)
+
             items.forEach(item => {
-
-                let icon = "🎭";
-                if (item.type === "movies") icon = "🎬";
-                if (item.type === "sports") icon = "🏏";
-
-                const url = item.url 
-                    ? item.url 
+                const style = CATEGORY_STYLES[item.type] || DEFAULT_STYLE;
+                const url   = item.url
+                    ? item.url
                     : `/search?q=${encodeURIComponent(item.title)}`;
 
                 html += `
                     <a href="${url}" class="suggest-item">
-                        <div style="display:flex; flex-direction:column;">
-                            <span style="font-weight:500;">${item.title}</span>
-                            
-                            <span style="font-size:12px; color:#aaa;">
-                                ${item.venue || "aa"} 
-                                ${item.start_date ? " • " + formatDate(item.start_date) : ""}
+                        <span class="suggest-icon-badge"
+                              style="background:${style.color}22; color:${style.color};">
+                            <i class="fas ${style.icon}"></i>
+                        </span>
+                        <div class="suggest-item-text">
+                            <span class="suggest-item-title">${item.title}</span>
+                            <span class="suggest-item-meta">
+                                ${item.venue     ? `<span><i class="fas fa-map-marker-alt"></i>${item.venue}</span>`              : ""}
+                                ${item.start_date ? `<span><i class="fas fa-calendar-alt"></i>${formatDate(item.start_date)}</span>` : ""}
                             </span>
                         </div>
-
-                        <span class="item-icon">${icon}</span>
+                        <i class="fas fa-chevron-right suggest-item-arrow"></i>
                     </a>
                 `;
             });
 
             list.innerHTML = html;
         }
-        
+
+        // FILTER PILL TOGGLE
         checkboxes.forEach(cb => {
             cb.addEventListener("change", function () {
-
-                // Toggle active class only for this pill
                 this.nextElementSibling.classList.toggle("active", this.checked);
-
-                // Trigger search with multiple filters
                 triggerSearch();
             });
         });
 
-        // GET SELECTED FILTER
+        // GET SELECTED FILTERS
         function getSelectedTypes() {
             return Array.from(document.querySelectorAll(".filter-checkbox:checked"))
                 .map(cb => cb.value);
         }
 
-        // MAIN SEARCH FUNCTION
+        // MAIN SEARCH
         function triggerSearch() {
             clearTimeout(debounceTimer);
-
             const query = input.value.trim();
             const types = getSelectedTypes();
 
-            if (query.length < 2) {
-                return;
-            }
+            if (query.length < 2) return;
 
             debounceTimer = setTimeout(() => {
                 fetch(`/search/suggestions?q=${query}&type=${types.join(",")}`)
@@ -184,20 +439,20 @@
                         if (data.results.length > 0) {
                             showItems(data.results);
                         } else {
-                            list.innerHTML = `<div class="p-3 text-muted small">No matches found</div>`;
+                            list.innerHTML = `<div style="padding:14px 16px; font-size:13px; color:#6b7aaa;">No matches found</div>`;
                         }
                     });
             }, 300);
         }
 
-        // INPUT EVENTS
+        // SHOW BOX ON FOCUS
         input.addEventListener("focus", () => {
             box.classList.remove("hidden");
         });
 
         input.addEventListener("input", triggerSearch);
 
-        // CLOSE DROPDOWN
+        // CLOSE ON OUTSIDE CLICK
         document.addEventListener("click", (e) => {
             if (!e.target.closest(".header-search")) {
                 box.classList.add("hidden");
@@ -205,15 +460,10 @@
         });
     });
 
-
     function formatDate(dateStr) {
         const date = new Date(dateStr);
-
         return date.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "2-digit"
+            day: "2-digit", month: "short", year: "2-digit"
         });
     }
-
 </script>
